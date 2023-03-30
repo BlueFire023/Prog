@@ -67,7 +67,6 @@ public class ElevenColors extends Frame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println(e.getSource().toString());
         switch (e.getActionCommand()){
             case "green" -> setBackground(Color.green);
             case "blue" -> setBackground(Color.blue);
