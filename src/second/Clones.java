@@ -8,8 +8,8 @@ import java.awt.event.*;
 
 public class Clones extends Frame implements ActionListener{
 
-    Button zykButton = new Button("Zyklus");
-    Button newButton = new Button("Neu");
+    Button zykButton = new Button("Cycle");
+    Button newButton = new Button("New");
 
     int index = 0;
 

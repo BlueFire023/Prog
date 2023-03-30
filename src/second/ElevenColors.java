@@ -8,17 +8,17 @@ import java.awt.event.*;
 
 public class ElevenColors extends Frame implements ActionListener{
 
-    Button blkButton = new Button("Schwarz");
-    Button bluButton = new Button("Blau");
+    Button blkButton = new Button("Black");
+    Button bluButton = new Button("Blue");
     Button cyaButton = new Button("Cyan");
-    Button gryButton = new Button("Grau");
-    Button greButton = new Button("Grün");
+    Button gryButton = new Button("Gray");
+    Button greButton = new Button("Green");
     Button magButton = new Button("Magenta");
     Button oraButton = new Button("Orange");
     Button pikButton = new Button("Pink");
-    Button redButton = new Button("Rot");
-    Button whtButton = new Button("Weiß");
-    Button ylwButton = new Button("Gelb");
+    Button redButton = new Button("Red");
+    Button whtButton = new Button("White");
+    Button ylwButton = new Button("Yellow");
 
 
     public ElevenColors()
@@ -107,7 +107,7 @@ public class ElevenColors extends Frame implements ActionListener{
         ElevenColors eC = new ElevenColors();
         WindowQuitter wquit = new WindowQuitter();
         eC.addWindowListener(wquit);
-        eC.setSize(2000,1500);
+        eC.setSize(1000,750);
         eC.setVisible(true);
     }
 }

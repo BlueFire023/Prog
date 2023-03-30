@@ -124,7 +124,7 @@ public class Safe extends Frame implements ActionListener{
         Safe sehrSichererSafe = new Safe();
         WindowQuitter wquit = new WindowQuitter();
         sehrSichererSafe.addWindowListener(wquit);
-        sehrSichererSafe.setSize(2000,1500);
+        sehrSichererSafe.setSize(1000,750);
         sehrSichererSafe.setVisible(true);
     }
 }
