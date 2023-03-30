@@ -7,5 +7,8 @@ package second;
 
 public class Clones
 {
+    public static void main(String[] args)
+    {
 
+    }
 }
