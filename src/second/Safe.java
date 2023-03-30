@@ -13,7 +13,7 @@ public class Safe extends Frame implements ActionListener
 {
     Button btn0 = new Button("0");
     Button btn1 = new Button("1");
-    Button btn2 = new Button("black");
+    Button btn2 = new Button("2");
     Button btn3 = new Button("3");
     Button btn4 = new Button("4");
     Button btn5 = new Button("5");
@@ -22,7 +22,7 @@ public class Safe extends Frame implements ActionListener
     Button btn8 = new Button("8");
     Button btn9 = new Button("9");
 
-    public void Safe()
+    public Safe()
     {
         setLayout(new FlowLayout());
 
@@ -78,29 +78,12 @@ public class Safe extends Frame implements ActionListener
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e)
+    {
         switch (e.getActionCommand())
         {
-            case "0":
-                setBackground(Color.green);
-            case "1":
-                setBackground(Color.green);
-            case "2":
-                setBackground(Color.green);
-            case "3":
-                setBackground(Color.red);
-            case "4":
-                setBackground(Color.red);
-            case "5":
-                setBackground(Color.red);
-            case "6":
-                setBackground(Color.red);
-            case "7":
-                setBackground(Color.red);
-            case "8":
-                setBackground(Color.red);
-            case "9":
-                setBackground(Color.red);
+            case "0", "2", "1", "3" -> setBackground(Color.green);
+            case "4", "5", "9", "7", "8", "6" -> setBackground(Color.red);
         }
     }
 }

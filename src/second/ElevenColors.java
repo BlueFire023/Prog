@@ -1,92 +1,86 @@
 package second;
 
 /**
- * @version 1.1, 30.03.2023
- * @author Filip Schepers, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Denis Schaffer
+ * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
+ * @version 1, 30/03/2023
  */
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
 
-public class ElevenColors extends Frame implements ActionListener
-{
-    Button btnbla = new Button("schwarzer Hintergrund!");
-    Button btnblu = new Button("blauer Hintergrund!");
-    Button btncya = new Button("cyan Hintergrund!");
-    Button btngre = new Button("grauer Hintergrund!");
-    Button btngrü = new Button("grüner Hintergrund!");
-    Button btnmag = new Button("magenta Hintergrund!");
-    Button btnora = new Button("orangener Hintergrund!");
-    Button btnpin = new Button("pinker Hintergrund!");
-    Button btnred = new Button("roter Hintergrund!");
-    Button btnwhi = new Button("weißer Hintergrund!");
-    Button btnyel = new Button("gelber Hintergrund!");
-
-    public ElevenColors()
-    {
+public class ElevenColors extends Frame implements ActionListener {
+    Button green = new Button("Green");
+    Button blue = new Button("Blue");
+    Button red = new Button("Red");
+    Button magenta = new Button("Magenta");
+    Button yellow = new Button("Yellow");
+    Button cyan = new Button("Cyan");
+    Button black = new Button("Black");
+    Button grey = new Button("Grey");
+    Button orange = new Button("Orange");
+    Button pink = new Button("Pink");
+    Button white = new Button("White");
+    ElevenColors(){
         setLayout(new FlowLayout());
-
-        btnbla.addActionListener(this);
-        btnbla.setActionCommand("black");
-        add(btnbla);
-
-        btnblu.addActionListener(this);
-        btnblu.setActionCommand("blue");
-        add(btnblu);
-
-        btncya.addActionListener(this);
-        btncya.setActionCommand("cyan");
-        add(btncya);
-
-        btngre.addActionListener(this);
-        btngre.setActionCommand("grey");
-        add(btngre);
-
-        btngrü.addActionListener(this);
-        btngrü.setActionCommand("greed");
-        add(btngrü);
-
-        btnmag.addActionListener(this);
-        btnmag.setActionCommand("magenta");
-        add(btnmag);
-
-        btnora.addActionListener(this);
-        btnora.setActionCommand("orange");
-        add(btnora);
-
-        btnpin.addActionListener(this);
-        btnpin.setActionCommand("pink");
-        add(btnpin);
-
-        btnred.addActionListener(this);
-        btnred.setActionCommand("red");
-        add(btnred);
-
-        btnwhi.addActionListener(this);
-        btnwhi.setActionCommand("white");
-        add(btnwhi);
-
-        btnyel.addActionListener(this);
-        btnyel.setActionCommand("yellow");
-        add(btnyel);
+        add(green);
+        green.addActionListener(this);
+        green.setActionCommand("green");
+        add(blue);
+        blue.addActionListener(this);
+        blue.setActionCommand("blue");
+        add(magenta);
+        magenta.addActionListener(this);
+        magenta.setActionCommand("magenta");
+        add(cyan);
+        cyan.addActionListener(this);
+        cyan.setActionCommand("cyan");
+        add(yellow);
+        yellow.addActionListener(this);
+        yellow.setActionCommand("yellow");
+        add(black);
+        black.addActionListener(this);
+        black.setActionCommand("black");
+        add(grey);
+        grey.addActionListener(this);
+        grey.setActionCommand("gray");
+        add(orange);
+        orange.addActionListener(this);
+        orange.setActionCommand("orange");
+        add(pink);
+        pink.addActionListener(this);
+        pink.setActionCommand("pink");
+        add(white);
+        white.addActionListener(this);
+        white.setActionCommand("white");
+        add(red);
+        red.addActionListener(this);
+        red.setActionCommand("red");
     }
-    Color[] colors = {Color.black, Color.blue, Color.cyan, Color.gray, Color.green, Color.magenta, Color.orange, Color.pink, Color.red, Color.white, Color.yellow};
-    int color = 0;
+    public static void main(String[] args) {
+        WindowQuitter wQuit = new WindowQuitter();
+        ElevenColors frm = new ElevenColors();
+        frm.addWindowListener(wQuit);
+        frm.setSize(150, 100);
+        frm.setVisible(true);
+    }
 
     @Override
-    public void actionPerformed(ActionEvent e)
-    {
-
-    }
-
-    public static void main(String[] args)
-    {
-        Frame frme = new Frame();
-        frme.setSize(300,400);
-        frme.setVisible(true);
-
-        WindowQuitter wquit = new WindowQuitter();
+    public void actionPerformed(ActionEvent e) {
+        System.out.println(e.getSource().toString());
+        switch (e.getActionCommand()){
+            case "green" -> setBackground(Color.green);
+            case "blue" -> setBackground(Color.blue);
+            case "magenta" -> setBackground(Color.magenta);
+            case "cyan" -> setBackground(Color.cyan);
+            case "yellow" -> setBackground(Color.yellow);
+            case "black" -> setBackground(Color.black);
+            case "gray" -> setBackground(Color.gray);
+            case "orange" -> setBackground(Color.orange);
+            case "pink" -> setBackground(Color.pink);
+            case "white" -> setBackground(Color.white);
+            case "red" -> setBackground(Color.red);
+        }
     }
 }
+
