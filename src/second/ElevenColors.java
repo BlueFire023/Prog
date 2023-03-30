@@ -33,7 +33,7 @@ public class ElevenColors extends Frame implements ActionListener
         add(btnbla);
 
         btnblu.addActionListener(this);
-        btnble.setActionCommand("blue");
+        btnblu.setActionCommand("blue");
         add(btnblu);
 
         btncya.addActionListener(this);
@@ -78,7 +78,7 @@ public class ElevenColors extends Frame implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        switch()
+
     }
 
     public static void main(String[] args)
@@ -88,6 +88,5 @@ public class ElevenColors extends Frame implements ActionListener
         frme.setVisible(true);
 
         WindowQuitter wquit = new WindowQuitter();
-        wquit.addWindowListener(wquit);
     }
 }
