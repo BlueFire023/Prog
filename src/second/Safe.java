@@ -50,6 +50,8 @@ public class Safe extends Frame implements ActionListener {
             if (tester.equals(PASSWORD)) {
                 System.exit(0);
             }
+        } else if (e.getActionCommand().equals(PASSWORD.substring(0,1))) {
+            tester = PASSWORD.substring(0,1);
         } else {
             tester = "";
             setBackground(Color.red);
