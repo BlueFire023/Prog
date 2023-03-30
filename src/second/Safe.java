@@ -1,6 +1,5 @@
 package second;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,8 +9,7 @@ import java.awt.event.ActionListener;
  * @author Filip Schepers, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Denis Schaffer
  */
 
-public class Safe extends Frame implements ActionListener
-{
+public class Safe extends Frame implements ActionListener {
     Button btn0 = new Button("0");
     Button btn1 = new Button("1");
     Button btn2 = new Button("2");
@@ -23,8 +21,7 @@ public class Safe extends Frame implements ActionListener
     Button btn8 = new Button("8");
     Button btn9 = new Button("9");
 
-    public Safe()
-    {
+    public Safe() {
         setLayout(new FlowLayout());
 
         btn0.addActionListener(this);
@@ -68,10 +65,9 @@ public class Safe extends Frame implements ActionListener
         add(btn9);
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         Safe nfrm = new Safe();
-        nfrm.setSize(400,400);
+        nfrm.setSize(400, 400);
         nfrm.setVisible(true);
 
         WindowQuitter wquit = new WindowQuitter();
