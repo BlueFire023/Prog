@@ -8,7 +8,7 @@ import java.awt.event.WindowEvent;
  * @version 1, 30/03/2023
  */
 public class WindowQuitter extends WindowAdapter {
-    public void windowClosing(WindowEvent e){
+    public void windowClosing(WindowEvent e) {
         System.exit(0);
     }
 }

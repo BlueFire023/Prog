@@ -10,53 +10,66 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ElevenColors extends Frame implements ActionListener {
-    Button green = new Button("Green");
-    Button blue = new Button("Blue");
-    Button red = new Button("Red");
-    Button magenta = new Button("Magenta");
-    Button yellow = new Button("Yellow");
-    Button cyan = new Button("Cyan");
-    Button black = new Button("Black");
-    Button grey = new Button("Grey");
-    Button orange = new Button("Orange");
-    Button pink = new Button("Pink");
-    Button white = new Button("White");
-    ElevenColors(){
+
+    ElevenColors() {
         setLayout(new FlowLayout());
+
+        Button green = new Button("Green");
         add(green);
         green.addActionListener(this);
         green.setActionCommand("green");
+
+        Button blue = new Button("Blue");
         add(blue);
         blue.addActionListener(this);
         blue.setActionCommand("blue");
+
+        Button magenta = new Button("Magenta");
         add(magenta);
         magenta.addActionListener(this);
         magenta.setActionCommand("magenta");
+
+        Button cyan = new Button("Cyan");
         add(cyan);
         cyan.addActionListener(this);
         cyan.setActionCommand("cyan");
+
+        Button yellow = new Button("Yellow");
         add(yellow);
         yellow.addActionListener(this);
         yellow.setActionCommand("yellow");
+
+        Button black = new Button("Black");
         add(black);
         black.addActionListener(this);
         black.setActionCommand("black");
+
+        Button grey = new Button("Grey");
         add(grey);
         grey.addActionListener(this);
         grey.setActionCommand("gray");
+
+        Button orange = new Button("Orange");
         add(orange);
         orange.addActionListener(this);
         orange.setActionCommand("orange");
+
+        Button pink = new Button("Pink");
         add(pink);
         pink.addActionListener(this);
         pink.setActionCommand("pink");
+
+        Button white = new Button("White");
         add(white);
         white.addActionListener(this);
         white.setActionCommand("white");
+
+        Button red = new Button("Red");
         add(red);
         red.addActionListener(this);
         red.setActionCommand("red");
     }
+
     public static void main(String[] args) {
         WindowQuitter wQuit = new WindowQuitter();
         ElevenColors frm = new ElevenColors();
@@ -67,7 +80,7 @@ public class ElevenColors extends Frame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        switch (e.getActionCommand()){
+        switch (e.getActionCommand()) {
             case "green" -> setBackground(Color.green);
             case "blue" -> setBackground(Color.blue);
             case "magenta" -> setBackground(Color.magenta);
