@@ -66,12 +66,12 @@ public class Safe extends Frame implements ActionListener {
     }
 
     public static void main(String[] args) {
-        Safe nfrm = new Safe();
-        nfrm.setSize(400, 400);
-        nfrm.setVisible(true);
+        Safe frm = new Safe();
+        frm.setSize(400, 400);
+        frm.setVisible(true);
 
         WindowQuitter wquit = new WindowQuitter();
-        nfrm.addWindowListener(wquit);
+        frm.addWindowListener(wquit);
     }
 
     @Override
