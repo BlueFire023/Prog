@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
  */
 public class Rainbow extends Frame implements ActionListener, Runnable {
     private final Color[] COLORS = {Color.black, Color.blue, Color.cyan, Color.gray, Color.green, Color.magenta, Color.orange, Color.pink, Color.red, Color.white, Color.yellow};
-    public static int index = 0;
+    public int index = 0;
 
     public Rainbow() {
         setLayout(new FlowLayout());
