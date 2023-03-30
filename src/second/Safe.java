@@ -1,5 +1,6 @@
 package second;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -80,10 +81,6 @@ public class Safe extends Frame implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        switch (e.getActionCommand())
-        {
-            case "0", "2", "1", "3" -> setBackground(Color.green);
-            case "4", "5", "9", "7", "8", "6" -> setBackground(Color.red);
-        }
+
     }
 }
