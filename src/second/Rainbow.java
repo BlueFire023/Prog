@@ -1,80 +1,53 @@
 package second;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 /**
- * @author  Filip Schepers, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Denis Schaffer
+ * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
  * @version 1, 30/03/2023
  */
-import java.awt.*;
-import java.awt.event.*;
-public class Rainbow extends Frame implements ActionListener, Runnable{
-
-    Button zykButton = new Button("New Window");
-
-
+public class Rainbow extends Frame implements ActionListener {
+    private static Button nWind = new Button("New Rainbow");
+    private static Color[] colors = {Color.black, Color.blue, Color.cyan, Color.gray, Color.green, Color.magenta, Color.orange, Color.pink, Color.red, Color.white, Color.yellow};
+    public static int index = 0;
 
     public Rainbow(){
         setLayout(new FlowLayout());
-        zykButton.addActionListener(this);
-
-        zykButton.setActionCommand("Cycle");
-
-        add(zykButton);
-
-        new Thread(this).start();
-
-
+        add(nWind);
+        nWind.addActionListener(this);
+    }
+    public static void main(String[] args) {
+        WindowQuitter wQuit = new WindowQuitter();
+        Rainbow frm = new Rainbow();
+        frm.addWindowListener(wQuit);
+        frm.setSize(500,500);
+        frm.setVisible(true);
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getActionCommand().equals("Cycle")){
-
-            Rainbow rB = new Rainbow();
-            WindowQuitter wquit = new WindowQuitter();
-            rB.addWindowListener(wquit);
-            rB.setSize(200,150);
-            rB.setVisible(true);
-
-        }
-
-    }
-
-    public void run(){
-        while(true)
-        {
-            try {
-                changeColor();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+        WindowQuitter wQuit = new WindowQuitter();
+        Rainbow frm = new Rainbow();
+        frm.addWindowListener(wQuit);
+        frm.setSize(500,500);
+        frm.setVisible(true);
+        try {
+            changeColor();
+        } catch (InterruptedException ex) {
         }
     }
 
     public void changeColor() throws InterruptedException {
-
-
-            setBackground(Color.red);
+        while (true) {
             Thread.sleep(1000);
-            setBackground(Color.orange);
-            Thread.sleep(1000);
-            setBackground(Color.yellow);
-            Thread.sleep(1000);
-            setBackground(Color.green);
-            Thread.sleep(1000);
-            setBackground(Color.blue);
-            Thread.sleep(1000);
-            setBackground(Color.magenta);
-
-
-    }
-    public static void main(String[] args) throws InterruptedException {
-        Rainbow rA = new Rainbow();
-        WindowQuitter wquit = new WindowQuitter();
-        rA.addWindowListener(wquit);
-        rA.setSize(200,150);
-        rA.setVisible(true);
-
-
-            rA.changeColor();
-
-
+            if (index != 10) {
+                setBackground(colors[index]);
+                index++;
+            } else {
+                index = 0;
+            }
+        }
     }
 }
+

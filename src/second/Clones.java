@@ -1,125 +1,56 @@
 package second;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+
 /**
- * @author  Filip Schepers, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Denis Schaffer
+ * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
  * @version 1, 30/03/2023
  */
-import java.awt.*;
-import java.awt.event.*;
-
-public class Clones extends Frame implements ActionListener{
-
-    Button zykButton = new Button("Zyklus");
-    Button newButton = new Button("Neu");
-
-    int index = 0;
-
-
-
-
-    public Clones()
-    {
+public class Clones extends Frame implements ActionListener {
+    Button cyclon = new Button("Next Color");
+    Button nWind = new Button("New Window");
+    Color[] cyclic = {Color.black, Color.blue, Color.cyan, Color.gray, Color.green, Color.magenta, Color.orange, Color.pink, Color.red, Color.white, Color.yellow};
+    int index;
+    public Clones(int index){
         setLayout(new FlowLayout());
-        zykButton.addActionListener(this);
-        newButton.addActionListener(this);
+        add(cyclon);
+        cyclon.addActionListener(this);
+        cyclon.setActionCommand("C");
+        add(nWind);
+        nWind.addActionListener(this);
+        nWind.setActionCommand("W");
+        this.index = index;
+        setBackground(cyclic[index]);
+    }
 
-
-        zykButton.setActionCommand("Cycle");
-        newButton.setActionCommand("New");
-
-        add(zykButton);
-        add(newButton);
-
+    public static void main(String[] args) {
+        WindowQuitter wQuit = new WindowQuitter();
+        Clones frm = new Clones(0);
+        frm.addWindowListener(wQuit);
+        frm.setSize(500,500);
+        frm.setVisible(true);
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getActionCommand().equals("Cycle")){
-            switch(index){
-                case 0: setBackground(Color.black);
-                break;
-                case 1: setBackground(Color.blue);
-                    break;
-                case 2: setBackground(Color.cyan);
-                    break;
-                case 3: setBackground(Color.gray);
-                    break;
-                case 4: setBackground(Color.green);
-                    break;
-                case 5: setBackground(Color.magenta);
-                    break;
-                case 6: setBackground(Color.orange);
-                    break;
-                case 7: setBackground(Color.pink);
-                    break;
-                case 8: setBackground(Color.red);
-                    break;
-                case 9: setBackground(Color.white);
-                    break;
-                case 10: setBackground(Color.yellow);
-                    break;
-                default: break;
-
-            }
-            if(index == 10)
-            {
-                index = 0;
-            }else{
-                index++;
-            }
-        }else if(e.getActionCommand().equals("New")) {
-            Clones dd = new Clones();
-            WindowQuitter wquit = new WindowQuitter();
-            dd.addWindowListener(wquit);
-            dd.setSize(200, 150);
-            dd.setVisible(true);
-            switch (index-1) {
-                case 0:
-                    dd.setBackground(Color.black);
-                    break;
-                case 1:
-                    dd.setBackground(Color.blue);
-                    break;
-                case 2:
-                    dd.setBackground(Color.cyan);
-                    break;
-                case 3:
-                    dd.setBackground(Color.gray);
-                    break;
-                case 4:
-                    dd.setBackground(Color.green);
-                    break;
-                case 5:
-                    dd.setBackground(Color.magenta);
-                    break;
-                case 6:
-                    dd.setBackground(Color.orange);
-                    break;
-                case 7:
-                    dd.setBackground(Color.pink);
-                    break;
-                case 8:
-                    dd.setBackground(Color.red);
-                    break;
-                case 9:
-                    dd.setBackground(Color.white);
-                    break;
-                case 10:
-                    dd.setBackground(Color.yellow);
-                    break;
-                default:
-                    break;
-
-            }
-
-
+        if(e.getActionCommand().equals("W")){
+            WindowQuitter wQuit = new WindowQuitter();
+            Clones frm = new Clones(index);
+            frm.addWindowListener(wQuit);
+            frm.setSize(500,500);
+            frm.setVisible(true);
         }
-    }
-    public static void main(String[] args)
-    {
-        Clones cc = new Clones();
-        WindowQuitter wquit = new WindowQuitter();
-        cc.addWindowListener(wquit);
-        cc.setSize(200,150);
-        cc.setVisible(true);
+        else{
+            if(index != 10){
+                index++;
+                setBackground(cyclic[index]);
+            }else{
+                index = 0;
+                setBackground(cyclic[index]);
+            }
+        }
     }
 }
 

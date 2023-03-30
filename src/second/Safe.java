@@ -1,130 +1,82 @@
 package second;
-/**
- * @author  Filip Schepers, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Denis Schaffer
- * @version 1, 30/03/2023
- */
+
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+/**
+ * @version 1.1, 30.03.2023
+ * @author Filip Schepers, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Denis Schaffer
+ */
 
-public class Safe extends Frame implements ActionListener{
+public class Safe extends Frame implements ActionListener {
+    Button btn0 = new Button("0");
+    Button btn1 = new Button("1");
+    Button btn2 = new Button("2");
+    Button btn3 = new Button("3");
+    Button btn4 = new Button("4");
+    Button btn5 = new Button("5");
+    Button btn6 = new Button("6");
+    Button btn7 = new Button("7");
+    Button btn8 = new Button("8");
+    Button btn9 = new Button("9");
 
-    Button zeroButton = new Button("0");
-    Button oneButton = new Button("1");
-    Button twoButton = new Button("2");
-    Button threeButton = new Button("3");
-    Button fourButton = new Button("4");
-    Button fiveButton = new Button("5");
-    Button sixButton = new Button("6");
-    Button sevenButton = new Button("7");
-    Button eightButton = new Button("8");
-    Button nineButton = new Button("9");
-
-    int[] rIndex = new int[]{3,1,0,3,2,0,2,3};
-    int index = 1;
-
-
-
-    public Safe()
-    {
+    public Safe() {
         setLayout(new FlowLayout());
-        zeroButton.addActionListener(this);
-        oneButton.addActionListener(this);
-        twoButton.addActionListener(this);
-        threeButton.addActionListener(this);
-        fourButton.addActionListener(this);
-        fiveButton.addActionListener(this);
-        sixButton.addActionListener(this);
-        sevenButton.addActionListener(this);
-        eightButton.addActionListener(this);
-        nineButton.addActionListener(this);
 
-        zeroButton.setActionCommand("0");
-        oneButton.setActionCommand("1");
-        twoButton.setActionCommand("2");
-        threeButton.setActionCommand("3");
-        fourButton.setActionCommand("4");
-        fiveButton.setActionCommand("5");
-        sixButton.setActionCommand("6");
-        sevenButton.setActionCommand("7");
-        eightButton.setActionCommand("8");
-        nineButton.setActionCommand("9");
+        btn0.addActionListener(this);
+        btn0.setActionCommand("0");
+        add(btn0);
 
+        btn1.addActionListener(this);
+        btn1.setActionCommand("1");
+        add(btn1);
 
-        add(zeroButton);
-        add(oneButton);
-        add(twoButton);
-        add(threeButton);
-        add(fourButton);
-        add(fiveButton);
-        add(sixButton);
-        add(sevenButton);
-        add(eightButton);
-        add(nineButton);
+        btn2.addActionListener(this);
+        btn2.setActionCommand("2");
+        add(btn2);
+
+        btn3.addActionListener(this);
+        btn3.setActionCommand("3");
+        add(btn3);
+
+        btn4.addActionListener(this);
+        btn4.setActionCommand("4");
+        add(btn4);
+
+        btn5.addActionListener(this);
+        btn5.setActionCommand("5");
+        add(btn5);
+
+        btn6.addActionListener(this);
+        btn6.setActionCommand("6");
+        add(btn6);
+
+        btn7.addActionListener(this);
+        btn7.setActionCommand("7");
+        add(btn7);
+
+        btn8.addActionListener(this);
+        btn8.setActionCommand("8");
+        add(btn8);
+
+        btn9.addActionListener(this);
+        btn9.setActionCommand("9");
+        add(btn9);
     }
-    @Override
-    public void actionPerformed(ActionEvent e) {
 
-        switch (e.getActionCommand()) {
-            case "0":
-                if(index == 3 || index == 6)
-                {
-                    index++;
-                    setBackground(Color.green);
-                }else {
-                    index = 1;
-                    setBackground(Color.red);
-                }
-                break;
-            case "1":
-                if(index == 2)
-                {
-                    index++;
-                    setBackground(Color.green);
-                }else {
-                    index = 1;
-                    setBackground(Color.red);
-                }
-                break;
-            case "2":
-                if(index == 5 || index == 7)
-                {
-                    index++;
-                    setBackground(Color.green);
-                }else {
-                    index = 1;
-                    setBackground(Color.red);
-                }
-                break;
-            case "3":
-                if(index == 1 || index == 4 || index == 8)
-                {
-                    if(index == 8){
-                        System.exit(0);
-                    }
-                    index++;
-                    setBackground(Color.green);
-                }else {
-                    index = 2;
-                    setBackground(Color.red);
-                }
-                break;
-            case "4", "5", "6", "7", "8", "9":
-                index = 1;
-                setBackground(Color.red);
-                break;
+    public static void main(String[] args) {
+        Safe frm = new Safe();
+        frm.setSize(400, 400);
+        frm.setVisible(true);
 
-            default: break;
-        }
-
-
-    }
-    public static void main(String[] args)
-    {
-        Safe sehrSichererSafe = new Safe();
         WindowQuitter wquit = new WindowQuitter();
-        sehrSichererSafe.addWindowListener(wquit);
-        sehrSichererSafe.setSize(2000,1500);
-        sehrSichererSafe.setVisible(true);
+        frm.addWindowListener(wquit);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e)
+    {
+
     }
 }
