@@ -53,7 +53,7 @@ public class Rainbow extends Frame implements ActionListener, Runnable {
         while (true) {
             try {
                 changeColor();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
     }

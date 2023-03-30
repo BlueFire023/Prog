@@ -15,14 +15,17 @@ public class Clones extends Frame implements ActionListener {
 
     public Clones(int index) {
         setLayout(new FlowLayout());
+
         Button cycleButton = new Button("Next Color");
         add(cycleButton);
         cycleButton.addActionListener(this);
         cycleButton.setActionCommand("C");
+
         Button newWindowButton = new Button("New Window");
         add(newWindowButton);
         newWindowButton.addActionListener(this);
         newWindowButton.setActionCommand("W");
+
         this.index = index;
         setBackground(COLORS[index]);
     }

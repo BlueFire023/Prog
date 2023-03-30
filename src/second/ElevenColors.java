@@ -10,88 +10,42 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ElevenColors extends Frame implements ActionListener {
+    private final Color[] COLORS = {Color.black, Color.blue, Color.cyan, Color.gray, Color.green, Color.magenta, Color.orange, Color.pink, Color.red, Color.white, Color.yellow};
+
+    private int i = 0;
 
     ElevenColors() {
         setLayout(new FlowLayout());
-
-        Button green = new Button("Green");
-        add(green);
-        green.addActionListener(this);
-        green.setActionCommand("green");
-
-        Button blue = new Button("Blue");
-        add(blue);
-        blue.addActionListener(this);
-        blue.setActionCommand("blue");
-
-        Button magenta = new Button("Magenta");
-        add(magenta);
-        magenta.addActionListener(this);
-        magenta.setActionCommand("magenta");
-
-        Button cyan = new Button("Cyan");
-        add(cyan);
-        cyan.addActionListener(this);
-        cyan.setActionCommand("cyan");
-
-        Button yellow = new Button("Yellow");
-        add(yellow);
-        yellow.addActionListener(this);
-        yellow.setActionCommand("yellow");
-
-        Button black = new Button("Black");
-        add(black);
-        black.addActionListener(this);
-        black.setActionCommand("black");
-
-        Button grey = new Button("Grey");
-        add(grey);
-        grey.addActionListener(this);
-        grey.setActionCommand("gray");
-
-        Button orange = new Button("Orange");
-        add(orange);
-        orange.addActionListener(this);
-        orange.setActionCommand("orange");
-
-        Button pink = new Button("Pink");
-        add(pink);
-        pink.addActionListener(this);
-        pink.setActionCommand("pink");
-
-        Button white = new Button("White");
-        add(white);
-        white.addActionListener(this);
-        white.setActionCommand("white");
-
-        Button red = new Button("Red");
-        add(red);
-        red.addActionListener(this);
-        red.setActionCommand("red");
+        Button[] buttons = {
+                new Button("Black"),
+                new Button("Blue"),
+                new Button("Cyan"),
+                new Button("Gray"),
+                new Button("Green"),
+                new Button("Magenta"),
+                new Button("Orange"),
+                new Button("Pink"),
+                new Button("Red"),
+                new Button("White"),
+                new Button("Yellow")
+        };
+        for (Button a : buttons) {
+            add(a);
+            a.setActionCommand("" + i++);
+            a.addActionListener(this);
+        }
     }
 
     public static void main(String[] args) {
         WindowQuitter wQuit = new WindowQuitter();
         ElevenColors frm = new ElevenColors();
         frm.addWindowListener(wQuit);
-        frm.setSize(150, 100);
+        frm.setSize(500, 500);
         frm.setVisible(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        switch (e.getActionCommand()) {
-            case "green" -> setBackground(Color.green);
-            case "blue" -> setBackground(Color.blue);
-            case "magenta" -> setBackground(Color.magenta);
-            case "cyan" -> setBackground(Color.cyan);
-            case "yellow" -> setBackground(Color.yellow);
-            case "black" -> setBackground(Color.black);
-            case "gray" -> setBackground(Color.gray);
-            case "orange" -> setBackground(Color.orange);
-            case "pink" -> setBackground(Color.pink);
-            case "white" -> setBackground(Color.white);
-            case "red" -> setBackground(Color.red);
-        }
+        setBackground(COLORS[Integer.parseInt(e.getActionCommand())]);
     }
 }
