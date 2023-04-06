@@ -11,10 +11,6 @@ import javax.swing.*;
 
 public class IdealWeight extends JFrame implements ActionListener
 {
-        /*Ergänzen Sie das Programm IdealWeight zur Idealgewichtsberechnung, so dass eine Ausgabe erfolgt.
-        Das Idealgewicht W in Pfund ergibt sich für Männer nach der Formel
-        W = H2/ 30 und für Frauen nach W = H2/ 28, wobei H die Größe in Inch ist.*/
-
     JRadioButton genderM, genderF, genderD;
     ButtonGroup genderGroup;
     JPanel genderPanel;
