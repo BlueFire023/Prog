@@ -13,8 +13,7 @@ import java.awt.event.ActionListener;
 public class DrehSafe extends JFrame implements ActionListener, Runnable {
     private final String PASSWORD = "8224725301";
     private String pTest = "";
-    private int z = 9;
-    private int r = 0;
+    private int counter = 9;
     private boolean clockwise = true;
     private final JButton[] buttons = {
             new JButton("0"),
@@ -38,18 +37,14 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
             button.setFont(new Font("Courier", Font.BOLD, 34));
             button.addActionListener(this);
         }
-        getContentPane().add(buttons[0]);
-        getContentPane().add(buttons[1]);
-        getContentPane().add(buttons[2]);
-        getContentPane().add(buttons[9]);
-        getContentPane().add(new JPanel());
-        getContentPane().add(buttons[3]);
-        getContentPane().add(buttons[8]);
-        getContentPane().add(new JPanel());
-        getContentPane().add(buttons[4]);
-        getContentPane().add(buttons[7]);
-        getContentPane().add(buttons[6]);
-        getContentPane().add(buttons[5]);
+        int[] gridArrangement = {0, 1, 2, 9, -1, 3, 8, -1, 4, 7, 6, 5};
+        for (int k : gridArrangement) {
+            if (k == -1) {
+                getContentPane().add(new JPanel());
+            } else {
+                getContentPane().add(buttons[k]);
+            }
+        }
         new Thread(this).start();
     }
 
@@ -61,7 +56,7 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        pTest += e.getActionCommand();
+        pTest += ((JButton) e.getSource()).getText();
         if (PASSWORD.startsWith(pTest)) {
             for (JButton button : buttons) {
                 button.setBackground(Color.green);
@@ -96,23 +91,15 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
         Thread.sleep(1000);
         if (clockwise) {
             for (JButton button : buttons) {
-                if (z > 9) {
-                    z = 0;
-                }
-                button.setText("" + z);
-                button.setActionCommand("" + z++);
+                counter = Integer.parseInt(button.getText());
+                counter = counter <= 0 ? 9 : counter - 1;
+                button.setText("" + counter);
             }
-            z--;
         } else {
             for (JButton button : buttons) {
-                if (++z > 9) {
-                    z = 0;
-                }
-                button.setText("" + z);
-                button.setActionCommand("" + z);
-            }
-            if (++z > 9) {
-                z = 0;
+                counter = Integer.parseInt(button.getText());
+                counter = counter >= 9 ? 0 : counter + 1;
+                button.setText("" + counter);
             }
         }
     }
