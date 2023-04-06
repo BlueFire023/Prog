@@ -80,7 +80,7 @@ public class IdealWeight extends JFrame implements ActionListener
         // Ergebnis-Panel
         resultText = new JTextField(7);
         resultText.setEditable( false );
-        resultLabel = new JLabel("'Ideal Weight' (as long as you stay healthy, every weight is acceptable)");
+        resultLabel = new JLabel("'Ideal Weight' (as long as you stay healthy, your weight can just be your weight)");
         resultPanel = new JPanel();
         resultPanel.add( resultLabel );
         resultPanel.add( resultText );
@@ -102,6 +102,8 @@ public class IdealWeight extends JFrame implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-
+        int genderConstant = genderM.isSelected()? 30 : genderF.isSelected()? 28 : 29;
+        int heightConstant = heightA.isSelected()? 60 : heightB.isSelected()? 64 : heightC.isSelected()? 68 : heightC.isSelected()? 72 : 78;
+        resultText.setText(((heightConstant*heightConstant)/genderConstant) + "pounds");
     }
 }
