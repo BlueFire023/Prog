@@ -13,7 +13,8 @@ import java.awt.event.ActionListener;
 public class DrehSafe extends JFrame implements ActionListener, Runnable {
     private final String PASSWORD = "8224725301";
     private String pTest = "";
-    private int z = 0;
+    private int z = 9;
+    private int r = 0;
     private boolean clockwise = true;
     private final JButton[] buttons = {
             new JButton("0"),
@@ -95,11 +96,11 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
         Thread.sleep(1000);
         if (clockwise) {
             for (JButton button : buttons) {
-                if (++z > 9) {
+                if (z > 9) {
                     z = 0;
                 }
                 button.setText("" + z);
-                button.setActionCommand("" + z);
+                button.setActionCommand("" + z++);
             }
             z--;
         } else {
