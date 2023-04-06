@@ -14,8 +14,8 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
     private final String PASSWORD = "8224725301";
     private String tester = "";
     private int i = 0;
-    private int z = 8;
-    private boolean right = false;
+    private int z = 0;
+    private boolean right = true;
     private final JButton[] numPad = {
             new JButton("0"),
             new JButton("1"),
@@ -34,6 +34,7 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
         getContentPane().setLayout(new GridLayout(4, 3));
         for (JButton a : numPad) {
             a.setBackground(Color.green);
+            a.setFont(new Font("Courier", Font.BOLD, 34));
             a.setActionCommand("" + i++);
             a.addActionListener(this);
         }
@@ -58,21 +59,28 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
         frm.addWindowListener(wQuit);
         frm.setSize(500, 500);
         frm.setVisible(true);
-
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         tester += e.getActionCommand();
         if (PASSWORD.startsWith(tester)) {
+            for (JButton a : numPad) {
+                a.setBackground(Color.green);
+            }
             if (tester.equals(PASSWORD)) {
                 System.exit(0);
             }
+            right = true;
         } else if (e.getActionCommand().equals(PASSWORD.substring(0, 1))) {
             tester = PASSWORD.substring(0, 1);
+            right = true;
         } else {
             tester = "";
-            right = !right;
+            right = false;
+            for (JButton a : numPad) {
+                a.setBackground(Color.red);
+            }
         }
     }
 
@@ -99,13 +107,15 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
             z--;
         } else {
             for (JButton a : numPad) {
+                a.setText("" + z);
+                a.setActionCommand("" + z);
                 if (++z > 9) {
                     z = 0;
                 }
-                a.setText("" + z);
-                a.setActionCommand("" + z);
             }
-            z--;
+            if (++z > 9) {
+                z = 0;
+            }
         }
     }
 }
