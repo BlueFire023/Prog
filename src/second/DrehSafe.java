@@ -12,11 +12,10 @@ import java.awt.event.ActionListener;
 
 public class DrehSafe extends JFrame implements ActionListener, Runnable {
     private final String PASSWORD = "8224725301";
-    private String tester = "";
-    private int i = 0;
+    private String pTest = "";
     private int z = 0;
-    private boolean right = true;
-    private final JButton[] numPad = {
+    private boolean clockwise = true;
+    private final JButton[] buttons = {
             new JButton("0"),
             new JButton("1"),
             new JButton("2"),
@@ -31,55 +30,53 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
 
     public DrehSafe() {
         setTitle("DrehSafe");
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         getContentPane().setLayout(new GridLayout(4, 3));
-        for (JButton a : numPad) {
-            a.setBackground(Color.green);
-            a.setFont(new Font("Courier", Font.BOLD, 34));
-            a.setActionCommand("" + i++);
-            a.addActionListener(this);
+        for (JButton button : buttons) {
+            button.setBackground(Color.green);
+            button.setFont(new Font("Courier", Font.BOLD, 34));
+            button.addActionListener(this);
         }
-        getContentPane().add(numPad[0]);
-        getContentPane().add(numPad[1]);
-        getContentPane().add(numPad[2]);
-        getContentPane().add(numPad[9]);
+        getContentPane().add(buttons[0]);
+        getContentPane().add(buttons[1]);
+        getContentPane().add(buttons[2]);
+        getContentPane().add(buttons[9]);
         getContentPane().add(new JPanel());
-        getContentPane().add(numPad[3]);
-        getContentPane().add(numPad[8]);
+        getContentPane().add(buttons[3]);
+        getContentPane().add(buttons[8]);
         getContentPane().add(new JPanel());
-        getContentPane().add(numPad[4]);
-        getContentPane().add(numPad[7]);
-        getContentPane().add(numPad[6]);
-        getContentPane().add(numPad[5]);
+        getContentPane().add(buttons[4]);
+        getContentPane().add(buttons[7]);
+        getContentPane().add(buttons[6]);
+        getContentPane().add(buttons[5]);
         new Thread(this).start();
     }
 
     public static void main(String[] args) {
-        WindowQuitter wQuit = new WindowQuitter();
         DrehSafe frm = new DrehSafe();
-        frm.addWindowListener(wQuit);
         frm.setSize(500, 500);
         frm.setVisible(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        tester += e.getActionCommand();
-        if (PASSWORD.startsWith(tester)) {
-            for (JButton a : numPad) {
-                a.setBackground(Color.green);
+        pTest += e.getActionCommand();
+        if (PASSWORD.startsWith(pTest)) {
+            for (JButton button : buttons) {
+                button.setBackground(Color.green);
             }
-            if (tester.equals(PASSWORD)) {
+            if (pTest.equals(PASSWORD)) {
                 System.exit(0);
             }
-            right = true;
+            clockwise = true;
         } else if (e.getActionCommand().equals(PASSWORD.substring(0, 1))) {
-            tester = PASSWORD.substring(0, 1);
-            right = true;
+            pTest = PASSWORD.substring(0, 1);
+            clockwise = true;
         } else {
-            tester = "";
-            right = false;
-            for (JButton a : numPad) {
-                a.setBackground(Color.red);
+            pTest = "";
+            clockwise = false;
+            for (JButton button : buttons) {
+                button.setBackground(Color.red);
             }
         }
     }
@@ -89,29 +86,29 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
         while (true) {
             try {
                 rotate();
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
         }
     }
 
     public void rotate() throws InterruptedException {
         Thread.sleep(1000);
-        if (right) {
-            for (JButton a : numPad) {
+        if (clockwise) {
+            for (JButton button : buttons) {
                 if (++z > 9) {
                     z = 0;
                 }
-                a.setText("" + z);
-                a.setActionCommand("" + z);
+                button.setText("" + z);
+                button.setActionCommand("" + z);
             }
             z--;
         } else {
-            for (JButton a : numPad) {
-                a.setText("" + z);
-                a.setActionCommand("" + z);
+            for (JButton button : buttons) {
                 if (++z > 9) {
                     z = 0;
                 }
+                button.setText("" + z);
+                button.setActionCommand("" + z);
             }
             if (++z > 9) {
                 z = 0;
