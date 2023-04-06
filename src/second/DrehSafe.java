@@ -15,11 +15,9 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
     private final String PASSWORD = "8224725301";
     // Das vom Benutzer eingegebene Passwort
     private String pTest = "";
-    // Der aktuelle Zählerstand des Drehknopfs
-    private int counter = 9;
-    // Die Drehrichtung des Drehknopfs
+    // Die Drehrichtung des Tastenfeldes
     private boolean clockwise = true;
-    // Die 10 Ziffern-Tasten des Drehknopfs
+    // Die 10 Ziffern-Tasten des Tastenfeldes
     private final JButton[] buttons = {
             new JButton("0"),
             new JButton("1"),
@@ -39,14 +37,14 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         getContentPane().setLayout(new GridLayout(4, 3));
 
-        // Konfiguriere die Tasten des Drehknopfs
+        // Konfigurieren der Tasten des Tastenfeldes
         for (JButton button : buttons) {
             button.setBackground(Color.green);
             button.setFont(new Font("Courier", Font.BOLD, 34));
             button.addActionListener(this);
         }
 
-        // Konfiguriere die Anordnung der Tasten im Fenster
+        // Konfigurieren der Anordnung der Tasten im Fenster
         int[] gridArrangement = {0, 1, 2, 9, -1, 3, 8, -1, 4, 7, 6, 5};
         for (int k : gridArrangement) {
             if (k == -1) {
@@ -56,7 +54,7 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
             }
         }
 
-        // Starte den Drehknopf im Hintergrund
+        // Starte den Timer im Hintergrund
         new Thread(this).start();
     }
 
@@ -73,7 +71,7 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
         pTest += ((JButton) e.getSource()).getText();
         if (PASSWORD.startsWith(pTest)) {
             // Der Benutzer hat das korrekte Passwort teilweise eingegeben
-            // Setze die Farbe aller Tasten auf grün
+            // Setze die Farbe aller Tasten auf Grün
             for (JButton button : buttons) {
                 button.setBackground(Color.green);
             }
@@ -91,7 +89,7 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
             // Die Benutzereingabe stimmt nicht mit dem Passwort überein
             pTest = "";
             clockwise = false;
-            // Setze die Farbe aller Tasten auf rot
+            // Setze die Farbe aller Tasten auf Rot
             for (JButton button : buttons) {
                 button.setBackground(Color.red);
             }
@@ -112,6 +110,8 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
         // Warte eine Sekunde, bevor die Zahlen rotiert werden
         Thread.sleep(1000);
         // Wenn clockwise true ist, rotiere die Zahlen im Uhrzeigersinn
+        // Der aktuelle Zählerstand des Drehknopfs
+        int counter;
         if (clockwise) {
             for (JButton button : buttons) {
                 counter = Integer.parseInt(button.getText());
