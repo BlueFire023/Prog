@@ -16,9 +16,11 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable
     Bei jedem falschen Knopfdruck ändert sich allerdings die Drehrichtung.*/
 
     private final String PASSWORD = "8224725301";
-    private String tester = "";
+    private String tryout = "";
+    private boolean clockwise = true;
+    private int tauschwert = 0;
 
-    private final JButton[] numPad = {
+    private final JButton[] knoepfe = {
                 new JButton("0"),
                 new JButton("1"),
                 new JButton("2"),
@@ -38,23 +40,24 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable
 
         getContentPane().setLayout(new GridLayout(4, 3));
 
-        for (JButton knopf : numPad) {
+        for (JButton knopf : knoepfe)
+        {
             knopf.setFont(new Font("Courier", Font.BOLD, 34));
             knopf.addActionListener(this);
         }
 
-        getContentPane().add(numPad[0]);
-        getContentPane().add(numPad[1]);
-        getContentPane().add(numPad[2]);
-        getContentPane().add(numPad[9]);
+        getContentPane().add(knoepfe[0]);
+        getContentPane().add(knoepfe[1]);
+        getContentPane().add(knoepfe[2]);
+        getContentPane().add(knoepfe[9]);
         getContentPane().add(new JPanel());
-        getContentPane().add(numPad[3]);
-        getContentPane().add(numPad[8]);
+        getContentPane().add(knoepfe[3]);
+        getContentPane().add(knoepfe[8]);
         getContentPane().add(new JPanel());
-        getContentPane().add(numPad[4]);
-        getContentPane().add(numPad[7]);
-        getContentPane().add(numPad[6]);
-        getContentPane().add(numPad[5]);
+        getContentPane().add(knoepfe[4]);
+        getContentPane().add(knoepfe[7]);
+        getContentPane().add(knoepfe[6]);
+        getContentPane().add(knoepfe[5]);
         new Thread(this).start();
     }
 
@@ -65,15 +68,79 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable
         safeSafe.setVisible(true);
     }
 
+    private void drehen() throws InterruptedException
+    {
+        Thread.sleep(1000);
+
+        if(clockwise)
+        {
+            for(JButton button : knoepfe)
+            {
+                if (tauschwert++ > 9 )
+                {
+
+                }
+            }
+        }
+
+        else
+        {
+            for(JButton button : knoepfe)
+            {
+                if (tauschwert++ > 9 )
+                {
+
+                }
+            }
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e)
     {
+        tryout += e.getActionCommand();
+        if (PASSWORD.startsWith(tryout))
+        {
+            for (JButton a : knoepfe)
+            {
+                a.setBackground(Color.green);
+            }
 
+            if (tryout.equals(PASSWORD))
+            {
+                System.exit(0);
+            }
+            clockwise = true;
+        }
+
+        else if (e.getActionCommand().equals(PASSWORD.substring(0, 1)))
+        {
+            tryout = PASSWORD.substring(0, 1);
+            clockwise = true;
+        }
+
+        else
+        {
+            tryout = "";
+            clockwise = false;
+            for (JButton a : knoepfe)
+            {
+                a.setBackground(Color.red);
+            }
+        }
     }
 
     @Override
     public void run()
     {
+        while (true)
+            try
+            {
+                drehen();
+            }
+        catch (InterruptedException ignored)
+        {
 
+        }
     }
 }
