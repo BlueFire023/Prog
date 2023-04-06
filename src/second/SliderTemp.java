@@ -12,22 +12,18 @@ import java.awt.*;
 
 public class SliderTemp extends JFrame implements ChangeListener
 {
-    Label titel = new Label("Konvertiere Temperaturen!");
-    Label fahrLabel = new Label("Fahrenheit");
-    Label celsLabel = new Label("Celsius");
-
     JSlider sliderCelcius, sliderFahrenheit;
     JTextField textCelsius, textFahrenheit;
 
-    int fahrTemp;
-    int celsTemp;
+    int fahreTemp;
+    int celsiTemp;
 
     public SliderTemp()
     {
-        setTitle(" SliderTemp ");
+        setTitle(" Konvertiere Temperaturen! ");
         setDefaultCloseOperation( EXIT_ON_CLOSE );
 
-        sliderCelcius = new JSlider(SwingConstants.HORIZONTAL, -273, 100, 0);
+        sliderCelcius = new JSlider(SwingConstants.VERTICAL, -273, 100, 0);
         sliderCelcius.setMajorTickSpacing(100);
         sliderCelcius.setMinorTickSpacing(50);
         sliderCelcius.setPaintTicks(true);
@@ -39,7 +35,7 @@ public class SliderTemp extends JFrame implements ChangeListener
         textCelsius.setText(sliderCelcius.getValue() + "");
         textCelsius.setToolTipText("Temperatur in Celsius");
 
-        sliderFahrenheit = new JSlider(SwingConstants.HORIZONTAL, -459, 212, 32);
+        sliderFahrenheit = new JSlider(SwingConstants.VERTICAL, -459, 212, 32);
         sliderFahrenheit.setMajorTickSpacing(100);
         sliderFahrenheit.setMinorTickSpacing(50);
         sliderFahrenheit.setPaintTicks(true);
@@ -63,13 +59,8 @@ public class SliderTemp extends JFrame implements ChangeListener
     public static void main(String[] args)
     {
         SliderTemp tempRechner = new SliderTemp();
-        tempRechner.setSize(400,150);
+        tempRechner.setSize(800, 600);
         tempRechner.setVisible(true);
-    }
-
-    public void rechner()
-    {
-        celsTemp = (( fahrTemp-32 ) * 5 ) / 9;
     }
 
     @Override
@@ -77,13 +68,15 @@ public class SliderTemp extends JFrame implements ChangeListener
     {
         JSlider quelle;
         quelle = (JSlider)e.getSource();
-        if (!quelle.getValueIsAdjusting() && quelle.getName().equals("Celsius-Skala"))
+        if (quelle.getName().equals("Celsius-Skala"))
         {
             textCelsius.setText(quelle.getValue() + "");
+            textFahrenheit.setText(String.valueOf(( quelle.getValue() * 1.8) + 32));
         }
         if (quelle.getName().equals("Fahrenheit-Skala"))
         {
             textFahrenheit.setText(quelle.getValue() + "");
+            textCelsius.setText(String.valueOf((( quelle.getValue()-32 ) * 5 ) / 9));
         }
     }
 }
