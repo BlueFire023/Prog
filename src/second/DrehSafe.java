@@ -71,28 +71,6 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable
     private void drehen() throws InterruptedException
     {
         Thread.sleep(1000);
-
-        if(clockwise)
-        {
-            for(JButton button : knoepfe)
-            {
-                if (tauschwert++ > 9 )
-                {
-
-                }
-            }
-        }
-
-        else
-        {
-            for(JButton button : knoepfe)
-            {
-                if (tauschwert++ > 9 )
-                {
-
-                }
-            }
-        }
     }
 
     @Override
