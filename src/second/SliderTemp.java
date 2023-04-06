@@ -76,7 +76,6 @@ public class SliderTemp extends JFrame implements ChangeListener
         {
             textFahrenheit.setText(quelle.getValue() + "");
             textCelsius.setText(String.valueOf((( quelle.getValue()-32 ) * 5 ) / 9));
-            sliderCelcius =
         }
     }
 }
