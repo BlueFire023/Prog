@@ -323,12 +323,15 @@ public class MyMath {
         }
         return n;
     }
-    public static int rand(int min, int max){
-        return (int) Math.floor(Math.random()*(max-min+1)+min);
+
+    public static int rand(int min, int max) {
+        return (int) Math.floor(Math.random() * (max - min + 1) + min);
     }
-    public static double rand(double min, double max){
-        return Math.floor(Math.random()*(max-min+1)+min);
+
+    public static double rand(double min, double max) {
+        return Math.floor(Math.random() * (max - min + 1) + min);
     }
+
     public static String invert(String n) {
         return n.length() <= 1 ? n : invert(n.substring(1)) + n.charAt(0);
     }
