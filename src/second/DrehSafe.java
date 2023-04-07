@@ -60,9 +60,10 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
 
     public static void main(String[] args) {
         // Erstelle ein neues DrehSafe-Objekt und zeige es an
-        DrehSafe frm = new DrehSafe();
-        frm.setSize(500, 500);
-        frm.setVisible(true);
+        DrehSafe drehSafe = new DrehSafe();
+        drehSafe.setSize(500, 500);
+        drehSafe.setVisible(true);
+        drehSafe.setResizable(false);
     }
 
     @Override
