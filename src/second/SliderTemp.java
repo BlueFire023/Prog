@@ -13,45 +13,54 @@ public class SliderTemp extends JFrame implements ChangeListener {
     JSlider sliderCelsius, sliderFahrenheit;
     JTextField textCelsius, textFahrenheit;
     JPanel resultPanel;
-    public SliderTemp(){
+
+    public SliderTemp() {
         setTitle("SliderTemp");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        getContentPane().setLayout(new FlowLayout());
-        sliderCelsius = new JSlider(SwingConstants.VERTICAL, -273, 537, 0);
+        getContentPane().setLayout(new BorderLayout());
+        sliderCelsius = new JSlider(SwingConstants.VERTICAL, -273, 100, 0);
         sliderCelsius.setMajorTickSpacing(100);
         sliderCelsius.setMinorTickSpacing(50);
         sliderCelsius.setPaintTicks(true);
         sliderCelsius.setPaintLabels(true);
-        sliderCelsius.setPreferredSize(new Dimension(100, 300));
+        sliderCelsius.setPreferredSize(new Dimension(175, 300));
+        sliderCelsius.setBorder(BorderFactory.createTitledBorder("Celsius"));
         sliderCelsius.addChangeListener(this);
         sliderCelsius.setName("Celsius");
         sliderCelsius.setToolTipText("Celsius einstellen");
-        getContentPane().add(sliderCelsius);
+        getContentPane().add(sliderCelsius, BorderLayout.WEST);
 
-        sliderFahrenheit = new JSlider(SwingConstants.VERTICAL, -459, 1000, 32);
+        sliderFahrenheit = new JSlider(SwingConstants.VERTICAL, -459, 212, 32);
         sliderFahrenheit.setMajorTickSpacing(100);
         sliderFahrenheit.setMinorTickSpacing(50);
         sliderFahrenheit.setPaintTicks(true);
         sliderFahrenheit.setPaintLabels(true);
-        sliderFahrenheit.setPreferredSize(new Dimension(100, 300));
+        sliderFahrenheit.setPreferredSize(new Dimension(175, 300));
+        sliderFahrenheit.setBorder(BorderFactory.createTitledBorder("Fahrenheit"));
         sliderFahrenheit.addChangeListener(this);
         sliderFahrenheit.setName("Fahrenheit");
         sliderFahrenheit.setToolTipText("Fahrenheit einstellen");
-        getContentPane().add(sliderFahrenheit);
+        getContentPane().add(sliderFahrenheit, BorderLayout.EAST);
 
-        textCelsius = new JTextField(3);
+        textCelsius = new JTextField();
         textCelsius.setText("" + sliderCelsius.getValue());
         textCelsius.setEditable(false);
-        getContentPane().add(textCelsius);
 
-        textFahrenheit = new JTextField(3);
+        textFahrenheit = new JTextField();
         textFahrenheit.setText("" + sliderFahrenheit.getValue());
         textFahrenheit.setEditable(false);
-        getContentPane().add(textFahrenheit);
+
+        resultPanel = new JPanel(new GridLayout());
+        resultPanel.add(new JLabel(" Celsius:"));
+        resultPanel.add(textCelsius);
+        resultPanel.add(new JLabel(" Fahrenheit:"));
+        resultPanel.add(textFahrenheit);
+        getContentPane().add(resultPanel, BorderLayout.SOUTH);
     }
+
     public static void main(String[] args) {
         SliderTemp sliderTemp = new SliderTemp();
-        sliderTemp.setSize(500, 500);
+        sliderTemp.setSize(362, 500);
         sliderTemp.setResizable(false);
         sliderTemp.setVisible(true);
     }
@@ -60,17 +69,17 @@ public class SliderTemp extends JFrame implements ChangeListener {
     public void stateChanged(ChangeEvent evt) {
         JSlider source;
         source = (JSlider) evt.getSource();
-        if(source.getValueIsAdjusting() && source.getName().equals("Celsius")){
+        if (source.getValueIsAdjusting() && source.getName().equals("Celsius")) {
             textCelsius.setText("" + sliderCelsius.getValue());
-            String fahrenheit = "" + (sliderCelsius.getValue() * 1.8) + 32 + "00";
-            textFahrenheit.setText(fahrenheit);
-            sliderFahrenheit.setValue((int)Double.parseDouble(fahrenheit));
+            int fahrenheit = (int) ((sliderCelsius.getValue() * 1.8) + 32);
+            textFahrenheit.setText(String.format("%.02f", ((sliderCelsius.getValue() * 1.8) + 32)));
+            sliderFahrenheit.setValue(fahrenheit);
         }
-        if(source.getValueIsAdjusting() && source.getName().equals("Fahrenheit")){
+        if (source.getValueIsAdjusting() && source.getName().equals("Fahrenheit")) {
             textFahrenheit.setText("" + sliderFahrenheit.getValue());
-            String celsius = "" + (sliderFahrenheit.getValue() - 32) / 1.8 + "00";
-            textCelsius.setText(celsius);
-            sliderCelsius.setValue((int)Double.parseDouble(celsius));
+            int celsius = (int) ((sliderFahrenheit.getValue() - 32) / 1.8);
+            textCelsius.setText(String.format("%.02f", ((sliderFahrenheit.getValue() - 32) / 1.8)));
+            sliderCelsius.setValue(celsius);
         }
     }
 }
