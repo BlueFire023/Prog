@@ -1,124 +1,131 @@
 package second;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 /**
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
  * @version 1, 06/04/2023
  */
 
-public class DrehSafe extends JFrame implements ActionListener, Runnable
-{
-    /*Zusätzlich soll sich die Beschriftung (und damit die Wirkung) der Knöpfe im Sekundentakt um eine Position drehen, zunächst nach rechts.
-    Bei jedem falschen Knopfdruck ändert sich allerdings die Drehrichtung.*/
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+public class DrehSafe extends JFrame implements ActionListener, Runnable {
+    // Das korrekte Passwort, um den Safe zu öffnen
     private final String PASSWORD = "8224725301";
-    private String tryout = "";
+    // Das vom Benutzer eingegebene Passwort
+    private String pTest = "";
+    // Die Drehrichtung des Tastenfeldes
     private boolean clockwise = true;
-    private int tauschwert = 0;
-
-    private final JButton[] knoepfe = {
-                new JButton("0"),
-                new JButton("1"),
-                new JButton("2"),
-                new JButton("3"),
-                new JButton("4"),
-                new JButton("5"),
-                new JButton("6"),
-                new JButton("7"),
-                new JButton("8"),
-                new JButton("9")
+    // Die 10 Ziffern-Tasten des Tastenfeldes
+    private final JButton[] buttons = {
+            new JButton("0"),
+            new JButton("1"),
+            new JButton("2"),
+            new JButton("3"),
+            new JButton("4"),
+            new JButton("5"),
+            new JButton("6"),
+            new JButton("7"),
+            new JButton("8"),
+            new JButton("9")
     };
 
-    public DrehSafe()
-    {
-        setTitle(" DrehSafe ");
+    public DrehSafe() {
+        // Konfiguriere das Fenster
+        setTitle("DrehSafe");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-
         getContentPane().setLayout(new GridLayout(4, 3));
 
-        for (JButton knopf : knoepfe)
-        {
-            knopf.setFont(new Font("Courier", Font.BOLD, 34));
-            knopf.addActionListener(this);
+        // Konfigurieren der Tasten des Tastenfeldes
+        for (JButton button : buttons) {
+            button.setFont(new Font("Courier", Font.BOLD, 34));
+            button.addActionListener(this);
         }
 
-        getContentPane().add(knoepfe[0]);
-        getContentPane().add(knoepfe[1]);
-        getContentPane().add(knoepfe[2]);
-        getContentPane().add(knoepfe[9]);
-        getContentPane().add(new JPanel());
-        getContentPane().add(knoepfe[3]);
-        getContentPane().add(knoepfe[8]);
-        getContentPane().add(new JPanel());
-        getContentPane().add(knoepfe[4]);
-        getContentPane().add(knoepfe[7]);
-        getContentPane().add(knoepfe[6]);
-        getContentPane().add(knoepfe[5]);
+        // Konfigurieren der Anordnung der Tasten im Fenster
+        int[] gridArrangement = {0, 1, 2, 9, -1, 3, 8, -1, 4, 7, 6, 5};
+        for (int k : gridArrangement) {
+            if (k == -1) {
+                getContentPane().add(new JPanel());
+            } else {
+                getContentPane().add(buttons[k]);
+            }
+        }
+
+        // Starte den Timer im Hintergrund
         new Thread(this).start();
     }
 
-    public static void main(String[] args)
-    {
-        DrehSafe safeSafe = new DrehSafe();
-        safeSafe.setSize(300, 400);
-        safeSafe.setVisible(true);
-    }
-
-    private void drehen() throws InterruptedException
-    {
-        Thread.sleep(1000);
+    public static void main(String[] args) {
+        // Erstelle ein neues DrehSafe-Objekt und zeige es an
+        DrehSafe frm = new DrehSafe();
+        frm.setSize(500, 500);
+        frm.setVisible(true);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e)
-    {
-        tryout += e.getActionCommand();
-        if (PASSWORD.startsWith(tryout))
-        {
-            for (JButton a : knoepfe)
-            {
-                a.setBackground(Color.green);
+    public void actionPerformed(ActionEvent e) {
+        // Füge die Benutzereingabe an die bisher eingegebene Kombination an
+        pTest += ((JButton) e.getSource()).getText();
+        if (PASSWORD.startsWith(pTest)) {
+            // Der Benutzer hat das korrekte Passwort teilweise eingegeben
+            // Setze die Farbe aller Tasten auf Grün
+            for (JButton button : buttons) {
+                button.setBackground(Color.green);
             }
-
-            if (tryout.equals(PASSWORD))
-            {
+            if (pTest.equals(PASSWORD)) {
+                // Der Benutzer hat das korrekte Passwort vollständig eingegeben
+                // Beende das Programm
                 System.exit(0);
             }
             clockwise = true;
-        }
-
-        else if (e.getActionCommand().equals(PASSWORD.substring(0, 1)))
-        {
-            tryout = PASSWORD.substring(0, 1);
+        } else if (e.getActionCommand().equals(PASSWORD.substring(0, 1))) {
+            // Der Benutzer hat die erste Ziffer des Passworts eingegeben
+            pTest = PASSWORD.substring(0, 1);
             clockwise = true;
-        }
-
-        else
-        {
-            tryout = "";
+        } else {
+            // Die Benutzereingabe stimmt nicht mit dem Passwort überein
+            pTest = "";
             clockwise = false;
-            for (JButton a : knoepfe)
-            {
-                a.setBackground(Color.red);
+            // Setze die Farbe aller Tasten auf Rot
+            for (JButton button : buttons) {
+                button.setBackground(Color.red);
             }
         }
     }
 
     @Override
-    public void run()
-    {
-        while (true)
-            try
-            {
-                drehen();
+    public void run() {
+        while (true) {
+            try {
+                rotate();
+            } catch (InterruptedException ignored) {
             }
-        catch (InterruptedException ignored)
-        {
+        }
+    }
 
+    public void rotate() throws InterruptedException {
+        // Warte eine Sekunde, bevor die Zahlen rotiert werden
+        Thread.sleep(1000);
+        // Wenn clockwise true ist, rotiere die Zahlen im Uhrzeigersinn
+        // Der aktuelle Zählerstand des Drehknopfs
+        int counter;
+        if (clockwise) {
+            for (JButton button : buttons) {
+                counter = Integer.parseInt(button.getText());
+                // Reduziere den Zähler um 1, aber wenn der Zähler 0 ist, setze ihn auf 9
+                counter = counter <= 0 ? 9 : counter - 1;
+                button.setText("" + counter);
+            }
+        } else {
+            // Wenn clockwise false ist, rotiere die Zahlen gegen den Uhrzeigersinn
+            for (JButton button : buttons) {
+                counter = Integer.parseInt(button.getText());
+                // Erhöhe den Zähler um 1, aber wenn der Zähler 9 ist, setze ihn auf 0
+                counter = counter >= 9 ? 0 : counter + 1;
+                button.setText("" + counter);
+            }
         }
     }
 }
