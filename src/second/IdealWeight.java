@@ -20,7 +20,7 @@ public class IdealWeight extends JFrame implements ActionListener {
     private JLabel resultLabel;
     private JPanel resultPanel;
     private boolean male = true;
-    private float height = 62f;
+    private float height = 60f;
 
     public IdealWeight() {
         setTitle("Your Ideal Weight");
@@ -78,12 +78,13 @@ public class IdealWeight extends JFrame implements ActionListener {
         heightPanel.add(heightE);
 
         // Erstellt ein JTextField für die Ergebnis-Anzeige und setzt es auf nicht editierbar
-        resultText = new JTextField(7);
-        resultText.setText(String.format("%.02f", calculateIdealWeight(male, height)));
+        resultText = new JTextField(12);
+        resultText.setText(String.format("%.02f", calculateIdealWeight(male, height)) + " - " + String.format("%.02f"
+                , calculateIdealWeight(male, height + 4f)) + " lbs");
         resultText.setEditable(false);
 
         // Erstellt eine JLabel für das Ergebnis und ein JPanel für die Anzeige des Ergebnisses
-        resultLabel = new JLabel("Ideal Weight");
+        resultLabel = new JLabel("Ideal Weight:");
         resultPanel = new JPanel();
         resultPanel.add(resultLabel);
         resultPanel.add(resultText);
@@ -122,12 +123,13 @@ public class IdealWeight extends JFrame implements ActionListener {
         switch (e.getActionCommand()) {
             case "M" -> male = true;
             case "F" -> male = false;
-            case "A" -> height = 62f;
-            case "B" -> height = 66f;
-            case "C" -> height = 70f;
-            case "D" -> height = 74f;
-            case "E" -> height = 78f;
+            case "A" -> height = 60f;
+            case "B" -> height = 64f;
+            case "C" -> height = 68f;
+            case "D" -> height = 72f;
+            case "E" -> height = 74f;
         }
-        resultText.setText(String.format("%.02f", calculateIdealWeight(male, height)));
+        resultText.setText(String.format("%.02f", calculateIdealWeight(male, height)) + " - " + String.format("%.02f"
+                , calculateIdealWeight(male, height + 4f)) + " lbs");
     }
 }
