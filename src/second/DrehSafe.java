@@ -15,23 +15,10 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
     private final String PASSWORD = "8224725301";
     // Das vom Benutzer eingegebene Passwort
     private String pTest = "";
-    // Der aktuelle Zählerstand des Drehknopfs
-    private int counter = 9;
-    // Die Drehrichtung des Drehknopfs
+    // Die Drehrichtung des Tastenfeldes
     private boolean clockwise = true;
-    // Die 10 Ziffern-Tasten des Drehknopfs
-    private final JButton[] buttons = {
-            new JButton("0"),
-            new JButton("1"),
-            new JButton("2"),
-            new JButton("3"),
-            new JButton("4"),
-            new JButton("5"),
-            new JButton("6"),
-            new JButton("7"),
-            new JButton("8"),
-            new JButton("9")
-    };
+    // Die 10 Ziffern-Tasten des Tastenfeldes
+    private final JButton[] buttons = new JButton[10];
 
     public DrehSafe() {
         // Konfiguriere das Fenster
@@ -39,14 +26,15 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         getContentPane().setLayout(new GridLayout(4, 3));
 
-        // Konfiguriere die Tasten des Drehknopfs
-        for (JButton button : buttons) {
-            button.setBackground(Color.green);
-            button.setFont(new Font("Courier", Font.BOLD, 34));
-            button.addActionListener(this);
+        // Konfigurieren der Tasten des Tastenfeldes
+        for (int i = 0; i < buttons.length; i++) {
+            buttons[i] = new JButton("" + i);
+            buttons[i].setBackground(Color.green);
+            buttons[i].setFont(new Font("Courier", Font.BOLD, 34));
+            buttons[i].addActionListener(this);
         }
 
-        // Konfiguriere die Anordnung der Tasten im Fenster
+        // Konfigurieren der Anordnung der Tasten im Fenster
         int[] gridArrangement = {0, 1, 2, 9, -1, 3, 8, -1, 4, 7, 6, 5};
         for (int k : gridArrangement) {
             if (k == -1) {
@@ -56,15 +44,16 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
             }
         }
 
-        // Starte den Drehknopf im Hintergrund
+        // Starte den Timer im Hintergrund
         new Thread(this).start();
     }
 
     public static void main(String[] args) {
         // Erstelle ein neues DrehSafe-Objekt und zeige es an
-        DrehSafe frm = new DrehSafe();
-        frm.setSize(500, 500);
-        frm.setVisible(true);
+        DrehSafe drehSafe = new DrehSafe();
+        drehSafe.setSize(500, 500);
+        drehSafe.setVisible(true);
+        drehSafe.setResizable(false);
     }
 
     @Override
@@ -73,7 +62,7 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
         pTest += ((JButton) e.getSource()).getText();
         if (PASSWORD.startsWith(pTest)) {
             // Der Benutzer hat das korrekte Passwort teilweise eingegeben
-            // Setze die Farbe aller Tasten auf grün
+            // Setze die Farbe aller Tasten auf Grün
             for (JButton button : buttons) {
                 button.setBackground(Color.green);
             }
@@ -91,7 +80,7 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
             // Die Benutzereingabe stimmt nicht mit dem Passwort überein
             pTest = "";
             clockwise = false;
-            // Setze die Farbe aller Tasten auf rot
+            // Setze die Farbe aller Tasten auf Rot
             for (JButton button : buttons) {
                 button.setBackground(Color.red);
             }
@@ -112,6 +101,8 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
         // Warte eine Sekunde, bevor die Zahlen rotiert werden
         Thread.sleep(1000);
         // Wenn clockwise true ist, rotiere die Zahlen im Uhrzeigersinn
+        // Der aktuelle Zählerstand des Drehknopfs
+        int counter;
         if (clockwise) {
             for (JButton button : buttons) {
                 counter = Integer.parseInt(button.getText());
