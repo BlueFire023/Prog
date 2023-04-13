@@ -77,7 +77,7 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable{
 
         for(int i = 0; i<=9;i++) {
             buttons.get(i).setOpaque(true);
-            buttons.get(i).setBackground(Color.white);
+            buttons.get(i).setBackground(Color.green);
 
         }
 
