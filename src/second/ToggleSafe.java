@@ -9,15 +9,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 public class ToggleSafe extends JFrame implements ActionListener, Runnable {
     // Das korrekte Passwort, um den Safe zu öffnen
-    private final String PASSWORD = "83";
+    private final String PASSWORD = "8529630741";
     // Das vom Benutzer eingegebene Passwort
     private String pTest = "";
     // Die Drehrichtung des Tastenfeldes
     private boolean clockwise = true;
-    private double waitTime;
+    private final double waitTime;
     private static int openWindows;
     // Die 10 Ziffern-Tasten des Tastenfeldes
     private final JButton[] buttons = {
@@ -33,12 +34,12 @@ public class ToggleSafe extends JFrame implements ActionListener, Runnable {
             new JButton("9")
     };
 
-    public ToggleSafe(double waitTime) {
+    private ToggleSafe(double waitTime, int[] gridArrangement) {
         // Konfiguriere das Fenster
-        setTitle("DrehSafe");
+        setTitle("ToggleSafe");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         getContentPane().setLayout(new GridLayout(4, 3));
-        setSize(500,500);
+        setSize(500, 500);
         setLocation(100, 100);
         setVisible(true);
         setResizable(false);
@@ -53,7 +54,6 @@ public class ToggleSafe extends JFrame implements ActionListener, Runnable {
         }
 
         // Konfigurieren der Anordnung der Tasten im Fenster
-        int[] gridArrangement = {0, 1, 2, 9, -1, 3, 8, -1, 4, 7, 6, 5};
         for (int k : gridArrangement) {
             if (k == -1) {
                 getContentPane().add(new JPanel());
@@ -66,12 +66,13 @@ public class ToggleSafe extends JFrame implements ActionListener, Runnable {
     }
 
     public static void main(String[] args) {
-        // Erstelle ein neues DrehSafe-Objekt und zeige es an
-          new ToggleSafe(1000);
+        // Erstelle ein neues DrehSafe-Objekt
+        new ToggleSafe(1000, new int[]{0, 1, 2, 9, -1, 3, 8, -1, 4, 7, 6, 5});
     }
 
-    public void newWindow() {
-        new ToggleSafe(waitTime - (waitTime * 0.33));
+    private void newWindow() {
+        // Erstelle ein neues DrehSafe-Objekt mit 33% schnellerer Geschwindigkeit
+        new ToggleSafe(waitTime - (waitTime * 0.33), getGridArrangement());
     }
 
     @Override
@@ -89,7 +90,7 @@ public class ToggleSafe extends JFrame implements ActionListener, Runnable {
                 // Beende das Programm
                 this.dispose();
                 openWindows--;
-                if(openWindows == 0){
+                if (openWindows == 0) {
                     System.exit(0);
                 }
             }
@@ -118,7 +119,7 @@ public class ToggleSafe extends JFrame implements ActionListener, Runnable {
         }
     }
 
-    public void rotate() throws InterruptedException {
+    private void rotate() throws InterruptedException {
         // Warte eine Sekunde, bevor die Zahlen rotiert werden
         Thread.sleep((long) waitTime);
         // Wenn clockwise true ist, rotiere die Zahlen im Uhrzeigersinn
@@ -140,8 +141,20 @@ public class ToggleSafe extends JFrame implements ActionListener, Runnable {
                 button.setText("" + counter);
             }
         }
-        if (buttons[0].getText().equals("0")) {
+        if (((JButton) getContentPane().getComponent(0)).getText().equals("0")) {
             clockwise = !clockwise;
         }
+    }
+
+    private int[] getGridArrangement() {
+        int[] gridArrangement = new int[12];
+        for (int i = 0; i < gridArrangement.length; i++) {
+            if (getContentPane().getComponent(i) instanceof JButton) {
+                gridArrangement[i] = Integer.parseInt(((JButton) getContentPane().getComponent(i)).getText());
+            } else {
+                gridArrangement[i] = -1;
+            }
+        }
+        return gridArrangement;
     }
 }
