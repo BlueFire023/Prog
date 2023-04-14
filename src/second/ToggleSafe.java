@@ -141,11 +141,13 @@ public class ToggleSafe extends JFrame implements ActionListener, Runnable {
                 button.setText("" + counter);
             }
         }
+        // Ändert die Richtung nach 9 Stufen
         if (((JButton) getContentPane().getComponent(0)).getText().equals("0")) {
             clockwise = !clockwise;
         }
     }
 
+    // Gibt die Positionen der Buttons zurück für ein neues Fenster mit den Buttons an den selben Stellen
     private int[] getGridArrangement() {
         int[] gridArrangement = new int[12];
         for (int i = 0; i < gridArrangement.length; i++) {
