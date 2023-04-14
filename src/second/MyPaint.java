@@ -76,7 +76,7 @@ public class MyPaint extends JFrame implements MouseMotionListener, MouseListene
     @Override
     public void mouseDragged(MouseEvent e) {
         int y = e.getX() / (640 / WIDTH);
-        int x = e.getY() / (640 / HEIGHT) - 6;
+        int x = e.getY() / (640 / HEIGHT) - 7;
         drawLineBresenham(prevX, prevY, x, y);
         prevX = x;
         prevY = y;
@@ -123,7 +123,7 @@ public class MyPaint extends JFrame implements MouseMotionListener, MouseListene
     @Override
     public void mousePressed(MouseEvent e) {
         prevY = e.getX() / (640 / WIDTH);
-        prevX = e.getY() / (640 / HEIGHT) - 6;
+        prevX = e.getY() / (640 / HEIGHT) - 7;
     }
 
     @Override
