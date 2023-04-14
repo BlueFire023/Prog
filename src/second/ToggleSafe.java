@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
+import java.util.Random;
 
 public class ToggleSafe extends JFrame implements ActionListener, Runnable {
     // Das korrekte Passwort, um den Safe zu öffnen
@@ -40,7 +40,7 @@ public class ToggleSafe extends JFrame implements ActionListener, Runnable {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         getContentPane().setLayout(new GridLayout(4, 3));
         setSize(500, 500);
-        setLocation(100, 100);
+        setLocation(new Random().nextInt(1250), new Random().nextInt(500));
         setVisible(true);
         setResizable(false);
         openWindows++;
