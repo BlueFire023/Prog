@@ -66,7 +66,7 @@ public class MyPaint extends JFrame implements MouseMotionListener, MouseListene
 
         JPanel panelRecentColorsBar = new JPanel();
         panelRecentColorsBar.setLayout(new GridLayout(1, 10, 1, 0));
-        panelRecentColorsBar.setPreferredSize(new Dimension(WIDTH,50));
+        panelRecentColorsBar.setPreferredSize(new Dimension(WIDTH, 50));
 
         for (int i = 0; i < buttonRecentColors.length; i++) {
             buttonRecentColors[i] = new JButton();
@@ -99,7 +99,7 @@ public class MyPaint extends JFrame implements MouseMotionListener, MouseListene
         }
         buttonRecentColors[0].setBorderPainted(true);
 
-        JSlider sliderBrushSize = new JSlider(SwingConstants.HORIZONTAL, 1, 5,1);
+        JSlider sliderBrushSize = new JSlider(SwingConstants.HORIZONTAL, 1, 5, 1);
         sliderBrushSize.addChangeListener(this);
         sliderBrushSize.setPaintTicks(true);
         sliderBrushSize.setPaintLabels(true);
@@ -148,12 +148,10 @@ public class MyPaint extends JFrame implements MouseMotionListener, MouseListene
     public void mousePressed(MouseEvent e) {
         prevY = e.getX() / PIXEL_SIZE - X_OFFSET;
         prevX = e.getY() / PIXEL_SIZE - Y_OFFSET;
-
         if (fillMode) {
             fill(prevX, prevY);
         } else if (prevX >= brushSize && prevX < WIDTH && prevY >= brushSize && prevY < HEIGHT) {
-            previousStates.push(getPixelColor());
-            buttonTools[3].setText("Undo: " + previousStates.size());
+            savePreviousState();
             paintPixel(prevX, prevY);
         }
     }
@@ -179,17 +177,13 @@ public class MyPaint extends JFrame implements MouseMotionListener, MouseListene
     // ist für das auswählen der Knöpfe zuständig
     @Override
     public void actionPerformed(ActionEvent e) {
+        JButton source = (JButton) e.getSource();
         switch (e.getActionCommand()) {
             case "Clear" -> clear();
             case "Fill" -> {
                 fillMode = !fillMode;
-                if (fillMode) {
-                    ((JButton) e.getSource()).setBackground(Color.darkGray);
-                    ((JButton) e.getSource()).setForeground(Color.white);
-                } else {
-                    ((JButton) e.getSource()).setBackground(Color.WHITE);
-                    ((JButton) e.getSource()).setForeground(Color.BLACK);
-                }
+                source.setBackground(fillMode ? Color.darkGray : Color.WHITE);
+                source.setForeground(fillMode ? Color.WHITE : Color.BLACK);
             }
             case "Undo" -> undo();
             case "Color" -> {
@@ -213,8 +207,8 @@ public class MyPaint extends JFrame implements MouseMotionListener, MouseListene
                 for (JButton button : buttonRecentColors) {
                     button.setBorderPainted(false);
                 }
-                ((JButton) e.getSource()).setBorderPainted(true);
-                currentColor = ((JButton) e.getSource()).getBackground();
+                source.setBorderPainted(true);
+                currentColor = source.getBackground();
             }
         }
     }
@@ -222,8 +216,7 @@ public class MyPaint extends JFrame implements MouseMotionListener, MouseListene
     // füllt einen Bereich mit ausgewählter Farbe aus
     private void fill(int x, int y) {
         Color targetColor = pixels[x][y].getBackground();
-        previousStates.push(getPixelColor());
-        buttonTools[3].setText("Undo: " + previousStates.size());
+        savePreviousState();
         if (!currentColor.equals(targetColor)) {
             Stack<Point> stack = new Stack<>();
             stack.push(new Point(x, y));
@@ -267,20 +260,19 @@ public class MyPaint extends JFrame implements MouseMotionListener, MouseListene
     }
 
     private void undo() {
-        if (!previousStates.empty()) {
+        if(!previousStates.isEmpty()) {
             Color[][] currLastSteps = previousStates.pop();
-            for (int i = 0; i < 160; i++) {
-                for (int j = 0; j < 160; j++) {
+            for (int i = 0; i < WIDTH; i++) {
+                for (int j = 0; j < HEIGHT; j++) {
                     pixels[i][j].setBackground(currLastSteps[i][j]);
                 }
             }
-            buttonTools[3].setText("Undo: " + previousStates.size());
         }
+        buttonTools[3].setText("Undo: " + previousStates.size());
     }
 
     private void clear() {
-        previousStates.push(getPixelColor());
-        buttonTools[3].setText("Undo: " + previousStates.size());
+        savePreviousState();
         for (int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT; j++) {
                 if (pixels[i][j].getBackground() != Color.WHITE) {
@@ -288,16 +280,6 @@ public class MyPaint extends JFrame implements MouseMotionListener, MouseListene
                 }
             }
         }
-    }
-
-    private Color[][] getPixelColor() {
-        Color[][] c = new Color[WIDTH][HEIGHT];
-        for (int i = 0; i < WIDTH; i++) {
-            for (int j = 0; j < HEIGHT; j++) {
-                c[i][j] = pixels[i][j].getBackground();
-            }
-        }
-        return c;
     }
 
     private void paintPixel(int x, int y) {
@@ -308,5 +290,16 @@ public class MyPaint extends JFrame implements MouseMotionListener, MouseListene
                 }
             }
         }
+    }
+
+    private void savePreviousState() {
+        Color[][] c = new Color[WIDTH][HEIGHT];
+        for (int i = 0; i < WIDTH; i++) {
+            for (int j = 0; j < HEIGHT; j++) {
+                c[i][j] = pixels[i][j].getBackground();
+            }
+        }
+        previousStates.push(c);
+        buttonTools[3].setText("Undo: " + previousStates.size());
     }
 }
