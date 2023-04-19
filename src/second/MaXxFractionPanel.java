@@ -9,6 +9,4 @@ import java.awt.*;
  */
 public class MaXxFractionPanel{
 
-
-
 }

@@ -5,24 +5,36 @@ package second;
  * @version 1, 16/04/2023
  */
 
+import first.GameBoard;
+
 import javax.swing.*;
 import java.awt.*;
-import first.GameBoard;
 
 public class MaXxGuI extends JFrame {
 
-private GameBoard b;
+    private GameBoard b;
+
     public MaXxGuI(int size) {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
         b = new GameBoard(size);
+        b.fillBoard();
         JPanel gamePanel = new JPanel();
-        gamePanel.setLayout(new GridLayout(size, size, 5,5));
+        gamePanel.setLayout(new GridLayout(size, size, 5, 5));
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                gamePanel.add(newFractionPanel( b.getValue(i,j).getNumerator()., j * 100));
+                try {
+                    gamePanel.add(newFractionLabel(b.getValue(i, j).getNumerator().intValue(),
+                            b.getValue(i, j).getDenominator().intValue()));
+                } catch (Exception ignored) {}
             }
         }
-        getContentPane().add(gamePanel);
+        add(gamePanel);
+
+        JPanel controlsBar = new JPanel();
+        JButton test  = new JButton("TEST");
+        controlsBar.add(test);
+        add(controlsBar, BorderLayout.SOUTH);
         pack();
         setVisible(true);
     }
@@ -31,25 +43,11 @@ private GameBoard b;
         new MaXxGuI(8);
     }
 
-    public JPanel newFractionPanel(int numerator, int denominator) {
-        JPanel fractionPanel = new JPanel();
-        JTextPane textNumerator = new JTextPane();
-        JTextArea textDenominator = new JTextArea();
-        JPanel fractionLine = new JPanel();
-        fractionPanel.setLayout(new BorderLayout());
-
-        fractionLine.setBackground(Color.BLACK);
-        fractionLine.setPreferredSize(new Dimension(30, 1));
-
-        textNumerator.setText("" + numerator);
-        textNumerator.setPreferredSize(new Dimension(1, 20));
-
-        textDenominator.setText("" + denominator);
-        textDenominator.setPreferredSize(new Dimension(1, 20));
-
-        fractionPanel.add(textNumerator, BorderLayout.NORTH);
-        fractionPanel.add(fractionLine, BorderLayout.CENTER);
-        fractionPanel.add(textDenominator, BorderLayout.SOUTH);
-        return fractionPanel;
+    public JPanel newFractionLabel(int numerator, int denominator) {
+        JPanel p = new JPanel();
+        JLabel textNumerator = new JLabel();
+        textNumerator.setText("<html><p align='center'><u>" + numerator + "</u><br>" + denominator + "</p></html");
+        p.add(textNumerator);
+        return p;
     }
 }
