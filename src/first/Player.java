@@ -33,7 +33,9 @@ public class Player {
         this.moveSet = new ArrayList<>(Arrays.asList(moveSet));
         this.board = board;
     }
-
+    public String getSymbol(){
+        return symbol;
+    }
     public void increaseWin() {
         this.winCounter++;
     }
