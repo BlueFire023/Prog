@@ -2,9 +2,9 @@ package second;
 
 /**
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
- * @version 1, 13.04.2023
+ * @version 1, 13/04/2023
  */
-
+import java.awt.event.*;
 import javax.swing.*;
 
 public class Konsole {
@@ -33,3 +33,5 @@ public class Konsole {
         frame.setVisible(true);
     }
 }
+
+

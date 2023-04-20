@@ -2,9 +2,8 @@ package second;
 
 /**
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
- * @version 1, 13.04.2023
+ * @version 1, 13/04/2023
  */
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -113,3 +112,5 @@ public class TrackEvent extends JFrame {
         }
     }
 }
+
+

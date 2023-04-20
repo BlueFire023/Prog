@@ -18,18 +18,7 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
     // Die Drehrichtung des Tastenfeldes
     private boolean clockwise = true;
     // Die 10 Ziffern-Tasten des Tastenfeldes
-    private final JButton[] buttons = {
-            new JButton("0"),
-            new JButton("1"),
-            new JButton("2"),
-            new JButton("3"),
-            new JButton("4"),
-            new JButton("5"),
-            new JButton("6"),
-            new JButton("7"),
-            new JButton("8"),
-            new JButton("9")
-    };
+    private final JButton[] buttons = new JButton[10];
 
     public DrehSafe() {
         // Konfiguriere das Fenster
@@ -38,9 +27,11 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
         getContentPane().setLayout(new GridLayout(4, 3));
 
         // Konfigurieren der Tasten des Tastenfeldes
-        for (JButton button : buttons) {
-            button.setFont(new Font("Courier", Font.BOLD, 34));
-            button.addActionListener(this);
+        for (int i = 0; i < buttons.length; i++) {
+            buttons[i] = new JButton("" + i);
+            buttons[i].setBackground(Color.green);
+            buttons[i].setFont(new Font("Courier", Font.BOLD, 34));
+            buttons[i].addActionListener(this);
         }
 
         // Konfigurieren der Anordnung der Tasten im Fenster
@@ -59,9 +50,10 @@ public class DrehSafe extends JFrame implements ActionListener, Runnable {
 
     public static void main(String[] args) {
         // Erstelle ein neues DrehSafe-Objekt und zeige es an
-        DrehSafe frm = new DrehSafe();
-        frm.setSize(500, 500);
-        frm.setVisible(true);
+        DrehSafe drehSafe = new DrehSafe();
+        drehSafe.setSize(500, 500);
+        drehSafe.setVisible(true);
+        drehSafe.setResizable(false);
     }
 
     @Override
