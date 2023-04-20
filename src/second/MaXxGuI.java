@@ -6,6 +6,7 @@ package second;
  */
 
 import first.GameBoard;
+import first.Player;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,20 +15,20 @@ import java.awt.event.ActionListener;
 
 public class MaXxGuI extends JFrame implements ActionListener {
 
-    private GameBoard b;
+    private final GameBoard board;
 
     public MaXxGuI(int size) {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-        b = new GameBoard(size);
-        b.fillBoard();
+        board = new GameBoard(size);
+        board.fillBoard();
         JPanel gamePanel = new JPanel();
         gamePanel.setLayout(new GridLayout(size, size, 5, 5));
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 try {
-                    gamePanel.add(newFractionLabel(b.getValue(i, j).getNumerator().intValue(),
-                            b.getValue(i, j).getDenominator().intValue()));
+                    gamePanel.add(newFractionLabel(board.getValue(i, j).getNumerator().intValue(),
+                            board.getValue(i, j).getDenominator().intValue()));
                 } catch (Exception ignored) {}
             }
         }
