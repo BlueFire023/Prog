@@ -4,56 +4,87 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+public class  Clones extends Frame implements ActionListener {
+    Button fw = new Button ("Farbwechsel");
+    Button cl = new Button ("Clone");
 
-/**
- * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
- * @version 1, 30/03/2023
- */
-public class Clones extends Frame implements ActionListener {
-    private final Color[] COLORS = {Color.black, Color.blue, Color.cyan, Color.gray, Color.green, Color.magenta, Color.orange, Color.pink, Color.red, Color.white, Color.yellow};
-    private int index;
+    Clones(){
+        fw.addActionListener( this );
+        cl.addActionListener( this );
 
-    public Clones(int index) {
+        fw.setActionCommand( "Farbwechsel" );
+        cl.setActionCommand( "Clone" );
+
         setLayout(new FlowLayout());
+        add(fw);
+        add(cl);
 
-        Button cycleButton = new Button("Next Color");
-        add(cycleButton);
-        cycleButton.addActionListener(this);
-        cycleButton.setActionCommand("C");
 
-        Button newWindowButton = new Button("New Window");
-        add(newWindowButton);
-        newWindowButton.addActionListener(this);
-        newWindowButton.setActionCommand("W");
 
-        this.index = index;
-        setBackground(COLORS[index]);
+
+
     }
 
-    public static void main(String[] args) {
-        WindowQuitter wQuit = new WindowQuitter();
-        Clones frm = new Clones(0);
-        frm.addWindowListener(wQuit);
-        frm.setSize(500, 500);
-        frm.setVisible(true);
-    }
+    public static void main(String[] args){
+        Clones frm = new Clones();
+        WindowQuitter wquit= new WindowQuitter();
+        frm.addWindowListener( wquit );
+        frm.setSize( 1000, 500);
+        frm.setVisible( true );
 
+    }
+    int index = 1;
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals("W")) {
-            WindowQuitter wQuit = new WindowQuitter();
-            Clones frm = new Clones(index);
-            frm.addWindowListener(wQuit);
-            frm.setSize(500, 500);
-            frm.setVisible(true);
-        } else {
-            if (index != 10) {
-                index++;
-                setBackground(COLORS[index]);
-            } else {
-                index = 0;
-                setBackground(COLORS[index]);
-            }
+        if(e.getActionCommand().equals("Farbwechsel")){
+        switch (index) {
+            case 1:
+                setBackground(Color.BLACK);
+                break;
+            case 2:
+                setBackground(Color.RED);
+                break;
+            case 3:
+                setBackground(Color.BLUE);
+                break;
+            case 4:
+                setBackground(Color.CYAN);
+                break;
+            case 5:
+                setBackground(Color.GRAY);
+                break;
+            case 6:
+                setBackground(Color.MAGENTA);
+                break;
+            case 7:
+                setBackground(Color.ORANGE);
+                break;
+            case 8:
+                setBackground(Color.PINK);
+                break;
+            case 9:
+                setBackground(Color.WHITE);
+                break;
+            case 10:
+                setBackground(Color.YELLOW);
+                break;
+            case 11:
+                setBackground(Color.GREEN);
+                break;
+
         }
+
+        index++;
+
+
+        } else if (e.getActionCommand().equals("Clone")){
+                Clones frm = new Clones();
+                WindowQuitter wquit= new WindowQuitter();
+                frm.addWindowListener( wquit );
+                frm.setSize( 1000, 500);
+                frm.setVisible( true );
+
+        }
+
     }
 }
