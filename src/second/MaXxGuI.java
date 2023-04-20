@@ -2,7 +2,7 @@ package second;
 
 /**
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
- * @version 1, 16/04/2023
+ * @version 1, 20/04/2023
  */
 
 import first.Fraction;
