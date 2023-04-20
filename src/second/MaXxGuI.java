@@ -54,8 +54,9 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
         add(gamePanel);
 
         JPanel controlsBar = new JPanel();
-        JButton test  = new JButton("TEST");
+
         test.addActionListener(this);
+        test.addKeyListener(this);
         controlsBar.add(test);
         add(controlsBar, BorderLayout.SOUTH);
         pack();
