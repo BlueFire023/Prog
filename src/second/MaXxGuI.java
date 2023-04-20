@@ -9,8 +9,10 @@ import first.GameBoard;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class MaXxGuI extends JFrame {
+public class MaXxGuI extends JFrame implements ActionListener {
 
     private GameBoard b;
 
@@ -33,6 +35,7 @@ public class MaXxGuI extends JFrame {
 
         JPanel controlsBar = new JPanel();
         JButton test  = new JButton("TEST");
+        test.addActionListener(this);
         controlsBar.add(test);
         add(controlsBar, BorderLayout.SOUTH);
         pack();
@@ -49,5 +52,10 @@ public class MaXxGuI extends JFrame {
         textNumerator.setText("<html><p align='center'><u>" + numerator + "</u><br>" + denominator + "</p></html");
         p.add(textNumerator);
         return p;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        new MaXxGuI(8);
     }
 }
