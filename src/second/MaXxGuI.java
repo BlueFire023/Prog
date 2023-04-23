@@ -25,13 +25,14 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
     private final int BOARDSIZE = 8;
     private final double SCORESTOWIN = 53d;
     private int currentPlayerIndex;
-    private int longestNameLength = 0;
+    private static int openWindows;
     private String direction;
     private Player[] players;
     JButton test = new JButton("TEST");
 
     public MaXxGuI() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setTitle("MaXxGuI");
         setLayout(new BorderLayout());
         board = new GameBoard(BOARDSIZE);
         players = new Player[PLAYERCOUNT];
@@ -39,12 +40,12 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
         players[1] = new Player("Schwarz", "B", new String[]{"N", "O", "S", "W", "SW"}, board);
         initNewGame();
 
-        gamePanel.setLayout(new GridLayout(BOARDSIZE, BOARDSIZE, 5, 5));
+        gamePanel.setLayout(new GridLayout(BOARDSIZE, BOARDSIZE, 20, 5));
         //gamePanel
         for (int i = 0; i < BOARDSIZE; i++) {
             for (int j = 0; j < BOARDSIZE; j++) {
                 JLabel fractionLabel = new JLabel();
-                fractionLabel.setFont(new Font("Courier",Font.PLAIN, 30));
+                fractionLabel.setFont(new Font("Courier",Font.PLAIN, 15));
                 fractionLabel.setHorizontalAlignment(JLabel.CENTER);
                 fractionLabel.setVerticalAlignment(JLabel.CENTER);
                 gamePanel.add(fractionLabel);
@@ -54,14 +55,24 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
         add(gamePanel);
 
         JPanel controlsBar = new JPanel();
+        controlsBar.setLayout(new GridLayout(1,2));
 
-        test.addActionListener(this);
-        test.addKeyListener(this);
-        controlsBar.add(test);
+        scoreBoard.setLayout(new GridLayout(PLAYERCOUNT,2));
+        for (Player player : players) {
+            scoreBoard.add(new JLabel(player.getName() + ":"));
+            scoreBoard.add(new JLabel());
+        }
+        updateScore();
+        newGameButton.addActionListener(this);
+        newGameButton.addKeyListener(this);
+
+        controlsBar.add(newGameButton);
+        controlsBar.add(scoreBoard);
         add(controlsBar, BorderLayout.SOUTH);
         pack();
         setVisible(true);
         System.out.println(players[currentPlayerIndex].getName() + " darf anfangen!\n");
+        openWindows++;
     }
 
     public static void main(String[] args) {
@@ -112,6 +123,19 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
             }
         }
     }
+    private void updateScore(){
+        int i = 0;
+        for (Player player : players) {
+            ((JLabel)scoreBoard.getComponent(2 * i++ + 1)).setText("<html><p align='center'><u>" + player.getScore().getNumerator().intValue()
+                    + "</u><br>" + player.getScore().getDenominator().intValue() + "</p></html>");
+            if(player.getScore().doubleValue() > SCORESTOWIN){
+                this.dispose();
+                if(--openWindows <= 0){
+                    System.exit(0);
+                }
+            }
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -143,6 +167,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
         }
         System.out.println(direction);
         updateBoard();
+        updateScore();
         board.printBoard();
 
         currentPlayerIndex++;
