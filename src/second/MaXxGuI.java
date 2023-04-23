@@ -110,7 +110,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
                 try {
                     for (Player player : players) {
                         if (player.getYPosition() == j && player.getXPosition() == i) {
-                            currentlabel.setText("<html><p align ='center'>" + player.getSymbol() + "</p></html>");
+                            currentlabel.setText("<html><p align ='center'><b>" + player.getSymbol() + "</b></p></html>");
                             break;
                         }
                     }
