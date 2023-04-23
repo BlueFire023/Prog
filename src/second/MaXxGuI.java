@@ -27,6 +27,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
     private final double SCORESTOWIN = 53d;
     private final JPanel[][] fractionPanels;
     private final JLabel[][] fractionLabels;
+    private JLabel instructionLabel = new JLabel();
     private int currentPlayerIndex;
     private static int openWindows;
     private String direction;
@@ -48,6 +49,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
         fractionPanels = new JPanel[BOARDSIZE][BOARDSIZE];
 
         gamePanel.setLayout(new GridLayout(BOARDSIZE, BOARDSIZE, 5, 5));
+        gamePanel.setPreferredSize(new Dimension(800, 650));
         gamePanel.setBackground(Color.BLACK);
         //gamePanel
         for (int i = 0; i < BOARDSIZE; i++) {
@@ -56,19 +58,19 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
                 fractionPanels[i][j].setLayout(new GridBagLayout());
 
                 fractionLabels[i][j] = new JLabel();
-                fractionLabels[i][j].setFont(new Font("Courier",Font.PLAIN, 15));
+                fractionLabels[i][j].setFont(new Font("Courier", Font.PLAIN, 15));
 
                 fractionPanels[i][j].add(fractionLabels[i][j]);
                 gamePanel.add(fractionPanels[i][j]);
             }
         }
         updateBoard();
-        add(gamePanel);
+        add(gamePanel, BorderLayout.NORTH);
 
         JPanel controlsBar = new JPanel();
-        controlsBar.setLayout(new GridLayout(1,2));
+        controlsBar.setLayout(new GridLayout(1, 2));
 
-        scoreBoard.setLayout(new GridLayout(PLAYERCOUNT,2));
+        scoreBoard.setLayout(new GridLayout(PLAYERCOUNT, 2));
         for (Player player : players) {
             scoreBoard.add(new JLabel(player.getName() + ":"));
             scoreBoard.add(new JLabel());
@@ -80,11 +82,16 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
 
         controlsBar.add(newGameButton);
         controlsBar.add(scoreBoard);
-        add(controlsBar, BorderLayout.SOUTH);
-        //pack();
-        setSize(800,800);
+        add(controlsBar, BorderLayout.CENTER);
+
+        JPanel instructionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        instructionPanel.setPreferredSize(new Dimension(800, 30));
+        instructionPanel.add(instructionLabel);
+        add(instructionPanel, BorderLayout.SOUTH);
+
+        setSize(800, 800);
         setVisible(true);
-        fractionPanels[players[currentPlayerIndex].getYPosition()][players[currentPlayerIndex].getXPosition()].setBorder(BorderFactory.createLineBorder(Color.RED,5));
+        fractionPanels[players[currentPlayerIndex].getYPosition()][players[currentPlayerIndex].getXPosition()].setBorder(BorderFactory.createLineBorder(Color.RED, 5));
         openWindows++;
     }
 
@@ -112,6 +119,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
             player.setScore(new Fraction(0, 1));
         }
         currentPlayerIndex = MyMath.rand(0, PLAYERCOUNT - 1);
+        instructionLabel.setText(players[currentPlayerIndex].getName() + " ist dran!");
     }
 
     private void updateBoard() {
@@ -133,7 +141,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
                     }
                 } catch (Exception ignored) {
                 }
-                fractionPanels[i][j].setBorder(new EmptyBorder(0,0,0,0));
+                fractionPanels[i][j].setBorder(new EmptyBorder(0, 0, 0, 0));
                 fractionPanels[i][j].setBackground(Color.LIGHT_GRAY);
                 fractionLabels[i][j].setForeground(invertColor(fractionPanels[i][j].getBackground()));
             }
@@ -142,16 +150,17 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
             fractionPanels[player.getYPosition()][player.getXPosition()].setBackground(player.getColor());
             fractionLabels[player.getYPosition()][player.getXPosition()].setForeground(invertColor(player.getColor()));
         }
-        fractionPanels[players[currentPlayerIndex].getYPosition()][players[currentPlayerIndex].getXPosition()].setBorder(BorderFactory.createLineBorder(Color.RED,5));
+        fractionPanels[players[currentPlayerIndex].getYPosition()][players[currentPlayerIndex].getXPosition()].setBorder(BorderFactory.createLineBorder(Color.RED, 5));
     }
-    private void updateScore(){
+
+    private void updateScore() {
         int i = 0;
         for (Player player : players) {
-            ((JLabel)scoreBoard.getComponent(2 * i++ + 1)).setText("<html><p align='center'><u>" + player.getScore().getNumerator().intValue()
-                    + "</u><br>" + player.getScore().getDenominator().intValue() + "    " + player.getScore().doubleValue() + "</p></html>");
-            if(player.getScore().doubleValue() > SCORESTOWIN){
+            ((JLabel) scoreBoard.getComponent(2 * i++ + 1)).setText("<html><p align='center'><u>" + player.getScore().getNumerator().intValue()
+                    + "</u><br>" + player.getScore().getDenominator().intValue() + "</p></html>");
+            if (player.getScore().doubleValue() > SCORESTOWIN) {
                 this.dispose();
-                if(--openWindows <= 0){
+                if (--openWindows <= 0) {
                     System.exit(0);
                 }
             }
@@ -164,7 +173,8 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) {
+    }
 
     @Override
     public void keyPressed(KeyEvent e) {
@@ -182,6 +192,11 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
             board.setValue(players[currentPlayerIndex].getXPosition(), players[currentPlayerIndex].getYPosition(), "0");
             players[currentPlayerIndex].move(direction);
         } catch (Exception ex) {
+            if(ex.getClass().equals(ArrayIndexOutOfBoundsException.class)){
+                instructionLabel.setText("Unmögliche Bewegung!");
+            }else{
+                instructionLabel.setText(ex.getMessage());
+            }
             throw new RuntimeException(ex);
         }
 
@@ -189,14 +204,16 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
         if (currentPlayerIndex == PLAYERCOUNT) {
             currentPlayerIndex = 0;
         }
+        instructionLabel.setText(players[currentPlayerIndex].getName() + " ist dran!");
         updateBoard();
         updateScore();
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {}
+    public void keyReleased(KeyEvent e) {
+    }
 
-    private Color invertColor(Color initalColor){
-        return new Color(255- initalColor.getRed(), 255 - initalColor.getGreen(), 255- initalColor.getBlue());
+    private Color invertColor(Color initalColor) {
+        return new Color(255 - initalColor.getRed(), 255 - initalColor.getGreen(), 255 - initalColor.getBlue());
     }
 }
