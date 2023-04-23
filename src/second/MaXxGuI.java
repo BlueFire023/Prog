@@ -28,7 +28,8 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
     private static int openWindows;
     private String direction;
     private Player[] players;
-    JButton test = new JButton("TEST");
+    private JButton newGameButton = new JButton("Start new Game");
+    private JPanel scoreBoard = new JPanel();
 
     public MaXxGuI() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -69,7 +70,8 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
         controlsBar.add(newGameButton);
         controlsBar.add(scoreBoard);
         add(controlsBar, BorderLayout.SOUTH);
-        pack();
+        //pack();
+        setSize(800,800);
         setVisible(true);
         System.out.println(players[currentPlayerIndex].getName() + " darf anfangen!\n");
         openWindows++;
