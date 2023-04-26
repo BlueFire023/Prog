@@ -5,7 +5,7 @@ package first;
  * @version 1, 19.12.2022
  */
 public class GameBoard {
-    private static String[][] board;
+    private String[][] board;
     private int size;
     private final int MINVALUE = 10;
     private final int MAXVALUE = 999;
