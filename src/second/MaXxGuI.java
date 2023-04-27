@@ -156,8 +156,8 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
     private void updateScore() {
         int i = 0;
         for (Player player : players) {
-            ((JLabel) scoreBoard.getComponent(2 * i++ + 1)).setText("<html><p align='center'><u>" + player.getScore().getNumerator().intValue()
-                    + "</u><br>" + player.getScore().getDenominator().intValue() + "</p></html>");
+            ((JLabel) scoreBoard.getComponent(2 * i++ + 1)).setText("<html><p align='center'><u>" + player.getScore().getNumerator()
+                    + "</u><br>" + player.getScore().getDenominator() + "</p></html>");
             if (player.getScore().doubleValue() > SCORESTOWIN) {
                 this.dispose();
                 if (--openWindows <= 0) {
