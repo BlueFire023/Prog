@@ -1,119 +1,67 @@
 package second;
-
+/**
+ * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
+ * @version 1, 13/04/2023
+ */
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 
 public class MyPaint extends JFrame {
-    HashMap<String,JTextField> h = new HashMap<String,JTextField>();
-    String[] event = {			// Array mit Strings fuer Event-Namen
-            "focusGained", "focusLost", "keyPressed",
-            "keyReleased", "keyTyped", "mouseClicked",
-            "mouseEntered", "mouseExited","mousePressed",
-            "mouseReleased", "mouseDragged", "mouseMoved"
-    };
 
-    MyButton
-            b1 = new MyButton(Color.yellow, "Knopf A"),
-            b2 = new MyButton(Color.green, "Knopf B");
+    MyButton buttons[]; //Array von Buttons, die als Pixel auf dem Bild dienen
+    private boolean test; //Testvariable, die zeigt, ob die Mausgedrückt wird
     class MyButton extends JButton {			// innere Klasse von TrackEvent
-        void report(String field, AWTEvent e ) {
-            h.get(field).setText(((MyButton)e.getSource()).getText()+": "+e.paramString());	// h ordnet felder JTextFields zu
-        }
-        FocusListener fl = new FocusListener() {
-            public void focusGained(FocusEvent e) {
-                report("focusGained", e);	// schreibe ins fG-Field den p-String
-            }
-            public void focusLost(FocusEvent e) {
-                report("focusLost", e);	// ... mit FocusLost
-            }
-        };
-        KeyListener kl = new KeyListener() {
-            public void keyPressed(KeyEvent e) {
-                report("keyPressed", e);	// Tastendruck
-            }
-            public void keyReleased(KeyEvent e) {
-                report("keyReleased", e);	// Tastelosgelassen
-            }
-            public void keyTyped(KeyEvent e) {
-                report("keyTyped", e);	// TasteGedrückt
-            }
-        };
         MouseListener ml = new MouseListener() {
             public void mouseClicked(MouseEvent e) {
-                report("mouseClicked", e);// mausgecklickt
             }
-            public void mouseEntered(MouseEvent e) {
-                report("mouseEntered", e);// maus ins feld
+            public void mouseEntered(MouseEvent e) { // Zeichnet Rot, wenn Pixel(Button) berührt wird und die Maus gedrückt ist
+                if(test) {
+                    ((JButton)e.getSource()).setBackground(Color.ORANGE);
+                }
             }
             public void mouseExited(MouseEvent e) {
-                report("mouseExited", e);	// maus raus
             }
-            public void mousePressed(MouseEvent e) {
-                report("mousePressed", e);// Mausgedrückt
+            public void mousePressed(MouseEvent e) { // Wenn die Maus gedrückt ist, wird die Testvariable auf wahr gesetzt
+                test = true;
             }
-            public void mouseReleased(MouseEvent e) {
-                report("mouseReleased", e);// mauslosgelassen
+            public void mouseReleased(MouseEvent e) { //Wenn die Maus nicht gedrückt ist, wird die Testvariable auf falsch gesetzt
+                test = false;
             }
         };
-        MouseMotionListener mml =
-                new MouseMotionListener() {
-                    public void mouseDragged(MouseEvent e) {
-                        report("mouseDragged", e);// mausziehen
-                    }
-                    public void mouseMoved(MouseEvent e) {
-                        report("mouseMoved", e);	// mausbewegt
-                    }
-                };
+
         public MyButton(Color color, String label) {// Konstruktor
             super(label);								// label
             setBackground(color);						// farbe
-            addFocusListener(fl);						// verschiedene Listener
-            addKeyListener(kl);						// Key
             addMouseListener(ml);						// Mouse
-            addMouseMotionListener(mml);				// MouseMotion
         }
     }
     public MyPaint() {
+        // Dieser Part wird für die Sichtbarkeit der Farben auf MacOS benötigt
         try {
             UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName() );
         } catch (Exception o) {
             o.printStackTrace();
         }
-        // init
-        Container c = getContentPane();				// container
-        c.setLayout(new GridLayout(event.length+1,2));	// Layout Manager
-        for(int i = 0; i < event.length; i++) {		// fuer jeden Event-Typ
-            JTextField t = new JTextField();			// ein Textfeld
-            t.setPreferredSize(new Dimension(600,500));
-            t.setEditable(false);						// nicht editierbar
-            JLabel ll = new JLabel(event[i], JLabel.CENTER);
-            c.add(ll);								// Label, rechts ausgerichtet
-            c.add(t);									// und Textfeld hinzufuegern
-            h.put(event[i], t);						// Event-String dem Feld zuordnen
+
+
+        buttons = new MyButton[4096]; // "Pixel-Array" wird definiert
+        setSize(1000,1000); // Fenstergröße wird gesetzt
+        setLocation(230,222); //Fensterlocation wird gesetzt
+        setTitle("MyPaint"); //Fenstertitel wird gesetzt
+        Container cp = getContentPane(); //Container für die Buttons wird erstellt
+        cp.setLayout(new GridLayout(64,64)); //Die Grid-Größe wird gesetzt
+        for(int i= 0; i<4096;i++) // Grid füllt sich mit den Buttons aus dem Array
+        {
+            buttons[i] = new MyButton(Color.BLUE,"");
+            cp.add(buttons[i]);
+            buttons[i].setFont(new Font("",Font.BOLD, 1));
+            buttons[i].setBorderPainted(false);
         }
-        c.add(b1);									// b1 und
-        c.add(b2);
-        b1.setOpaque(true);
-        b2.setOpaque(true);// b2 ...
-        setTitle("TrackEvent ... TrackEvent ... TrackEvent ... ");
-        setSize(1700, 700);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     public static void main(String[] args) {
-        setUIFont (new javax.swing.plaf.FontUIResource("Courier", Font.BOLD, 18));
-        new MyPaint();
-    }
-    // zum Setzen der Schriftart ...
-    public static void setUIFont (javax.swing.plaf.FontUIResource f){
-        java.util.Enumeration keys = UIManager.getDefaults().keys();
-        while (keys.hasMoreElements()) {
-            Object key = keys.nextElement();
-            Object value = UIManager.get (key);
-            if (value instanceof javax.swing.plaf.FontUIResource)
-                UIManager.put (key, f);
-        }
+        MyPaint p = new MyPaint();
     }
 }
