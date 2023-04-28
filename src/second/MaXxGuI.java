@@ -11,6 +11,7 @@ import first.MyMath;
 import first.Player;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -33,6 +34,8 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
     private final Player[] players;
     private final JPanel scoreBoard = new JPanel();
     private JFileChooser fileChooser = new JFileChooser();
+    Border borderFocusedPlayer = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.WHITE, 3),
+            BorderFactory.createLineBorder(Color.BLACK, 3));
 
     public MaXxGuI(GameBoard board, Player[] players) {
         this.board = board;
@@ -79,7 +82,6 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(1, 3));
-        JButton newGameButton = new JButton("Start new Game");
 
         JButton saveButton = new JButton("Save");
         buttonPanel.add(saveButton);
@@ -89,7 +91,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
         controlsBar.add(buttonPanel);
         controlsBar.add(scoreBoard);
         add(controlsBar, BorderLayout.CENTER);
-
+        saveButton.addKeyListener(this);
         JPanel instructionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         instructionPanel.setPreferredSize(new Dimension(800, 30));
         instructionPanel.add(instructionLabel);
@@ -97,7 +99,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
 
         setSize(800, 800);
         setVisible(true);
-        fractionPanels[players[currentPlayerIndex].getYPosition()][players[currentPlayerIndex].getXPosition()].setBorder(BorderFactory.createLineBorder(Color.RED, 5));
+        fractionPanels[players[currentPlayerIndex].getYPosition()][players[currentPlayerIndex].getXPosition()].setBorder(borderFocusedPlayer);
     }
 
     private void initNewGame() {
@@ -151,7 +153,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
             fractionPanels[player.getYPosition()][player.getXPosition()].setBackground(player.getColor());
             fractionLabels[player.getYPosition()][player.getXPosition()].setForeground(invertColor(player.getColor()));
         }
-        fractionPanels[players[currentPlayerIndex].getYPosition()][players[currentPlayerIndex].getXPosition()].setBorder(BorderFactory.createLineBorder(Color.RED, 5));
+        fractionPanels[players[currentPlayerIndex].getYPosition()][players[currentPlayerIndex].getXPosition()].setBorder(borderFocusedPlayer);
     }
 
     private void updateScore() {

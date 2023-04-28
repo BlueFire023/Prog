@@ -101,7 +101,6 @@ public class MaXxController extends JFrame implements ActionListener {
             }
             String[] moveSet = moveSetList.toArray(new String[0]);
             players[i] = new Player(name, symbol, moveSet, board, color);
-            System.out.println(Arrays.toString(moveSet));
         }
         new MaXxGuI(board, players);
 
