@@ -13,12 +13,16 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 public class MaXxController extends JFrame implements ActionListener {
-    private final JFileChooser fileChooser = new JFileChooser();
+    private final JFileChooser fileChooser = new JFileChooser(); //FileChooser wird erstellt zum Sichern der Spiele
+    //Textfeld zum Einstellen der Spielfeldgröße wird erstellt
     private final JTextField boardSizeTextField = new JTextField("8");
-    private int playerCount = 2;
+    private int playerCount = 2; //Standard Spielerzahl wird gesetzt
+    //Textfeld zum Erstellen der Spieler wird gesetzt
     private final JTextField playerCountTextField = new JTextField(String.valueOf(playerCount));
     private final JPanel customizationPanel = new JPanel();
     private JPanel[] customizationPanels;
+    private int estimatedBoardsize; //Variable zum Errechnen der optimalen Spielfeldgröße anhand der Spieleranzahl
+
 
     public MaXxController() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -58,13 +62,16 @@ public class MaXxController extends JFrame implements ActionListener {
         add(menuBar, BorderLayout.NORTH);
         setSize(new Dimension(1000, 1000));
         setVisible(true);
+        setResizable(false);
+        // Zeigt direkt die zum ändern bereiten Spieler an
         updatePlayerCustomizations();
     }
 
     public static void main(String[] args) {
         new MaXxController();
-    }
+    } //Neuer Controller wird erstellt
 
+    //Methode zum Öffnen eines Spielstandes
     private void openSavedGame() {
         int returnValue = fileChooser.showOpenDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
@@ -100,6 +107,8 @@ public class MaXxController extends JFrame implements ActionListener {
         }
     }
 
+
+    //Hier wird ein neues Spiel geöffnet. Dabei werden alle Parameter gesetzt und das MaXxGuI aufgerufen
     public void openNewGame() {
         GameBoard board = new GameBoard(Integer.parseInt(boardSizeTextField.getText()));
 
@@ -130,7 +139,12 @@ public class MaXxController extends JFrame implements ActionListener {
     }
 
     public void updatePlayerCustomizations() {
+        //Setzen der Spieler durch Auslesen des Textfeldes
         playerCount = Integer.parseInt(playerCountTextField.getText());
+        //Rechnung zur optimalen Spielfeldgröße
+        estimatedBoardsize = (int)Math.sqrt((playerCount-1)*MaXxGuI.getSCORESTOWIN())+1;
+        boardSizeTextField.setText(String.valueOf(estimatedBoardsize));
+        // Fenster wird gefüllt mit den Spielern, die auch noch eingestellt werden können
         customizationPanels = new JPanel[playerCount];
         customizationPanel.removeAll();
         customizationPanel.setLayout(new GridLayout(playerCount, 1));
