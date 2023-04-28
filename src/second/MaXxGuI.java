@@ -28,7 +28,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
     private final JPanel[][] fractionPanels; //Panels für das Spielfeld (Array)
     private final JLabel[][] fractionLabels; //Labels für das Spielfeld (Array)
     private JLabel instructionLabel = new JLabel(); //Label für die Instruktionen unter dem Spielfeld
-    private int currentPlayerIndex; //Index, der zeigt welcher Spieler am Zug ist
+    private int currentPlayerIndex; //Index, der zeigt, welcher Spieler am Zug ist
     private static int openWindows; //Anzahl geöffneter Fenster
     private String direction; //String, der Richtung, der bei der Tastatureingabe gesetzt wird
     private final Player[] players; //Array der Spieler
