@@ -7,17 +7,19 @@ import java.io.Serializable;
  * @version 1, 19.12.2022
  */
 public class GameBoard implements Serializable {
-    private String[][] board;
-    private int size;
-    private final int MINVALUE = 10;
-    private final int MAXVALUE = 999;
+    private String[][] board; //Spielfeld als 2D String Array
+    private int size; // Größe des Spielfeldes (immer quadratisch)
+    private final int MINVALUE = 10; //Min Wert, damit weder Numerator noch der Denominator darunter fallen
+    private final int MAXVALUE = 999; //Max Wert, damit weder Numerator noch der Denominator darüber fallen
 
     public GameBoard(int size) {
+        //Gameboard wird erstellt
         this.size = size;
         board = new String[this.size][this.size];
     }
 
     public void fillBoard() {
+        //Füllen des Boards mit zufälligen Werten
         int r;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
@@ -32,6 +34,7 @@ public class GameBoard implements Serializable {
     }
 
     public void printBoard() {
+        //Ausgeben des StringArrays(Gameboards auf der Konsole)
         System.out.println();
         for (String[] strings : board) {
             System.out.print("[ ");
@@ -53,6 +56,7 @@ public class GameBoard implements Serializable {
     }
 
     public Fraction getValue(int x, int y) throws Exception{
+        //Abfrage eines bestimmten Wertes im Feld, Rückgabe als Fraction und nicht als String
         String s = board[y][x].trim();
         if(s.equals("0")){
             return Fraction.NaN;
@@ -66,9 +70,9 @@ public class GameBoard implements Serializable {
 
     public int getSize() {
         return size;
-    }
+    } //Rückgabe der Größe
 
     public void setValue(int x, int y, String n) {
         board[y][x] = n;
-    }
+    } //Setzen eines Wertes an einer bestimmten Position im Feld
 }
