@@ -1,33 +1,62 @@
 package second;
 
+/**
+ * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
+ * @version 1, 16/04/2023
+ */
+
+import first.GameBoard;
+import first.Player;
+
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
- * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
- * @version 1, 13.04.2023
- */
+public class MaXxGuI extends JFrame implements ActionListener {
 
-public class MaXxGUI extends JFrame implements ActionListener {
-    //Schreiben Sie das Programm MaXxGuI für das „MaXx“-Spiel aus dem 1. Semester (Foliensatz 9, Seite 62).
-    // Es soll dabei möglich sein, mehrere Fenster gleichzeitig offen zu haben und in jedem Fenster ein Spiel zu spielen,
-    // welches von den anderen unabhängig ist.
+    private final GameBoard board;
 
-    public MaXxGUI() {
-        setTitle(" MaXxGUI ");
+    public MaXxGuI(int size) {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+        board = new GameBoard(size);
+        board.fillBoard();
+        JPanel gamePanel = new JPanel();
+        gamePanel.setLayout(new GridLayout(size, size, 5, 5));
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                try {
+                    gamePanel.add(newFractionLabel(board.getValue(i, j).getNumerator().intValue(),
+                            board.getValue(i, j).getDenominator().intValue()));
+                } catch (Exception ignored) {}
+            }
+        }
+        add(gamePanel);
+
+        JPanel controlsBar = new JPanel();
+        JButton test  = new JButton("TEST");
+        test.addActionListener(this);
+        controlsBar.add(test);
+        add(controlsBar, BorderLayout.SOUTH);
+        pack();
+        setVisible(true);
     }
 
     public static void main(String[] args) {
-        MaXxGUI MaXxGUI = new MaXxGUI();
-        MaXxGUI.setSize(800, 600);// Setze die Größe des Fensters auf 800 x 600 Pixel (Formatierung)
-        MaXxGUI.setResizable(false);
-        MaXxGUI.setVisible(true);
+        new MaXxGuI(8);
+    }
+
+    public JPanel newFractionLabel(int numerator, int denominator) {
+        JPanel p = new JPanel();
+        JLabel textNumerator = new JLabel();
+        textNumerator.setText("<html><p align='center'><u>" + numerator + "</u><br>" + denominator + "</p></html");
+        p.add(textNumerator);
+        return p;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        new MaXxGuI(8);
     }
 }
