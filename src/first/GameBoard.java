@@ -1,10 +1,12 @@
 package first;
 
+import java.io.Serializable;
+
 /**
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
  * @version 1, 19.12.2022
  */
-public class GameBoard {
+public class GameBoard implements Serializable {
     private String[][] board;
     private int size;
     private final int MINVALUE = 10;
