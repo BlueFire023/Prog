@@ -27,24 +27,34 @@ public class MaXxController extends JFrame implements ActionListener {
         JPanel menuBar = new JPanel();
         JLabel playerCountLabel = new JLabel("Player anzahl:");
 
+        // Initalisiert playerCountTextField mit Größe und ActionCommand
         playerCountTextField.setPreferredSize(new Dimension(50, 20));
         playerCountTextField.setActionCommand("updatePlayerCustomization");
         playerCountTextField.addActionListener(this);
-        JLabel boardSizeLabel = new JLabel("Spielbrett größe:");
 
+        JLabel boardSizeLabel = new JLabel("Spielbrett größe:");
         boardSizeTextField.setPreferredSize(new Dimension(50, 20));
 
+        // Initialisiert den Button mit dem man Spielstände Laden kann
         JButton openSavedGame = new JButton("Laden");
         openSavedGame.addActionListener(this);
 
+        // Initialisiert den Button mit dem man ein frische Spiel starten kann
         JButton newGameButton = new JButton("Neues Spiel");
         newGameButton.addActionListener(this);
+
+        // Initialisert den Button mit dem man sich die Steurung anzeigen lassen kann
+        JButton showControlsButton = new JButton("Zeige Steuerung");
+        showControlsButton.addActionListener(this);
+
+        // Fügt all Objecte zur menuBar hinzu
         menuBar.add(playerCountLabel);
         menuBar.add(playerCountTextField);
         menuBar.add(boardSizeLabel);
         menuBar.add(boardSizeTextField);
         menuBar.add(newGameButton);
         menuBar.add(openSavedGame);
+        menuBar.add(showControlsButton);
         add(menuBar, BorderLayout.NORTH);
         setSize(new Dimension(1000, 1000));
         setVisible(true);
@@ -72,8 +82,13 @@ public class MaXxController extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
-            case "Laden" -> openSavedGame();
-            case "Neues Spiel" -> openNewGame();
+            case "Laden" -> openSavedGame(); //Wird der Button "Laden" gedrückt, wird das Fenster zum Auswählen geöffnet
+            case "Neues Spiel" -> openNewGame(); //Wird der Button "Neues Spiel" gedrückt, erstellt sich ein neues Spiel
+            //Wird Enter bei einer Eingabe gedrückt, werden alle Daten aktualisiert
+            case "updatePlayerCustomization" -> updatePlayerCustomizations();
+            //Wird der Button "Zeige Steuerung" gedrückt, öffnet sich das Fenster mit der Steuerungserklärung
+            case "Zeige Steuerung" -> showControlWindow();
+            //Als Default wird das Farbpanel geöffnet, damit sind alle Eventualitäten abgedeckt
             default -> {
                 Color currentColor = ((JButton) e.getSource()).getBackground();
                 Color newColor = JColorChooser.showDialog(this, "Wähle eine Farbe aus", currentColor);
@@ -167,5 +182,33 @@ public class MaXxController extends JFrame implements ActionListener {
         }
         add(customizationPanel, BorderLayout.CENTER);
         validate();
+    }
+
+
+    //Methode, die genutzt wird, um ein Fenster zu öffnen, das die möglichen Bewegungen anzeigt und durch welche Taste
+    //diese Ausgelöst werden können
+    private void showControlWindow(){
+        JFrame controlsWindow = new JFrame();
+        controlsWindow.setSize(new Dimension(200,200));
+        JPanel moveSetPanel = new JPanel();
+        moveSetPanel.setLayout(new GridLayout(3,3));
+        JLabel[] controlsLabels = {
+                new JLabel("Q = NW"),
+                new JLabel("W = N"),
+                new JLabel("E = NO"),
+                new JLabel("A = W"),
+                new JLabel("D = O"),
+                new JLabel("Y = SW"),
+                new JLabel("X = S"),
+                new JLabel("C = SO"),
+        };
+        for (int j = 0; j < 8; j++) {
+            if (j == 4) {
+                moveSetPanel.add(new JPanel());
+            }
+            moveSetPanel.add(controlsLabels[j]);
+        }
+        controlsWindow.add(moveSetPanel);
+        controlsWindow.setVisible(true);
     }
 }

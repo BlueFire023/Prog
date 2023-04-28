@@ -21,21 +21,22 @@ import java.awt.event.KeyListener;
 import java.io.*;
 
 public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Serializable {
-    private final JPanel gamePanel = new JPanel();
-    private final GameBoard board;
-    private final int PLAYERCOUNT;
-    private final int BOARDSIZE;
-    private int test = 0;
-    private final double SCORESTOWIN = 5d;
-    private final JPanel[][] fractionPanels;
-    private final JLabel[][] fractionLabels;
-    private final JLabel instructionLabel = new JLabel();
-    private int currentPlayerIndex;
-    private String direction;
-    public Player[] players;
-    private final JPanel scoreBoard = new JPanel();
-    private JFileChooser fileChooser = new JFileChooser();
-    Border borderFocusedPlayer = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.WHITE, 3),
+    private final JPanel gamePanel = new JPanel(); //Erstellung des Panels, in dem sich später die einzelnen Felder
+    // wiederfinden
+    private final GameBoard board; //Spielfeld, welches im Hintergrund steht
+    private final int PLAYERCOUNT; //Anzahl der Mitspieler
+    private final int BOARDSIZE; //Größe des Boards (immer quadratisch)
+    private static final double SCORESTOWIN = 53d; //Punktestand, der überschritten werden muss, um zu gewinnen
+    private final JPanel[][] fractionPanels; //Panels für das Spielfeld (Array)
+    private final JLabel[][] fractionLabels; //Labels für das Spielfeld (Array)
+    private JLabel instructionLabel = new JLabel(); //Label für die Instruktionen unter dem Spielfeld
+    private int currentPlayerIndex; //Index, der zeigt welcher Spieler am Zug ist
+    private String direction; //String, der Richtung, der bei der Tastatureingabe gesetzt wird
+    private final Player[] players; //Array der Spieler
+    private final JPanel scoreBoard = new JPanel(); //Panel für die Scores
+    private JFileChooser fileChooser = new JFileChooser(); // Erstellung des Filechoosers
+    private Border borderFocusedPlayer = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.WHITE,
+                    3),
             BorderFactory.createLineBorder(Color.BLACK, 3));
 
     public MaXxGuI(GameBoard board, Player[] players) {
@@ -49,13 +50,16 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
         setLayout(new BorderLayout());
         initNewGame();
 
+        //Definierung der Panel- und Labelarrays
         fractionLabels = new JLabel[BOARDSIZE][BOARDSIZE];
         fractionPanels = new JPanel[BOARDSIZE][BOARDSIZE];
 
+        //Setzen des Layouts, Größe und Hintergrundfarbe des Gamepanels
         gamePanel.setLayout(new GridLayout(BOARDSIZE, BOARDSIZE, 5, 5));
         gamePanel.setPreferredSize(new Dimension(800, 650));
         gamePanel.setBackground(Color.BLACK);
-        //gamePanel
+
+        //Füllen des Panels mit einzelnen Feldern(bestehend aus Panels mit Labeln)
         for (int i = 0; i < BOARDSIZE; i++) {
             for (int j = 0; j < BOARDSIZE; j++) {
                 fractionPanels[i][j] = new JPanel();
@@ -68,12 +72,16 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
                 gamePanel.add(fractionPanels[i][j]);
             }
         }
+        //Labels bekommen Aufdruck(Bruch bzw. Spieler-Symbol)
         updateBoard();
+        //GamePanel wird dem Fenster hinzugefügt
         add(gamePanel, BorderLayout.NORTH);
 
+        //Erstellung der ControlsBar, in der später Score und Buttons zu finden sind
         JPanel controlsBar = new JPanel();
         controlsBar.setLayout(new GridLayout(1, 2));
 
+        //Definierung des Scoreboard Panels und dessen Füllung mit Labels für die Anzeige der Punkte
         scoreBoard.setLayout(new GridLayout(PLAYERCOUNT, 2));
         for (Player player : players) {
             scoreBoard.add(new JLabel(player.getName() + ":"));
@@ -81,30 +89,37 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
         }
         updateScore();
 
+        //Definierung des ButtonPanels
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(1, 3));
 
+        //Hinzufügen eines Buttons (zum Speichern des Spielstandes) zum ButtonPanel
         JButton saveButton = new JButton("Speichern");
         buttonPanel.add(saveButton);
         saveButton.addActionListener(this);
         saveButton.setBackground(Color.WHITE);
 
+        //Hinzufügen vom ButtonPanel zum ControlsBar Panel
         controlsBar.add(buttonPanel);
         controlsBar.add(scoreBoard);
         add(controlsBar, BorderLayout.CENTER);
         saveButton.addKeyListener(this);
+        //Definition des InstructionPanels und das Hinzufügen zum Fenster (Immer am unteren Rand des Fensters)
         JPanel instructionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         instructionPanel.setPreferredSize(new Dimension(800, 30));
         instructionPanel.add(instructionLabel);
         add(instructionPanel, BorderLayout.SOUTH);
 
-        setSize(800, 800);
+        //Setzen der Größe und Sichtbarkeit des Fensters
+        setSize(1000,1000);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
         fractionPanels[players[currentPlayerIndex].getYPosition()][players[currentPlayerIndex].getXPosition()].setBorder(borderFocusedPlayer);
     }
 
     private void initNewGame() {
-        board.fillBoard();
+        board.fillBoard(); // Gameboard wird mit Werten gefüllt
+        //Spieler werden zufällig auf das Spielfeld gesetzt
         boolean repeat;
         do {
             repeat = false;
@@ -120,13 +135,14 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
         } while (repeat);
         for (Player player : players) {
             player.initPosition();
-            player.setScore(new Fraction(0, 1));
+            player.setScore(new Fraction(0, 1)); //Setzen des Scores der Spieler auf 0
         }
-        currentPlayerIndex = MyMath.rand(0, PLAYERCOUNT - 1);
-        instructionLabel.setText(players[currentPlayerIndex].getName() + " ist dran!");
+        currentPlayerIndex = MyMath.rand(0, PLAYERCOUNT - 1); //Zufällige Auswahl des Spielers, der anfangen darf
+        instructionLabel.setText(players[currentPlayerIndex].getName() + " ist dran!"); //Auf dem Fenster wird angezeigt, wer anfangen darf
     }
 
     private void updateBoard() {
+        //Jedes Label des Spielfeldes im Fenster wird geupdated und der neuen Spielsituation angepasst (Player-Symbol wandert weiter, Felder werden Leer, nachdem ein Spieler auf ihnen war)
         for (int i = 0; i < BOARDSIZE; i++) {
             for (int j = 0; j < BOARDSIZE; j++) {
                 JLabel currentLabel = fractionLabels[j][i];
@@ -158,10 +174,12 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
     }
 
     private void updateScore() {
+        //Score auf dem Scoreboard wird aktualisiert und mit dem neuen Ergebnis Angezeigt
         int i = 0;
         for (Player player : players) {
             ((JLabel) scoreBoard.getComponent(2 * i++ + 1)).setText("<html><p align='center'><u>" + player.getScore().getNumerator()
                     + "</u><br>" + player.getScore().getDenominator() + "</p></html>");
+            //Sollte der Score eines Spielers über den zu erreichenden Score wandern, wird das Spiel beendet
             if (player.getScore().doubleValue() > SCORESTOWIN) {
                 JPanel winPanel = new JPanel(new GridLayout(2, 1));
                 winPanel.setPreferredSize(new Dimension(100, 100));
@@ -169,7 +187,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
                 JLabel againLabel = new JLabel("Nochmal?", SwingConstants.CENTER);
                 winPanel.add(winLabel);
                 winPanel.add(againLabel);
-                test = JOptionPane.showConfirmDialog(null, winPanel);
+                int test = JOptionPane.showConfirmDialog(null, winPanel);
                 if (test == 0) {
                     playAgain();
                 } else {
@@ -181,12 +199,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        switch (e.getActionCommand()) {
-            case "Speichern" -> saveGame();
-            case "Test" -> {
-
-            }
-        }
+        saveGame();// Wird der Button "Save" gedrückt, öffnet sich das Fenster zum Speichern
     }
 
     @Override
@@ -195,6 +208,9 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
 
     @Override
     public void keyPressed(KeyEvent e) {
+        //Hier wird geprüft welche Taste gedrückt wird
+        //Für die Tasten W,A,S,D,E,Y,Q und X wird die Richtung dementsprechend gesetzt, in die sich bewegt wird.
+        //Der Rest der Tasten wird ignoriert
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W -> direction = "N";
             case KeyEvent.VK_A -> direction = "W";
@@ -207,9 +223,10 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
             default -> direction = "nix";
         }
         try {
-            board.setValue(players[currentPlayerIndex].getXPosition(), players[currentPlayerIndex].getYPosition(), "0");
-            players[currentPlayerIndex].move(direction);
+            board.setValue(players[currentPlayerIndex].getXPosition(), players[currentPlayerIndex].getYPosition(), "0"); //Der Wert des Feldes, auf dem der Spieler zuvor war, wird auf 0 gesetzt
+            players[currentPlayerIndex].move(direction); //Der Spieler, der aktuell dran ist, bewegt sich in die Richtung, die durch die Tastatur angegeben wurde
         } catch (Exception ex) {
+            //Catchen der Exceptions
             if (ex.getClass().equals(ArrayIndexOutOfBoundsException.class)) {
                 instructionLabel.setText("Unmögliche Bewegung!");
             } else {
@@ -218,6 +235,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
             throw new RuntimeException(ex);
         }
 
+        //Der Spieler wird gewechselt, der im Fokus steht
         currentPlayerIndex++;
         if (currentPlayerIndex == PLAYERCOUNT) {
             currentPlayerIndex = 0;
@@ -231,10 +249,12 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
     public void keyReleased(KeyEvent e) {
     }
 
+    //Methode zum Farbeninvertieren, die genutzt wird, um das Symbol des Spielers invertiert zu seiner Farbe darstellen zu lassen
     private Color invertColor(Color initalColor) {
         return new Color(255 - initalColor.getRed(), 255 - initalColor.getGreen(), 255 - initalColor.getBlue());
     }
 
+    //Methode zum Speichern
     private void saveGame() {
         fileChooser = new JFileChooser();
         int returnValue = fileChooser.showSaveDialog(null);
@@ -269,5 +289,9 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
         }
         new MaXxGuI(newBoard, newPlayers);
         dispose();
+    }
+
+    public static double getSCORESTOWIN() {
+        return SCORESTOWIN;
     }
 }
