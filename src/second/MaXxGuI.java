@@ -20,7 +20,7 @@ import java.awt.event.KeyListener;
 import java.io.*;
 
 public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Serializable {
-    private JPanel gamePanel = new JPanel();
+    private final JPanel gamePanel = new JPanel();
 
     private final GameBoard board;
     private final int PLAYERCOUNT = 2;
@@ -28,7 +28,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
     private final double SCORESTOWIN = 53d;
     private final JPanel[][] fractionPanels;
     private final JLabel[][] fractionLabels;
-    private JLabel instructionLabel = new JLabel();
+    private final JLabel instructionLabel = new JLabel();
     private int currentPlayerIndex;
     private static int openWindows;
     private String direction;
@@ -142,18 +142,18 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
     private void updateBoard() {
         for (int i = 0; i < BOARDSIZE; i++) {
             for (int j = 0; j < BOARDSIZE; j++) {
-                JLabel currentlabel = fractionLabels[j][i];
+                JLabel currentLabel = fractionLabels[j][i];
                 try {
                     for (Player player : players) {
                         if (player.getYPosition() == j && player.getXPosition() == i) {
-                            currentlabel.setText("<html><p align ='center'><b>" + player.getSymbol() + "</b></p></html>");
+                            currentLabel.setText("<html><p align ='center'><b>" + player.getSymbol() + "</b></p></html>");
                             break;
                         }
                     }
                     if (board.getValue(i, j).equals(Fraction.NaN)) {
-                        currentlabel.setText("");
+                        currentLabel.setText("");
                     } else {
-                        currentlabel.setText("<html><p align='center'><u>" + board.getValue(i, j).getNumerator().intValue()
+                        currentLabel.setText("<html><p align='center'><u>" + board.getValue(i, j).getNumerator().intValue()
                                 + "</u><br>" + board.getValue(i, j).getDenominator().intValue() + "</p></html");
                     }
                 } catch (Exception ignored) {
