@@ -34,7 +34,7 @@ public class MyMath {
         System.out.println(clampMin(MyIO.readInt("min: "), MyIO.readInt("i: ")));
     }
 
-    public static long addAll(int... a) {
+    public static long addAll(int... a) { //Addierung aller Werte einer Int-Liste
         int count = 0;
         for (int i : a) {
             count += i;
@@ -42,7 +42,7 @@ public class MyMath {
         return count;
     }
 
-    public static long addAll(long... a) {
+    public static long addAll(long... a) { //Addierung aller Werte einer long-Liste
         long count = 0;
         for (long i : a) {
             count += i;
@@ -50,7 +50,7 @@ public class MyMath {
         return count;
     }
 
-    public static double addAll(double... a) {
+    public static double addAll(double... a) { //Addierung aller Werte einer Double-Liste
         double count = 0;
         for (double i : a) {
             count += i;
@@ -58,7 +58,7 @@ public class MyMath {
         return count;
     }
 
-    public static String addAll(String... a) {
+    public static String addAll(String... a) { //Addierung aller Werte einer String-Liste
         String connected = "";
         for (String i : a) {
             connected += i;
@@ -66,7 +66,7 @@ public class MyMath {
         return connected;
     }
 
-    public static long multiplyAll(int... a) {
+    public static long multiplyAll(int... a) { //Multiplikation aller Werte einer Int-Liste
         long product = 1;
         for (int i : a) {
             product *= i;
@@ -74,7 +74,7 @@ public class MyMath {
         return product;
     }
 
-    public static long multiplyAll(long... a) {
+    public static long multiplyAll(long... a) {//Multiplikation aller Werte einer Long-Liste
         long product = 1;
         for (long i : a) {
             product *= i;
@@ -82,7 +82,7 @@ public class MyMath {
         return product;
     }
 
-    public static double multiplyAll(double... a) {
+    public static double multiplyAll(double... a) { //Multiplikation aller Werte einer Double-Liste
         double product = 1;
         for (double i : a) {
             product *= i;
@@ -90,7 +90,7 @@ public class MyMath {
         return product;
     }
 
-    public static String catAll(String... a) {
+    public static String catAll(String... a) { //Multiplikation aller Werte einer String-Liste
         String connected = "";
         for (String i : a) {
             connected += i + ",";
@@ -98,7 +98,7 @@ public class MyMath {
         return connected.substring(0, connected.length() - 1);
     }
 
-    public static String catAll(int... a) {
+    public static String catAll(int... a) { //Anneinanderreihung von Int-Werten als String
         String connected = "";
         for (int i : a) {
             connected += i + ",";
@@ -106,7 +106,7 @@ public class MyMath {
         return connected.substring(0, connected.length() - 1);
     }
 
-    public static String catAll(long... a) {
+    public static String catAll(long... a) { //Anneinanderreihung von Long-Werten als String
         String connected = "";
         for (long i : a) {
             connected += i + ",";
@@ -114,7 +114,7 @@ public class MyMath {
         return connected.substring(0, connected.length() - 1);
     }
 
-    public static String catAll(double... a) {
+    public static String catAll(double... a) { //Anneinanderreihung von Double-Werten als String
         String connected = "";
         for (double i : a) {
             connected += i + ",";
@@ -122,7 +122,7 @@ public class MyMath {
         return connected.substring(0, connected.length() - 1);
     }
 
-    public static int max(int... a) {
+    public static int max(int... a) { //Rückgabe des größten Wertes von einer Int-Liste
         int m = Integer.MIN_VALUE;
         for (int i : a) {
             m = Math.max(m, i);
@@ -130,7 +130,7 @@ public class MyMath {
         return m;
     }
 
-    public static int min(int... a) {
+    public static int min(int... a) { //Rückgabe des kleinsten Wertes von einer Int-Liste
         int m = Integer.MAX_VALUE;
         for (int i : a) {
             m = m >= i ? i : m;
@@ -138,7 +138,7 @@ public class MyMath {
         return m;
     }
 
-    public static long max(long... a) {
+    public static long max(long... a) { //Rückgabe des größten Wertes von einer Long-Liste
         long m = Long.MIN_VALUE;
         for (long i : a) {
             m = m <= i ? i : m;
@@ -146,7 +146,7 @@ public class MyMath {
         return m;
     }
 
-    public static long min(long... a) {
+    public static long min(long... a) { //Rückgabe des kleinsten Wertes von einer Long-Liste
         long m = Long.MAX_VALUE;
         for (long i : a) {
             m = m >= i ? i : m;
@@ -154,7 +154,7 @@ public class MyMath {
         return m;
     }
 
-    public static float max(float... a) {
+    public static float max(float... a) { //Rückgabe des größten Wertes von einer Float-Liste
         float m = Float.MIN_VALUE;
         for (float i : a) {
             m = m <= i ? i : m;
@@ -162,7 +162,7 @@ public class MyMath {
         return m;
     }
 
-    public static float min(float... a) {
+    public static float min(float... a) { //Rückgabe des kleinsten Wertes von einer Float-Liste
         float m = Float.MAX_VALUE;
         for (float i : a) {
             m = m >= i ? i : m;
@@ -170,7 +170,7 @@ public class MyMath {
         return m;
     }
 
-    public static double max(double... a) {
+    public static double max(double... a) { //Rückgabe des größten Wertes von einer Double-Liste
         double m = Double.MIN_VALUE;
         for (double i : a) {
             m = m <= i ? i : m;
@@ -178,7 +178,7 @@ public class MyMath {
         return m;
     }
 
-    public static double min(double... a) {
+    public static double min(double... a) { //Rückgabe des kleinsten Wertes von einer Double-Liste
         double m = Double.MAX_VALUE;
         for (double i : a) {
             m = m >= i ? i : m;
@@ -188,19 +188,19 @@ public class MyMath {
 
     public static int abs(int i) {
         return i < 0 ? i * -1 : i;
-    }
+    } //Rückgabe einer positiven Zahl auf Grundlage einer Int-Zahl
 
     public static long abs(long i) {
         return i < 0L ? i * -1L : i;
-    }
+    } //Rückgabe einer positiven Zahl auf Grundlage einer Long-Zahl
 
     public static float abs(float i) {
         return i < 0f ? i * -1f : i;
-    }
+    } //Rückgabe einer positiven Zahl auf Grundlage einer Float-Zahl
 
     public static double abs(double i) {
         return i < 0d ? i * -1d : i;
-    }
+    } //Rückgabe einer positiven Zahl auf Grundlage einer Double-Zahl
 
     public static int pow(int a, int b) {
 
@@ -213,19 +213,19 @@ public class MyMath {
 
     public static int sqr(int a) {
         return a * a;
-    }
+    } //Quadratwert einer Int-Zahl
 
     public static long sqr(long a) {
         return a * a;
-    }
+    } //Quadratwert einer Long-Zahl
 
     public static float sqr(float a) {
         return a * a;
-    }
+    } //Quadratwert einer Float-Zahl
 
     public static double sqr(double a) {
         return a * a;
-    }
+    } //Quadratwert einer Double-Zahl
 
     public static String toBinary(int n) {
         String b = "";
@@ -234,7 +234,7 @@ public class MyMath {
             n /= 2;
         }
         return invert(b);
-    }
+    } //Umwandlung eines Int-Wertes ind Binary
 
     public static String toBinary(double n) {
         String b = "";
@@ -256,7 +256,7 @@ public class MyMath {
             }
         }
         return b;
-    }
+    } //Umwandlung eines Double-Wertes ind Binary
 
     public static int toDecimal(String n) {
         int r = 0;
@@ -326,11 +326,11 @@ public class MyMath {
 
     public static int rand(int min, int max) {
         return (int) Math.floor(Math.random() * (max - min + 1) + min);
-    }
+    } //Erstellung eines zufälligen Int-Wertes
 
     public static double rand(double min, double max) {
         return Math.floor(Math.random() * (max - min + 1) + min);
-    }
+    } //Erstellung eines zufälligen Double-Wertes
 
     public static String invert(String n) {
         return n.length() <= 1 ? n : invert(n.substring(1)) + n.charAt(0);
