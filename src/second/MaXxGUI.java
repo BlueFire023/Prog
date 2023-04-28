@@ -12,12 +12,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-public class MaXxGuI extends JFrame implements ActionListener {
+/**
+public class MaXxGUI extends JFrame implements ActionListener {
 
     private final GameBoard board;
 
-    public MaXxGuI(int size) {
+    public MaXxGUI(int size) {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         board = new GameBoard(size);
@@ -60,3 +60,4 @@ public class MaXxGuI extends JFrame implements ActionListener {
         new MaXxGuI(8);
     }
 }
+ */
