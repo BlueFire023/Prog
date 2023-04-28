@@ -1,5 +1,7 @@
 package first;
 
+import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -7,15 +9,17 @@ import java.util.Arrays;
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
  * @version 1, 19.12.22
  */
-public class Player {
+public class Player implements Serializable {
     private Fraction score;
     private String symbol;
+    private Color color;
     private final String name;
     private final ArrayList<String> moveSet;
     private final GameBoard board;
     private int winCounter;
     private int xPosition;
     private int yPosition;
+
 
     public Player(String name, String symbol, String[] moveSet, GameBoard board) {
         this.name = name;
@@ -32,8 +36,31 @@ public class Player {
         }
         this.moveSet = new ArrayList<>(Arrays.asList(moveSet));
         this.board = board;
-    }
 
+    }
+    public Player(String name, String symbol, String[] moveSet, GameBoard board, Color color) {
+        this.name = name;
+        if (symbol.length() < 8) {
+            this.symbol = symbol;
+        } else {
+            for (int i = 0; i < MaXx.p.length; i++) {
+                if (MaXx.p[i] == null) {
+                    this.symbol = "P" + (i + 1);
+                    break;
+                }
+            }
+            System.out.println("\nSymbol darf nicht länger als 7 Zeichen sein!");
+        }
+        this.color = color;
+        this.moveSet = new ArrayList<>(Arrays.asList(moveSet));
+        this.board = board;
+    }
+    public String getSymbol(){
+        return symbol;
+    }
+    public Color getColor(){
+        return color;
+    }
     public void increaseWin() {
         this.winCounter++;
     }

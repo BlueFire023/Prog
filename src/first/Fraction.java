@@ -9,7 +9,7 @@ import java.math.BigInteger;
 
 public class Fraction extends Number implements Comparable<Fraction> {
 
-    final static Fraction NaN = new Fraction(0, 0);
+    public final static Fraction NaN = new Fraction(0, 0);
     protected BigInteger numerator;
     protected BigInteger denominator;
 

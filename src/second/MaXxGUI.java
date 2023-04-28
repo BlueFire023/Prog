@@ -2,62 +2,274 @@ package second;
 
 /**
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
- * @version 1, 16/04/2023
+ * @version 1, 20/04/2023
  */
 
+import first.Fraction;
 import first.GameBoard;
+import first.MyMath;
 import first.Player;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-/**
-public class MaXxGUI extends JFrame implements ActionListener {
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.io.*;
+
+public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Serializable {
+    private JPanel gamePanel = new JPanel();
 
     private final GameBoard board;
+    private final int PLAYERCOUNT = 2;
+    private final int BOARDSIZE = 8;
+    private final double SCORESTOWIN = 53d;
+    private final JPanel[][] fractionPanels;
+    private final JLabel[][] fractionLabels;
+    private JLabel instructionLabel = new JLabel();
+    private int currentPlayerIndex;
+    private static int openWindows;
+    private String direction;
+    private final Player[] players;
+    private final JPanel scoreBoard = new JPanel();
+    private JFileChooser fileChooser = new JFileChooser();
 
-    public MaXxGUI(int size) {
+    public MaXxGuI() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setTitle("MaXxGuI");
         setLayout(new BorderLayout());
-        board = new GameBoard(size);
-        board.fillBoard();
-        JPanel gamePanel = new JPanel();
-        gamePanel.setLayout(new GridLayout(size, size, 5, 5));
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                try {
-                    gamePanel.add(newFractionLabel(board.getValue(i, j).getNumerator().intValue(),
-                            board.getValue(i, j).getDenominator().intValue()));
-                } catch (Exception ignored) {}
+        board = new GameBoard(BOARDSIZE);
+        players = new Player[PLAYERCOUNT];
+        players[0] = new Player("Weiß", "W", new String[]{"N", "O", "S", "W", "NO"}, board, Color.WHITE);
+        players[1] = new Player("Schwarz", "B", new String[]{"N", "O", "S", "W", "SW"}, board, Color.BLACK);
+        initNewGame();
+
+        fractionLabels = new JLabel[BOARDSIZE][BOARDSIZE];
+        fractionPanels = new JPanel[BOARDSIZE][BOARDSIZE];
+
+        gamePanel.setLayout(new GridLayout(BOARDSIZE, BOARDSIZE, 5, 5));
+        gamePanel.setPreferredSize(new Dimension(800, 650));
+        gamePanel.setBackground(Color.BLACK);
+        //gamePanel
+        for (int i = 0; i < BOARDSIZE; i++) {
+            for (int j = 0; j < BOARDSIZE; j++) {
+                fractionPanels[i][j] = new JPanel();
+                fractionPanels[i][j].setLayout(new GridBagLayout());
+
+                fractionLabels[i][j] = new JLabel();
+                fractionLabels[i][j].setFont(new Font("Courier", Font.PLAIN, 15));
+
+                fractionPanels[i][j].add(fractionLabels[i][j]);
+                gamePanel.add(fractionPanels[i][j]);
             }
         }
-        add(gamePanel);
+        updateBoard();
+        add(gamePanel, BorderLayout.NORTH);
 
         JPanel controlsBar = new JPanel();
-        JButton test  = new JButton("TEST");
-        test.addActionListener(this);
-        controlsBar.add(test);
-        add(controlsBar, BorderLayout.SOUTH);
-        pack();
+        controlsBar.setLayout(new GridLayout(1, 2));
+
+        scoreBoard.setLayout(new GridLayout(PLAYERCOUNT, 2));
+        for (Player player : players) {
+            scoreBoard.add(new JLabel(player.getName() + ":"));
+            scoreBoard.add(new JLabel());
+        }
+        updateScore();
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(1, 3));
+        JButton newGameButton = new JButton("Start new Game");
+
+        buttonPanel.add(newGameButton);
+        newGameButton.addActionListener(this);
+        newGameButton.addKeyListener(this);
+        newGameButton.setBackground(Color.WHITE);
+
+        JButton openButton = new JButton("Open");
+        buttonPanel.add(openButton);
+        openButton.addActionListener(this);
+        openButton.setBackground(Color.WHITE);
+
+        JButton saveButton = new JButton("Save");
+        buttonPanel.add(saveButton);
+        saveButton.addActionListener(this);
+        saveButton.setBackground(Color.WHITE);
+
+        controlsBar.add(buttonPanel);
+        controlsBar.add(scoreBoard);
+        add(controlsBar, BorderLayout.CENTER);
+
+        JPanel instructionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        instructionPanel.setPreferredSize(new Dimension(800, 30));
+        instructionPanel.add(instructionLabel);
+        add(instructionPanel, BorderLayout.SOUTH);
+
+        setSize(800, 800);
         setVisible(true);
+        fractionPanels[players[currentPlayerIndex].getYPosition()][players[currentPlayerIndex].getXPosition()].setBorder(BorderFactory.createLineBorder(Color.RED, 5));
+        openWindows++;
     }
 
     public static void main(String[] args) {
-        new MaXxGuI(8);
+        new MaXxGuI();
     }
 
-    public JPanel newFractionLabel(int numerator, int denominator) {
-        JPanel p = new JPanel();
-        JLabel textNumerator = new JLabel();
-        textNumerator.setText("<html><p align='center'><u>" + numerator + "</u><br>" + denominator + "</p></html");
-        p.add(textNumerator);
-        return p;
+    private void initNewGame() {
+        board.fillBoard();
+        boolean repeat;
+        do {
+            repeat = false;
+            for (Player player : players) {
+                player.initPosValue((MyMath.rand(0, board.getSize() - 1)), (MyMath.rand(0, board.getSize() - 1)));
+            }
+            for (int i = 0; i < PLAYERCOUNT - 1; i++) {
+                if (players[i].getXPosition() == players[i + 1].getXPosition() && players[i].getYPosition() == players[i + 1].getYPosition()) {
+                    repeat = true;
+                    break;
+                }
+            }
+        } while (repeat);
+        for (Player player : players) {
+            player.initPosition();
+            player.setScore(new Fraction(0, 1));
+        }
+        currentPlayerIndex = MyMath.rand(0, PLAYERCOUNT - 1);
+        instructionLabel.setText(players[currentPlayerIndex].getName() + " ist dran!");
+    }
+
+    private void updateBoard() {
+        for (int i = 0; i < BOARDSIZE; i++) {
+            for (int j = 0; j < BOARDSIZE; j++) {
+                JLabel currentlabel = fractionLabels[j][i];
+                try {
+                    for (Player player : players) {
+                        if (player.getYPosition() == j && player.getXPosition() == i) {
+                            currentlabel.setText("<html><p align ='center'><b>" + player.getSymbol() + "</b></p></html>");
+                            break;
+                        }
+                    }
+                    if (board.getValue(i, j).equals(Fraction.NaN)) {
+                        currentlabel.setText("");
+                    } else {
+                        currentlabel.setText("<html><p align='center'><u>" + board.getValue(i, j).getNumerator().intValue()
+                                + "</u><br>" + board.getValue(i, j).getDenominator().intValue() + "</p></html");
+                    }
+                } catch (Exception ignored) {
+                }
+                fractionPanels[i][j].setBorder(new EmptyBorder(0, 0, 0, 0));
+                fractionPanels[i][j].setBackground(Color.LIGHT_GRAY);
+                fractionLabels[i][j].setForeground(invertColor(fractionPanels[i][j].getBackground()));
+            }
+        }
+        for (Player player : players) {
+            fractionPanels[player.getYPosition()][player.getXPosition()].setBackground(player.getColor());
+            fractionLabels[player.getYPosition()][player.getXPosition()].setForeground(invertColor(player.getColor()));
+        }
+        fractionPanels[players[currentPlayerIndex].getYPosition()][players[currentPlayerIndex].getXPosition()].setBorder(BorderFactory.createLineBorder(Color.RED, 5));
+    }
+
+    private void updateScore() {
+        int i = 0;
+        for (Player player : players) {
+            ((JLabel) scoreBoard.getComponent(2 * i++ + 1)).setText("<html><p align='center'><u>" + player.getScore().getNumerator()
+                    + "</u><br>" + player.getScore().getDenominator() + "</p></html>");
+            if (player.getScore().doubleValue() > SCORESTOWIN) {
+                this.dispose();
+                if (--openWindows <= 0) {
+                    System.exit(0);
+                }
+            }
+        }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        new MaXxGuI(8);
+        switch (e.getActionCommand()) {
+            case "Start new Game" -> new MaXxGuI();
+            case "Open" -> openSavedGame();
+            case "Save" -> saveGame();
+        }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_W -> direction = "N";
+            case KeyEvent.VK_A -> direction = "W";
+            case KeyEvent.VK_S -> direction = "S";
+            case KeyEvent.VK_D -> direction = "O";
+            case KeyEvent.VK_E -> direction = "NO";
+            case KeyEvent.VK_Y -> direction = "SW";
+            case KeyEvent.VK_Q -> direction = "NW";
+            case KeyEvent.VK_X -> direction = "SO";
+        }
+        try {
+            board.setValue(players[currentPlayerIndex].getXPosition(), players[currentPlayerIndex].getYPosition(), "0");
+            players[currentPlayerIndex].move(direction);
+        } catch (Exception ex) {
+            if (ex.getClass().equals(ArrayIndexOutOfBoundsException.class)) {
+                instructionLabel.setText("Unmögliche Bewegung!");
+            } else {
+                instructionLabel.setText(ex.getMessage());
+            }
+            throw new RuntimeException(ex);
+        }
+
+        currentPlayerIndex++;
+        if (currentPlayerIndex == PLAYERCOUNT) {
+            currentPlayerIndex = 0;
+        }
+        instructionLabel.setText(players[currentPlayerIndex].getName() + " ist dran!");
+        updateBoard();
+        updateScore();
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
+
+    private Color invertColor(Color initalColor) {
+        return new Color(255 - initalColor.getRed(), 255 - initalColor.getGreen(), 255 - initalColor.getBlue());
+    }
+
+    private void openSavedGame() {
+        int returnValue = fileChooser.showOpenDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+            try {
+                FileInputStream fs = new FileInputStream(filePath);
+                ObjectInputStream os = new ObjectInputStream(fs);
+                MaXxGuI m = (MaXxGuI) os.readObject();
+                m.setVisible(true);
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    private void saveGame() {
+        fileChooser = new JFileChooser();
+        int returnValue = fileChooser.showSaveDialog(null);
+
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            String filePath = selectedFile.getAbsolutePath();
+            try {
+                FileOutputStream fileOut = new FileOutputStream(filePath);
+                ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+                objectOut.writeObject(this);
+                objectOut.close();
+                fileOut.close();
+                JOptionPane.showMessageDialog(null, "Das Objekt wurde erfolgreich gespeichert.");
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Fehler beim Schreiben des Objekts.");
+                e.printStackTrace();
+            }
+        }
     }
 }
- */
