@@ -100,7 +100,7 @@ public class MaXx {
         } while (repeat);
         for (Player player : p) {
             player.initPosition();
-            player.setScore(new Fraction(0,1));
+            player.setScore(new Fraction(0, 1));
         }
         currentPlayerIndex = MyMath.rand(0, PLAYERCOUNT - 1);
     }

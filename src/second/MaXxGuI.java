@@ -24,14 +24,15 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
     private final JPanel gamePanel = new JPanel();
     private final GameBoard board;
     private final int PLAYERCOUNT;
-    private final int BOARDSIZE ;
-    private final double SCORESTOWIN = 53d;
+    private final int BOARDSIZE;
+    private int test = 0;
+    private final double SCORESTOWIN = 5d;
     private final JPanel[][] fractionPanels;
     private final JLabel[][] fractionLabels;
     private final JLabel instructionLabel = new JLabel();
     private int currentPlayerIndex;
     private String direction;
-    private final Player[] players;
+    public Player[] players;
     private final JPanel scoreBoard = new JPanel();
     private JFileChooser fileChooser = new JFileChooser();
     Border borderFocusedPlayer = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.WHITE, 3),
@@ -83,7 +84,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(1, 3));
 
-        JButton saveButton = new JButton("Save");
+        JButton saveButton = new JButton("Speichern");
         buttonPanel.add(saveButton);
         saveButton.addActionListener(this);
         saveButton.setBackground(Color.WHITE);
@@ -162,14 +163,30 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
             ((JLabel) scoreBoard.getComponent(2 * i++ + 1)).setText("<html><p align='center'><u>" + player.getScore().getNumerator()
                     + "</u><br>" + player.getScore().getDenominator() + "</p></html>");
             if (player.getScore().doubleValue() > SCORESTOWIN) {
-                this.dispose();
+                JPanel winPanel = new JPanel(new GridLayout(2, 1));
+                winPanel.setPreferredSize(new Dimension(100, 100));
+                JLabel winLabel = new JLabel(player.getName() + " hat gewonnen", SwingConstants.CENTER);
+                JLabel againLabel = new JLabel("Nochmal?", SwingConstants.CENTER);
+                winPanel.add(winLabel);
+                winPanel.add(againLabel);
+                test = JOptionPane.showConfirmDialog(null, winPanel);
+                if (test == 0) {
+                    playAgain();
+                } else {
+                    dispose();
+                }
             }
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        saveGame();
+        switch (e.getActionCommand()) {
+            case "Speichern" -> saveGame();
+            case "Test" -> {
+
+            }
+        }
     }
 
     @Override
@@ -238,5 +255,19 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
                 e.printStackTrace();
             }
         }
+    }
+
+    private void playAgain() {
+        GameBoard newBoard = new GameBoard(BOARDSIZE);
+        Player[] newPlayers = new Player[PLAYERCOUNT];
+        for (int i = 0; i < PLAYERCOUNT; i++) {
+            String name = players[i].getName();
+            String symbol = players[i].getSymbol();
+            String[] moveSet = players[i].getMoveSet();
+            Color color = players[i].getColor();
+            newPlayers[i] = new Player(name, symbol, moveSet, newBoard, color);
+        }
+        new MaXxGuI(newBoard, newPlayers);
+        dispose();
     }
 }
