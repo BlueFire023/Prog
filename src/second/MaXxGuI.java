@@ -17,8 +17,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.*;
 
-public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
+public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Serializable {
     private JPanel gamePanel = new JPanel();
 
     private final GameBoard board;
@@ -32,8 +33,8 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
     private static int openWindows;
     private String direction;
     private final Player[] players;
-    private final JButton newGameButton = new JButton("Start new Game");
     private final JPanel scoreBoard = new JPanel();
+    private JFileChooser fileChooser = new JFileChooser();
 
     public MaXxGuI() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -76,11 +77,27 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
             scoreBoard.add(new JLabel());
         }
         updateScore();
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(1, 3));
+        JButton newGameButton = new JButton("Start new Game");
+
+        buttonPanel.add(newGameButton);
         newGameButton.addActionListener(this);
         newGameButton.addKeyListener(this);
         newGameButton.setBackground(Color.WHITE);
 
-        controlsBar.add(newGameButton);
+        JButton openButton = new JButton("Open");
+        buttonPanel.add(openButton);
+        openButton.addActionListener(this);
+        openButton.setBackground(Color.WHITE);
+
+        JButton saveButton = new JButton("Save");
+        buttonPanel.add(saveButton);
+        saveButton.addActionListener(this);
+        saveButton.setBackground(Color.WHITE);
+
+        controlsBar.add(buttonPanel);
         controlsBar.add(scoreBoard);
         add(controlsBar, BorderLayout.CENTER);
 
@@ -169,7 +186,11 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        new MaXxGuI();
+        switch (e.getActionCommand()) {
+            case "Start new Game" -> new MaXxGuI();
+            case "Open" -> openSavedGame();
+            case "Save" -> saveGame();
+        }
     }
 
     @Override
@@ -192,9 +213,9 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
             board.setValue(players[currentPlayerIndex].getXPosition(), players[currentPlayerIndex].getYPosition(), "0");
             players[currentPlayerIndex].move(direction);
         } catch (Exception ex) {
-            if(ex.getClass().equals(ArrayIndexOutOfBoundsException.class)){
+            if (ex.getClass().equals(ArrayIndexOutOfBoundsException.class)) {
                 instructionLabel.setText("Unmögliche Bewegung!");
-            }else{
+            } else {
                 instructionLabel.setText(ex.getMessage());
             }
             throw new RuntimeException(ex);
@@ -215,5 +236,40 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener {
 
     private Color invertColor(Color initalColor) {
         return new Color(255 - initalColor.getRed(), 255 - initalColor.getGreen(), 255 - initalColor.getBlue());
+    }
+
+    private void openSavedGame() {
+        int returnValue = fileChooser.showOpenDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+            try {
+                FileInputStream fs = new FileInputStream(filePath);
+                ObjectInputStream os = new ObjectInputStream(fs);
+                MaXxGuI m = (MaXxGuI) os.readObject();
+                m.setVisible(true);
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    private void saveGame() {
+        fileChooser = new JFileChooser();
+        int returnValue = fileChooser.showSaveDialog(null);
+
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            String filePath = selectedFile.getAbsolutePath();
+            try {
+                FileOutputStream fileOut = new FileOutputStream(filePath);
+                ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+                objectOut.writeObject(this);
+                objectOut.close();
+                fileOut.close();
+                JOptionPane.showMessageDialog(null, "Das Objekt wurde erfolgreich gespeichert.");
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Fehler beim Schreiben des Objekts.");
+                e.printStackTrace();
+            }
+        }
     }
 }

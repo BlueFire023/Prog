@@ -12,7 +12,7 @@ public class FileChooserTest extends JFrame {
     JButton // Knoepfe fuer
             open = new JButton("Öffnen"), // Oeffnen
             save = new JButton("Speichern"); // Speichern
-    JFileChooser c = new JFileChooser(new File("c://aabb")); // Start-Directory
+    JFileChooser c = new JFileChooser(new File("c://")); // Start-Directory
 
     public FileChooserTest() { // Konstruktor
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -34,6 +34,7 @@ public class FileChooserTest extends JFrame {
         p.add(isdir); // ...
         cp.add(p, BorderLayout.CENTER); // ...
         c.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES); // Sel.-Modus
+        setSize(300,300);
         setVisible(true);
     }
 

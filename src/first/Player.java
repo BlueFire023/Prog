@@ -1,6 +1,7 @@
 package first;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -8,7 +9,7 @@ import java.util.Arrays;
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
  * @version 1, 19.12.22
  */
-public class Player {
+public class Player implements Serializable {
     private Fraction score;
     private String symbol;
     private Color color;
