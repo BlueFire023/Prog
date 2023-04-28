@@ -39,30 +39,24 @@ public class Player implements Serializable {
         this.board = board;
 
     }
+
     public Player(String name, String symbol, String[] moveSet, GameBoard board, Color color) {
         //Setzen der Instanzvariabeln (mit Farbe)
         this.name = name;
-        if (symbol.length() < 8) {
-            this.symbol = symbol;
-        } else {
-            for (int i = 0; i < MaXx.p.length; i++) {
-                if (MaXx.p[i] == null) {
-                    this.symbol = "P" + (i + 1);
-                    break;
-                }
-            }
-            System.out.println("\nSymbol darf nicht länger als 7 Zeichen sein!");
-        }
+        this.symbol = symbol;
         this.color = color;
         this.moveSet = new ArrayList<>(Arrays.asList(moveSet));
         this.board = board;
     }
-    public String getSymbol(){
+
+    public String getSymbol() {
         return symbol;
     } //Rückgabe des Symbols
-    public Color getColor(){
+
+    public Color getColor() {
         return color;
     } //Rückgabe der Farbe
+
     public void increaseWin() {
         this.winCounter++;
     } //Erhöhung der Siege
@@ -105,6 +99,10 @@ public class Player implements Serializable {
     public String getName() {
         return name;
     } //Rückgabe des Namens
+
+    public String[] getMoveSet() {
+        return moveSet.toArray(new String[0]);
+    }
 
     public boolean isInMoveSet(String direction) {
         return this.moveSet.contains(direction);

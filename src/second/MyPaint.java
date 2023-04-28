@@ -260,7 +260,7 @@ public class MyPaint extends JFrame implements MouseMotionListener, MouseListene
     }
 
     private void undo() {
-        if(!previousStates.isEmpty()) {
+        if (!previousStates.isEmpty()) {
             Color[][] currLastSteps = previousStates.pop();
             for (int i = 0; i < WIDTH; i++) {
                 for (int j = 0; j < HEIGHT; j++) {
