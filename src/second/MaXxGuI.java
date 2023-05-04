@@ -11,6 +11,7 @@ import first.MyMath;
 import first.Player;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -20,32 +21,34 @@ import java.awt.event.KeyListener;
 import java.io.*;
 
 public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Serializable {
-    private JPanel gamePanel = new JPanel(); //Erstellung des Panels, in dem sich später die einzelnen Felder wiederfinden
+    private final JPanel gamePanel = new JPanel(); //Erstellung des Panels, in dem sich später die einzelnen Felder
+    // wiederfinden
     private final GameBoard board; //Spielfeld, welches im Hintergrund steht
-    private final int PLAYERCOUNT = 2; //Anzahl der Mitspieler (hier 2)
-    private final int BOARDSIZE = 8; //Größe des Boards (immer quadratisch; hier 8x8)
-    private final double SCORESTOWIN = 53d; //Punktestand, der überschritten werden muss, um zu gewinnen
+    private final int PLAYERCOUNT; //Anzahl der Mitspieler
+    private final int BOARDSIZE; //Größe des Boards (immer quadratisch)
+    private static final double SCORESTOWIN = 53d; //Punktestand, der überschritten werden muss, um zu gewinnen
     private final JPanel[][] fractionPanels; //Panels für das Spielfeld (Array)
     private final JLabel[][] fractionLabels; //Labels für das Spielfeld (Array)
     private JLabel instructionLabel = new JLabel(); //Label für die Instruktionen unter dem Spielfeld
-    private int currentPlayerIndex; //Index, der zeigt, welcher Spieler am Zug ist
-    private static int openWindows; //Anzahl geöffneter Fenster
+    private int currentPlayerIndex; //Index, der zeigt welcher Spieler am Zug ist
     private String direction; //String, der Richtung, der bei der Tastatureingabe gesetzt wird
     private final Player[] players; //Array der Spieler
     private final JPanel scoreBoard = new JPanel(); //Panel für die Scores
     private JFileChooser fileChooser = new JFileChooser(); // Erstellung des Filechoosers
+    private Border borderFocusedPlayer = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.WHITE,
+                    3),
+            BorderFactory.createLineBorder(Color.BLACK, 3));
 
-    public MaXxGuI() {
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+    public MaXxGuI(GameBoard board, Player[] players) {
+        this.board = board;
+        this.PLAYERCOUNT = players.length;
+        this.players = players;
+        this.BOARDSIZE = board.getSize();
+
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setTitle("MaXxGuI");
         setLayout(new BorderLayout());
-        //Definierung des GameBoards
-        board = new GameBoard(BOARDSIZE);
-        // Erstellung des Spieler mit Namen, Abkürzungen, Moveset, Zuweisung zum Board und der Farbe
-        players = new Player[PLAYERCOUNT];
-        players[0] = new Player("Weiß", "W", new String[]{"N", "O", "S", "W", "NO"}, board, Color.WHITE);
-        players[1] = new Player("Schwarz", "B", new String[]{"N", "O", "S", "W", "SW"}, board, Color.BLACK);
-        initNewGame();//Methode zum Aufsetzen eines neuen Spiels
+        initNewGame();
 
         //Definierung der Panel- und Labelarrays
         fractionLabels = new JLabel[BOARDSIZE][BOARDSIZE];
@@ -89,22 +92,9 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
         //Definierung des ButtonPanels
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(1, 3));
-        JButton newGameButton = new JButton("Start new Game");
-
-        //Hinzufügen eines Buttons (zum Starten von neuen Spielen) zum ButtonPanel
-        buttonPanel.add(newGameButton);
-        newGameButton.addActionListener(this);
-        newGameButton.addKeyListener(this);
-        newGameButton.setBackground(Color.WHITE);
-
-        //Hinzufügen eines Buttons (zum Öffnen von gespeicherten Spielen) zum ButtonPanel
-        JButton openButton = new JButton("Open");
-        buttonPanel.add(openButton);
-        openButton.addActionListener(this);
-        openButton.setBackground(Color.WHITE);
 
         //Hinzufügen eines Buttons (zum Speichern des Spielstandes) zum ButtonPanel
-        JButton saveButton = new JButton("Save");
+        JButton saveButton = new JButton("Speichern");
         buttonPanel.add(saveButton);
         saveButton.addActionListener(this);
         saveButton.setBackground(Color.WHITE);
@@ -113,7 +103,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
         controlsBar.add(buttonPanel);
         controlsBar.add(scoreBoard);
         add(controlsBar, BorderLayout.CENTER);
-
+        saveButton.addKeyListener(this);
         //Definition des InstructionPanels und das Hinzufügen zum Fenster (Immer am unteren Rand des Fensters)
         JPanel instructionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         instructionPanel.setPreferredSize(new Dimension(800, 30));
@@ -121,16 +111,11 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
         add(instructionPanel, BorderLayout.SOUTH);
 
         //Setzen der Größe und Sichtbarkeit des Fensters
-        setSize(800, 800);
+        setSize(1000,1000);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
-
-        openWindows++;
+        fractionPanels[players[currentPlayerIndex].getYPosition()][players[currentPlayerIndex].getXPosition()].setBorder(borderFocusedPlayer);
     }
-
-    public static void main(String[] args) {
-        new MaXxGuI(); //Beim Ausführen wird ein neues Objekt der Klasse erstellt bzw. es wird der Konstruktor aufgerufen
-    }
-
 
     private void initNewGame() {
         board.fillBoard(); // Gameboard wird mit Werten gefüllt
@@ -160,18 +145,18 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
         //Jedes Label des Spielfeldes im Fenster wird geupdated und der neuen Spielsituation angepasst (Player-Symbol wandert weiter, Felder werden Leer, nachdem ein Spieler auf ihnen war)
         for (int i = 0; i < BOARDSIZE; i++) {
             for (int j = 0; j < BOARDSIZE; j++) {
-                JLabel currentlabel = fractionLabels[j][i];
+                JLabel currentLabel = fractionLabels[j][i];
                 try {
                     for (Player player : players) {
                         if (player.getYPosition() == j && player.getXPosition() == i) {
-                            currentlabel.setText("<html><p align ='center'><b>" + player.getSymbol() + "</b></p></html>");
+                            currentLabel.setText("<html><p align ='center'><b>" + player.getSymbol() + "</b></p></html>");
                             break;
                         }
                     }
                     if (board.getValue(i, j).equals(Fraction.NaN)) {
-                        currentlabel.setText("");
+                        currentLabel.setText("");
                     } else {
-                        currentlabel.setText("<html><p align='center'><u>" + board.getValue(i, j).getNumerator().intValue()
+                        currentLabel.setText("<html><p align='center'><u>" + board.getValue(i, j).getNumerator().intValue()
                                 + "</u><br>" + board.getValue(i, j).getDenominator().intValue() + "</p></html");
                     }
                 } catch (Exception ignored) {
@@ -185,8 +170,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
             fractionPanels[player.getYPosition()][player.getXPosition()].setBackground(player.getColor());
             fractionLabels[player.getYPosition()][player.getXPosition()].setForeground(invertColor(player.getColor()));
         }
-        //Der Spieler der Anfängt wird mit rotem Rand gekennzeichnet
-        fractionPanels[players[currentPlayerIndex].getYPosition()][players[currentPlayerIndex].getXPosition()].setBorder(BorderFactory.createLineBorder(Color.RED, 5));
+        fractionPanels[players[currentPlayerIndex].getYPosition()][players[currentPlayerIndex].getXPosition()].setBorder(borderFocusedPlayer);
     }
 
     private void updateScore() {
@@ -197,9 +181,17 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
                     + "</u><br>" + player.getScore().getDenominator() + "</p></html>");
             //Sollte der Score eines Spielers über den zu erreichenden Score wandern, wird das Spiel beendet
             if (player.getScore().doubleValue() > SCORESTOWIN) {
-                this.dispose();
-                if (--openWindows <= 0) {
-                    System.exit(0);
+                JPanel winPanel = new JPanel(new GridLayout(2, 1));
+                winPanel.setPreferredSize(new Dimension(100, 100));
+                JLabel winLabel = new JLabel(player.getName() + " hat gewonnen", SwingConstants.CENTER);
+                JLabel againLabel = new JLabel("Nochmal?", SwingConstants.CENTER);
+                winPanel.add(winLabel);
+                winPanel.add(againLabel);
+                int test = JOptionPane.showConfirmDialog(null, winPanel);
+                if (test == 0) {
+                    playAgain();
+                } else {
+                    dispose();
                 }
             }
         }
@@ -207,11 +199,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        switch (e.getActionCommand()) {
-            case "Start new Game" -> new MaXxGuI(); //Wird der Button "Start new Game" gedrückt, öffnet sich ein neues Spiel
-            case "Open" -> openSavedGame();  // Wird der Button "Open" gedrückt, öffnet sich das Fenster zum Öffnen von Dateien
-            case "Save" -> saveGame(); // Wird der Button "Save" gedrückt, öffnet sich das Fenster zum Speichern
-        }
+        saveGame();// Wird der Button "Save" gedrückt, öffnet sich das Fenster zum Speichern
     }
 
     @Override
@@ -226,12 +214,13 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W -> direction = "N";
             case KeyEvent.VK_A -> direction = "W";
-            case KeyEvent.VK_S -> direction = "S";
+            case KeyEvent.VK_X -> direction = "S";
             case KeyEvent.VK_D -> direction = "O";
             case KeyEvent.VK_E -> direction = "NO";
             case KeyEvent.VK_Y -> direction = "SW";
             case KeyEvent.VK_Q -> direction = "NW";
-            case KeyEvent.VK_X -> direction = "SO";
+            case KeyEvent.VK_C -> direction = "SO";
+            default -> direction = "nix";
         }
         try {
             board.setValue(players[currentPlayerIndex].getXPosition(), players[currentPlayerIndex].getYPosition(), "0"); //Der Wert des Feldes, auf dem der Spieler zuvor war, wird auf 0 gesetzt
@@ -265,21 +254,6 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
         return new Color(255 - initalColor.getRed(), 255 - initalColor.getGreen(), 255 - initalColor.getBlue());
     }
 
-    //Methode zum Öffnen alter Games
-    private void openSavedGame() {
-        int returnValue = fileChooser.showOpenDialog(null);
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            String filePath = fileChooser.getSelectedFile().getAbsolutePath();
-            try {
-                FileInputStream fs = new FileInputStream(filePath);
-                ObjectInputStream os = new ObjectInputStream(fs);
-                MaXxGuI m = (MaXxGuI) os.readObject();
-                m.setVisible(true);
-            } catch (Exception ignored) {
-            }
-        }
-    }
-
     //Methode zum Speichern
     private void saveGame() {
         fileChooser = new JFileChooser();
@@ -295,10 +269,29 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
                 objectOut.close();
                 fileOut.close();
                 JOptionPane.showMessageDialog(null, "Das Objekt wurde erfolgreich gespeichert.");
+                dispose();
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(null, "Fehler beim Schreiben des Objekts.");
                 e.printStackTrace();
             }
         }
+    }
+
+    private void playAgain() {
+        GameBoard newBoard = new GameBoard(BOARDSIZE);
+        Player[] newPlayers = new Player[PLAYERCOUNT];
+        for (int i = 0; i < PLAYERCOUNT; i++) {
+            String name = players[i].getName();
+            String symbol = players[i].getSymbol();
+            String[] moveSet = players[i].getMoveSet();
+            Color color = players[i].getColor();
+            newPlayers[i] = new Player(name, symbol, moveSet, newBoard, color);
+        }
+        new MaXxGuI(newBoard, newPlayers);
+        dispose();
+    }
+
+    public static double getSCORESTOWIN() {
+        return SCORESTOWIN;
     }
 }
