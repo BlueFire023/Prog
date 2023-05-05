@@ -283,21 +283,21 @@ public class MyMath {
         return rPreC + rPostC;
     }
 
-    public static int clampMin(int min, int n) {
-        return n <= min ? min : n;
+    public static int clampMin(int value, int clampedTo) {
+        return clampedTo <= value ? value : clampedTo;
     }
 
-    public static int clampMax(int max, int n) {
-        return n >= max ? max : n;
+    public static int clampMax(int value, int clampedTo) {
+        return clampedTo >= value ? value : clampedTo;
     }
 
-    public static int clampMinMax(int min, int max, int n) {
-        if (n <= min) {
-            return min;
-        } else if (n >= max) {
-            return max;
+    public static int clampMinMax(int lowValue, int highValue, int clampedTo) {
+        if (clampedTo <= lowValue) {
+            return lowValue;
+        } else if (clampedTo >= highValue) {
+            return highValue;
         } else {
-            return n;
+            return clampedTo;
         }
     }
 
