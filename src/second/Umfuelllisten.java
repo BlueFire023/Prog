@@ -1,121 +1,68 @@
 package second;
+/**
+ * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
+ * @version 1, 5/05/2023
+ */
 
 import java.util.*;
 
 public class Umfuelllisten {
-    static int[] capacity = new int[5];
-    static Set<List<Integer>> visited = new HashSet<>();
+    static int[] capacities = new int[5];
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
         // Einlesen der Kapazitäten
         for (int i = 0; i < 5; i++) {
-            capacity[i] = scanner.nextInt();
+            capacities[i] = scanner.nextInt();
         }
-
-        // Startzustand
-        List<Integer> start = new ArrayList<>();
-        start.add(capacity[0]); // Behälter 1 ist voll
-        for (int i = 1; i < 5; i++) {
-            start.add(0); // die anderen sind leer
+        int[] initial = {capacities[0], 0, 0, 0, 0};
+        List<int[]> states = getAllStates(capacities, initial);
+        for (int[] state : states) {
+            System.out.println(Arrays.toString(state));
         }
+        System.out.println(states.size() + " states");
+    }
 
-        // Breitensuche
-        Queue<List<Integer>> queue = new LinkedList<>();
-        queue.add(start);
-        visited.add(start);
+    public static List<int[]> getAllStates(int[] capacities, int[] initial) {
+        Set<String> visited = new HashSet<>();
+        List<int[]> result = new ArrayList<>();
+        dfs(capacities, initial, visited, result);
+        Collections.sort(result, (a, b) -> {
+            for (int i = 0; i < a.length; i++) {
+                if (a[i] != b[i]) {
+                    return a[i] - b[i];
+                }
+            }
+            return 0;
+        });
+        return result;
+    }
 
-        while (!queue.isEmpty()) {
-            List<Integer> state = queue.poll();
-            System.out.println(state);
-
-            for (int i = 0; i < 5; i++) {
-                for (int j = 0; j < 5; j++) {
-                    if (i == j) {
-                        continue;
-                    }
-
-                    List<Integer> newState = transfer(state, i, j);
-                    if (newState != null && !visited.contains(newState)) {
-                        queue.add(newState);
-                        visited.add(newState);
+    private static void dfs(int[] capacities, int[] current, Set<String> visited, List<int[]> result) {
+        String state = Arrays.toString(current);
+        if (visited.contains(state)) {
+            return;
+        }
+        visited.add(state);
+        result.add(current.clone());
+        for (int i = 0; i < capacities.length; i++) {
+            for (int j = 0; j < capacities.length; j++) {
+                if (i != j) {
+                    // Bedingungen für die Behälterumfüllung
+                    if ((i == 0 && j == 1) || (i == 0 && j == 3) || (i == 1 && j == 2) ||
+                            (i == 2 && j == 4) || (i == 3 && j == 1) || (i == 4 && j == 3)) {
+                        int amount = Math.min(current[i], capacities[j] - current[j]);
+                        if (amount > 0) {
+                            current[i] -= amount;
+                            current[j] += amount;
+                            dfs(capacities, current, visited, result);
+                            current[i] += amount;
+                            current[j] -= amount;
+                        }
                     }
                 }
             }
         }
     }
-
-    static List<Integer> transfer(List<Integer> state, int from, int to) {
-        // Transfer von Behälter "from" zu Behälter "to"
-        if (state.get(from) == 0 || state.get(to) == capacity[to]) {
-            return null;
-        }
-
-        List<Integer> newState = new ArrayList<>(state);
-        int amount = Math.min(state.get(from), capacity[to] - state.get(to));
-        newState.set(from, state.get(from) - amount);
-        newState.set(to, state.get(to) + amount);
-
-        // Anwendung der Umfüllregeln
-        switch (from) {
-            case 0:
-                switch (to) {
-                    case 1:
-                        break;
-                    case 3:
-                        break;
-                    default:
-                        return null;
-                }
-                break;
-            case 1:
-                switch (to) {
-                    case 2:
-                        break;
-                    case 4:
-                        break;
-                    default:
-                        return null;
-                }
-                break;
-            case 2:
-                switch (to) {
-                    case 3:
-                        break;
-                    default:
-                        return null;
-                }
-                break;
-            case 3:
-                switch (to) {
-                    case 4:
-                        break;
-                    case 5:
-                        break;
-                    default:
-                        return null;
-                }
-                break;
-            case 4:
-                switch (to) {
-                    case 2:
-                        break;
-                    default:
-                        return null;
-                }
-                break;
-            case 5:
-                switch (to) {
-                    case 4:
-                        break;
-                    default:
-                        return null;
-                }
-                break;
-        }
-
-        return newState;
-    }
-
 }
