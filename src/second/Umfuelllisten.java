@@ -1,100 +1,68 @@
 package second;
-
-import first.MyMath;
+/**
+ * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
+ * @version 1, 5/05/2023
+ */
 
 import java.util.*;
 
-/**
- * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
- * @version 1, 04/05/2023
- */
 public class Umfuelllisten {
-    private static final int[] capacity = {3, 2, 3, 2, 3};
-    private static final List<Integer>[] containers = new ArrayList[5];
-    private static final Set<String> setToSort = new HashSet<>();
-    private static List<String> listToSort;
-    private static int listLength = 0;
+    static int[] capacities = new int[5];
 
     public static void main(String[] args) {
-        for (int i = 0; i < containers.length; i++) {
-            containers[i] = new ArrayList<>();
+        Scanner scanner = new Scanner(System.in);
+
+        // Einlesen der Kapazitäten
+        for (int i = 0; i < 5; i++) {
+            capacities[i] = scanner.nextInt();
         }
-        setStartingValue();
-        transferWater();
-        translateList();
-        printSortedList();
+        int[] initial = {capacities[0], 0, 0, 0, 0};
+        List<int[]> states = getAllStates(capacities, initial);
+        for (int[] state : states) {
+            System.out.println(Arrays.toString(state));
+        }
+        System.out.println(states.size() + " states");
     }
 
-    private static void translateList() {
-        for (int i = 0; i < listLength; i++) {
-            String intAsString = "";
-            for (List<Integer> l : containers) {
-                intAsString = intAsString.concat(String.valueOf(l.get(i)));
+    public static List<int[]> getAllStates(int[] capacities, int[] initial) {
+        Set<String> visited = new HashSet<>();
+        List<int[]> result = new ArrayList<>();
+        dfs(capacities, initial, visited, result);
+        Collections.sort(result, (a, b) -> {
+            for (int i = 0; i < a.length; i++) {
+                if (a[i] != b[i]) {
+                    return a[i] - b[i];
+                }
             }
-            setToSort.add(intAsString);
-        }
-        listToSort = new ArrayList<>(setToSort);
-        Collections.sort(listToSort);
+            return 0;
+        });
+        return result;
     }
 
-    private static void transferWater() {
-        boolean run = true;
-        int i =0;
-        int current, next;
-        while (run) {
-            run = false;
-            current = 0;
-            next = 1;
-            run = transferIfPossible(run, current, next);
-            next = 3;
-            run = transferIfPossible(run, current, next);
-            current = 1;
-            next = 2;
-            run = transferIfPossible(run, current, next);
-            current = 2;
-            next = 4;
-            run = transferIfPossible(run, current, next);
-            current = 3;
-            next = 1;
-            run = transferIfPossible(run, current, next);
-            if (run) {
-                listLength++;
-            }
-            i++;
+    private static void dfs(int[] capacities, int[] current, Set<String> visited, List<int[]> result) {
+        String state = Arrays.toString(current);
+        if (visited.contains(state)) {
+            return;
         }
-    }
-
-    private static boolean transferIfPossible(boolean run, int current, int next) {
-        if (containers[current].get(listLength - 1) > 0 && containers[next].get(listLength - 1) < capacity[next]) {
-            run = true;
-            containers[next].add(Math.min(containers[current].get(listLength - 1), capacity[next] - containers[next].get(listLength - 1)));
-            containers[current].add(MyMath.clampMin(containers[current].get(listLength - 1) - (capacity[next] - containers[next].get(listLength - 1)), 0));
-            fillNotChanged(current, next);
-        }
-        return run;
-    }
-
-    private static void fillNotChanged(int aChanged, int bChanged) {
-        for (int i = 0; i < containers.length; i++) {
-            if (i != aChanged && i != bChanged) {
-                containers[i].add(containers[i].get(listLength - 1));
+        visited.add(state);
+        result.add(current.clone());
+        for (int i = 0; i < capacities.length; i++) {
+            for (int j = 0; j < capacities.length; j++) {
+                if (i != j) {
+                    // Bedingungen für die Behälterumfüllung
+                    if ((i == 0 && j == 1) || (i == 0 && j == 3) || (i == 1 && j == 2) ||
+                            (i == 2 && j == 4) || (i == 3 && j == 1) || (i == 4 && j == 3)) {
+                        int amount = Math.min(current[i], capacities[j] - current[j]);
+                        if (amount > 0) {
+                            current[i] -= amount;
+                            current[j] += amount;
+                            dfs(capacities, current, visited, result);
+                            current[i] += amount;
+                            current[j] -= amount;
+                        }
+                    }
+                }
             }
         }
-    }
-
-    private static void setStartingValue() {
-        containers[0].add(capacity[0]);
-        for (int i = 1; i < containers.length; i++) {
-            containers[i].add(0);
-        }
-        listLength++;
-    }
-
-    private static void printSortedList() {
-        int i;
-        for (i = 0; i < listToSort.toArray().length; i++) {
-            System.out.println(listToSort.get(i));
-        }
-        System.out.println(i);
     }
 }
