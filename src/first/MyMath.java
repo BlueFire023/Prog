@@ -291,13 +291,13 @@ public class MyMath {
         return clampedTo >= value ? value : clampedTo;
     }
 
-    public static int clampMinMax(int min, int max, int n) {
-        if (n <= min) {
-            return min;
-        } else if (n >= max) {
-            return max;
+    public static int clampMinMax(int lowValue, int highValue, int clampedTo) {
+        if (clampedTo <= lowValue) {
+            return lowValue;
+        } else if (clampedTo >= highValue) {
+            return highValue;
         } else {
-            return n;
+            return clampedTo;
         }
     }
 
