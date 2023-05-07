@@ -275,38 +275,13 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        int PY = players[currentPlayerIndex].getXPosition();
-        int PX = players[currentPlayerIndex].getYPosition();
-        Point mousePosition = getMousePosition((JPanel) e.getSource());
-        int r = 0;
-        for (int i = -1; i <= 1; i++) {
-            for (int j = -1; j <= 1; j++) {
-                if (mousePosition.x + i == PX && mousePosition.y + j == PY) {
-                    switch (r) {
-                        case 0 -> direction = "SO";
-                        case 1 -> direction = "S";
-                        case 2 -> direction = "SW";
-                        case 3 -> direction = "O";
-                        case 5 -> direction = "W";
-                        case 6 -> direction = "NO";
-                        case 7 -> direction = "N";
-                        case 8 -> direction = "NW";
-                    }
-                    break;
-                } else {
-                    direction = null;
-                }
-                r++;
-            }
-            if (direction != null) {
-                break;
-            }
-        }
-        move();
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
+        Point mousePosition = getMousePosition((JPanel) e.getSource());
+        checkMoveSet(mousePosition);
+        move();
     }
 
     @Override
@@ -323,7 +298,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
                 if (!isPlayer) {
-                    if (mousePosition.x + i == PX && mousePosition.y + j == PY) {
+                    if (mousePosition.x + i == PX && mousePosition.y + j == PY && checkMoveSet(mousePosition)) {
                         ((JPanel) e.getSource()).setBackground(Color.GREEN);
                         break;
                     } else {
@@ -391,5 +366,35 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
             }
         }
         return new Point(MX, MY);
+    }
+
+    private boolean checkMoveSet(Point mP){
+        int PY = players[currentPlayerIndex].getXPosition();
+        int PX = players[currentPlayerIndex].getYPosition();
+        int r = 0;
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                if (mP.x + i == PX && mP.y + j == PY) {
+                    switch (r) {
+                        case 0 -> direction = "SO";
+                        case 1 -> direction = "S";
+                        case 2 -> direction = "SW";
+                        case 3 -> direction = "O";
+                        case 5 -> direction = "W";
+                        case 6 -> direction = "NO";
+                        case 7 -> direction = "N";
+                        case 8 -> direction = "NW";
+                    }
+                    break;
+                } else {
+                    direction = null;
+                }
+                r++;
+            }
+            if (direction != null) {
+                break;
+            }
+        }
+        return players[currentPlayerIndex].isInMoveSet(direction);
     }
 }
