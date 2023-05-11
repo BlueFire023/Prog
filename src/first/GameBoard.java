@@ -55,10 +55,10 @@ public class GameBoard implements Serializable {
         System.out.println();
     }
 
-    public Fraction getValue(int x, int y) throws Exception{
+    public Fraction getValue(int x, int y) throws Exception {
         //Abfrage eines bestimmten Wertes im Feld, Rückgabe als Fraction und nicht als String
         String s = board[y][x].trim();
-        if(s.equals("0")){
+        if (s.equals("0")) {
             return Fraction.NaN;
         } else if (s.contains("/")) {
             int slashIndex = s.indexOf("/");
