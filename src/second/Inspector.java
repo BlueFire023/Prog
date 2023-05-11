@@ -52,19 +52,25 @@ public class Inspector {
                 System.out.println("Methoden: ");
                 for (Method meth: methodenObjekte){
 
+                    System.out.println(" ");
                     //Modifier, Return Werte, Name ausgeben
-                    System.out.print("Modifier:" + Modifier.toString(meth.getModifiers()) + " ");
-                    System.out.print("Returnwert:" + meth.getReturnType().getName() + " ");
-                    System.out.print("Methodenname:" + meth.getName() + " Parameter:(");
+                    System.out.println("-Methode:");
+                    System.out.println(" Modifier: " + Modifier.toString(meth.getModifiers()));
+                    System.out.println(" Returnwert: " + meth.getReturnType().getName());
+                    System.out.println(" Methodenname: " + meth.getName());
 
                     //Parameter/Argumente ausgeben
                     Parameter[] parameterObjekte = meth.getParameters();
+                    System.out.println(" Parameter: (");
                     for(int ind = 0; ind < parameterObjekte.length; ind++){
                         Parameter para = parameterObjekte[ind];
                         System.out.print(para.getType().getName());
+                        if (ind < parameterObjekte.length - 1) {
+                            System.out.print(", ");
+                        }
                     }
                     System.out.print(")");
-                    System.out.println("");
+                    System.out.println(" ");
                 }
             }
         }
