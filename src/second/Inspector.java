@@ -12,22 +12,27 @@ import java.util.Scanner;
 
 public class Inspector {
     public static void main(String[] args) {
+
         //Benutzereingabe der gewünschten Klasse
         System.out.println("Geben sie hier den Namen der gewünschten Klasse ein: ");
         Scanner scanLeser = new Scanner(System.in);
         String klassenName = scanLeser.nextLine();
         try {
+
             //Laufzeit über Benutzereingabe beenden
             if (klassenName.toLowerCase().startsWith("end")) {
                 System.exit(1);
             }
+
             //Klassenobjekt anhand des Klassennamens erstellen
             Class<?> klassenObjekt = Class.forName(klassenName);
+
             //Superklasse ausgeben
             Class<?> superklassenObjekt = klassenObjekt.getSuperclass();
             if (superklassenObjekt != null){
                 System.out.println("Superklasse: " + superklassenObjekt.getName());
             }
+
             //Interfaces ausgeben
             Class<?>[] interfaceObjekte = klassenObjekt.getInterfaces();
             if (interfaceObjekte.length > 0){
@@ -36,25 +41,30 @@ public class Inspector {
                     System.out.println(inface.getName());
                 }
             }
+
             //Modifier ausgeben
             int modifierObjekte = klassenObjekt.getModifiers();
             System.out.println("Modifier: "+ Modifier.toString(modifierObjekte));
+
             //Methoden ausgeben
             Method[] methodenObjekte = klassenObjekt.getMethods();
             if (methodenObjekte.length > 0){
                 System.out.println("Methoden: ");
                 for (Method meth: methodenObjekte){
-                    //Modifier, Return Werte, Name ausgeben
-                    System.out.println(Modifier.toString(meth.getModifiers()) + "");
-                    System.out.println(meth.getReturnType().getName() + "");
-                    System.out.println(meth.getName() + "(");
 
-                    //Parameter/Argumente mit ausgeben
+                    //Modifier, Return Werte, Name ausgeben
+                    System.out.print("Modifier:" + Modifier.toString(meth.getModifiers()) + " ");
+                    System.out.print("Returnwert:" + meth.getReturnType().getName() + " ");
+                    System.out.print("Methodenname:" + meth.getName() + " Parameter:(");
+
+                    //Parameter/Argumente ausgeben
                     Parameter[] parameterObjekte = meth.getParameters();
                     for(int ind = 0; ind < parameterObjekte.length; ind++){
-                        System.out.println();
+                        Parameter para = parameterObjekte[ind];
+                        System.out.print(para.getType().getName());
                     }
-                    System.out.println(")");
+                    System.out.print(")");
+                    System.out.println("");
                 }
             }
         }
