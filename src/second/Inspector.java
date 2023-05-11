@@ -61,7 +61,7 @@ public class Inspector {
 
                     //Parameter/Argumente ausgeben
                     Parameter[] parameterObjekte = meth.getParameters();
-                    System.out.println(" Parameter: (");
+                    System.out.print(" Parameter: (");
                     for(int ind = 0; ind < parameterObjekte.length; ind++){
                         Parameter para = parameterObjekte[ind];
                         System.out.print(para.getType().getName());
@@ -69,8 +69,7 @@ public class Inspector {
                             System.out.print(", ");
                         }
                     }
-                    System.out.print(")");
-                    System.out.println(" ");
+                    System.out.print(")\n");
                 }
             }
         }
