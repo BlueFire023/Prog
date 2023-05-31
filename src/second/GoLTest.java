@@ -14,6 +14,13 @@ public class GoLTest extends JPanel {
     BufferedImage test = new BufferedImage(10, 10, 1);
     Color aliveCellColor = Color.BLACK;
     Color deadCellColor = Color.WHITE;
+    JMenuBar menuBar = new JMenuBar();
+    JMenu menu = new JMenu("Menü");
+    JMenu subMenu = new JMenu("SubMenü");
+    JMenuItem item1 = new JMenuItem("Item1");
+    JMenuItem item2 = new JMenuItem("Item2");
+    JMenuItem item3 = new JMenuItem("Item3");
+    JMenuItem item4 = new JMenuItem("Item4");
 
     public GoLTest() {
         JFrame frame = new JFrame();
@@ -22,7 +29,17 @@ public class GoLTest extends JPanel {
                 setCell(i, j, false);
             }
         }
-        setCell(5, 5, true);
+        setCell(0, 0, true);
+        menu.add(item1);
+        menu.add(item2);
+
+        subMenu.add(item3);
+        subMenu.add(item4);
+
+        menu.add(subMenu);
+        menuBar.add(menu);
+        menuBar.setBackground(Color.LIGHT_GRAY);
+        frame.setJMenuBar(menuBar);
         frame.setSize(new Dimension(1000, 1000));
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
         frame.setContentPane(this);
