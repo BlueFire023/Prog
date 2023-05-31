@@ -32,10 +32,11 @@ public class GoLTest extends JPanel implements KeyListener {
         JFrame frame = new JFrame();
         for (int i = 0; i < test.getWidth(); i++) {
             for (int j = 0; j < test.getHeight(); j++) {
-                setCell(new Point(i,j), false);
+                setCell(new Point(i, j), false);
             }
         }
         setCell(new Point(5, 5), true);
+        setCell(new Point(4, 4), true);
         menu.add(item1);
         menu.add(item2);
 
@@ -66,23 +67,38 @@ public class GoLTest extends JPanel implements KeyListener {
     }
 
     public void setCell(Point p, boolean isAlive) {
+        Point nextCellPosition = calculateWrap(p);
         if (isAlive) {
-            test.setRGB(p.x, p.y, aliveCellColor.getRGB());
-            aliveCells.add(p);
-        }else{
-            test.setRGB(p.x, p.y, deadCellColor.getRGB());
-            aliveCells.remove(p);
+            test.setRGB(nextCellPosition.x, nextCellPosition.y, aliveCellColor.getRGB());
+            aliveCells.add(nextCellPosition);
+        } else {
+            test.setRGB(nextCellPosition.x, nextCellPosition.y, deadCellColor.getRGB());
+            aliveCells.remove(nextCellPosition);
         }
     }
-    public boolean isCellAlive(Point p){
+
+    public boolean isCellAlive(Point p) {
         return aliveCells.contains(p);
     }
 
+    public Point calculateWrap(Point p) {
+        int x = Math.floorMod(p.x, test.getWidth());
+        int y = Math.floorMod(p.y, test.getHeight());
+        return new Point(x, y);
+    }
+
     public void calculateNextGeneration() {
-        for(Point p: aliveCells){
-            if(!isCellAlive(new Point(p.x+1,p.y))){
-                setCell(new Point(p.x+1,p.y),true);
+        ArrayList<Point> cellsToAdd = new ArrayList<>();
+
+        for (Point p : aliveCells) {
+            Point rightNeighbor = new Point(p.x + 1, p.y);
+
+            if (!isCellAlive(rightNeighbor)) {
+                cellsToAdd.add(rightNeighbor);
             }
+        }
+        for (Point p : cellsToAdd) {
+            setCell(p, true);
         }
     }
 
