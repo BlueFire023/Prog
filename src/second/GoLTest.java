@@ -168,7 +168,6 @@ public class GoLTest extends JPanel implements KeyListener, MouseListener, Mouse
         drawLineBresenham(prevX, prevY, x, y);
         prevX = x;
         prevY = y;
-        setCell(new Point(e.getPoint().x / (frame.getWidth() / canvas.getWidth()), e.getPoint().y / (frame.getHeight() / canvas.getHeight())), true);
     }
 
     @Override
