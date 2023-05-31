@@ -37,6 +37,7 @@ public class GoLTest extends JPanel implements KeyListener {
         }
         setCell(new Point(5, 5), true);
         setCell(new Point(4, 4), true);
+        setCell(new Point(5,4),true);
         menu.add(item1);
         menu.add(item2);
 
@@ -89,17 +90,32 @@ public class GoLTest extends JPanel implements KeyListener {
 
     public void calculateNextGeneration() {
         ArrayList<Point> cellsToAdd = new ArrayList<>();
-
+        ArrayList<Point> cellsToRemove = new ArrayList<>();
+        int newX, newY, aliveCellsCount;
         for (Point p : aliveCells) {
-            Point rightNeighbor = new Point(p.x + 1, p.y);
-
-            if (!isCellAlive(rightNeighbor)) {
-                cellsToAdd.add(rightNeighbor);
+            aliveCellsCount = 0;
+            for (int i = -1; i <= 1; i++) {
+                for (int j = -1; j <= 1; j++) {
+                    newX = p.x + i;
+                    newY = p.y + j;
+                    if(new Point(newX,newY).equals(p)){
+                        continue;
+                    }
+                    if (isCellAlive(calculateWrap(new Point(newX, newY)))) {
+                        aliveCellsCount++;
+                    }
+                }
+            }
+            if (aliveCellsCount < 2){
+                cellsToRemove.add(p);
             }
         }
-        for (Point p : cellsToAdd) {
-            setCell(p, true);
-        }
+            for(Point p : cellsToRemove){
+                setCell(p,false);
+            }
+            for (Point p : cellsToAdd) {
+                setCell(p, true);
+            }
     }
 
     protected void paintComponent(Graphics g) {
