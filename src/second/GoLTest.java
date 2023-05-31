@@ -2,10 +2,8 @@ package second;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,8 +13,8 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
  * @version 1, 31/05/2023
  */
-public class GoLTest extends JPanel implements KeyListener {
-    BufferedImage test = new BufferedImage(10, 10, 1);
+public class GoLTest extends JPanel implements KeyListener, MouseListener, MouseMotionListener {
+    BufferedImage canvas = new BufferedImage(100, 100, 1);
     Set<Point> aliveCells = new HashSet<>();
     Color aliveCellColor = Color.BLACK;
     Color deadCellColor = Color.WHITE;
@@ -27,19 +25,15 @@ public class GoLTest extends JPanel implements KeyListener {
     JMenuItem item2 = new JMenuItem("Item2");
     JMenuItem item3 = new JMenuItem("Item3");
     JMenuItem item4 = new JMenuItem("Item4");
+    JFrame frame = new JFrame();
+    int prevX, prevY;
 
     public GoLTest() {
-        JFrame frame = new JFrame();
-        for (int i = 0; i < test.getWidth(); i++) {
-            for (int j = 0; j < test.getHeight(); j++) {
+        for (int i = 0; i < canvas.getWidth(); i++) {
+            for (int j = 0; j < canvas.getHeight(); j++) {
                 setCell(new Point(i, j), false);
             }
         }
-        setCell(new Point(5, 5), true);
-        setCell(new Point(4, 4), true);
-        setCell(new Point(4, 5), true);
-        setCell(new Point(5, 4), true);
-        setCell(new Point(6, 4), true);
         menu.add(item1);
         menu.add(item2);
 
@@ -50,6 +44,8 @@ public class GoLTest extends JPanel implements KeyListener {
         menuBar.add(menu);
         menuBar.setBackground(Color.LIGHT_GRAY);
         frame.addKeyListener(this);
+        frame.addMouseMotionListener(this);
+        frame.addMouseListener(this);
         frame.setJMenuBar(menuBar);
         frame.setSize(new Dimension(1000, 1000));
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -72,10 +68,10 @@ public class GoLTest extends JPanel implements KeyListener {
     public void setCell(Point p, boolean isAlive) {
         Point nextCellPosition = calculateWrap(p);
         if (isAlive) {
-            test.setRGB(nextCellPosition.x, nextCellPosition.y, aliveCellColor.getRGB());
+            canvas.setRGB(nextCellPosition.x, nextCellPosition.y, aliveCellColor.getRGB());
             aliveCells.add(nextCellPosition);
         } else {
-            test.setRGB(nextCellPosition.x, nextCellPosition.y, deadCellColor.getRGB());
+            canvas.setRGB(nextCellPosition.x, nextCellPosition.y, deadCellColor.getRGB());
             aliveCells.remove(nextCellPosition);
         }
     }
@@ -85,8 +81,8 @@ public class GoLTest extends JPanel implements KeyListener {
     }
 
     public Point calculateWrap(Point p) {
-        int x = Math.floorMod(p.x, test.getWidth());
-        int y = Math.floorMod(p.y, test.getHeight());
+        int x = Math.floorMod(p.x, canvas.getWidth());
+        int y = Math.floorMod(p.y, canvas.getHeight());
         return new Point(x, y);
     }
 
@@ -106,12 +102,11 @@ public class GoLTest extends JPanel implements KeyListener {
                     }
                     if (isCellAlive(calculateWrap(new Point(newX, newY)))) {
                         aliveCellsCount++;
-                    } else{
-                        deadCellsToCheck.add(new Point(newX,newY));
+                    } else {
+                        deadCellsToCheck.add(new Point(newX, newY));
                     }
                 }
             }
-            System.out.println(aliveCellsCount);
             if (aliveCellsCount < 2) {
                 cellsToRemove.add(p);
             }
@@ -119,7 +114,7 @@ public class GoLTest extends JPanel implements KeyListener {
                 cellsToRemove.add(p);
             }
         }
-        for(Point p: deadCellsToCheck){
+        for (Point p : deadCellsToCheck) {
             aliveCellsCount = 0;
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
@@ -133,7 +128,7 @@ public class GoLTest extends JPanel implements KeyListener {
                     }
                 }
             }
-            if(aliveCellsCount ==3){
+            if (aliveCellsCount == 3) {
                 cellsToAdd.add(p);
             }
         }
@@ -147,7 +142,7 @@ public class GoLTest extends JPanel implements KeyListener {
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(test, 0, 0, getWidth(), getHeight(), null);
+        g.drawImage(canvas, 0, 0, getWidth(), getHeight(), null);
         repaint();
     }
 
@@ -164,5 +159,68 @@ public class GoLTest extends JPanel implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
 
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        int x = e.getX() / (frame.getWidth() / canvas.getWidth());
+        int y = e.getY() / (frame.getWidth() / canvas.getWidth());
+        drawLineBresenham(prevX, prevY, x, y);
+        prevX = x;
+        prevY = y;
+        setCell(new Point(e.getPoint().x / (frame.getWidth() / canvas.getWidth()), e.getPoint().y / (frame.getHeight() / canvas.getHeight())), true);
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        prevX = e.getX() / (frame.getWidth() / canvas.getWidth());
+        prevY = e.getY() / (frame.getWidth() / canvas.getWidth());
+        setCell(new Point(prevX, prevY), true);
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+
+    private void drawLineBresenham(int x0, int y0, int x1, int y1) {
+        int dx = Math.abs(x1 - x0), dy = Math.abs(y1 - y0);
+        int sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1;
+        int err = dx - dy, e2;
+        while (true) {
+            setCell(new Point(x0, y0), true);
+            if (x0 == x1 && y0 == y1) {
+                break;
+            }
+            e2 = err * 2;
+            if (e2 > -dy) {
+                err -= dy;
+                x0 += sx;
+            }
+            if (e2 < dx) {
+                err += dx;
+                y0 += sy;
+            }
+        }
     }
 }
