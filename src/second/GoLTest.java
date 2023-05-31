@@ -2,7 +2,12 @@ package second;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
@@ -10,8 +15,9 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
  * @version 1, 31/05/2023
  */
-public class GoLTest extends JPanel {
+public class GoLTest extends JPanel implements KeyListener {
     BufferedImage test = new BufferedImage(10, 10, 1);
+    Set<Point> aliveCells = new HashSet<>();
     Color aliveCellColor = Color.BLACK;
     Color deadCellColor = Color.WHITE;
     JMenuBar menuBar = new JMenuBar();
@@ -26,10 +32,10 @@ public class GoLTest extends JPanel {
         JFrame frame = new JFrame();
         for (int i = 0; i < test.getWidth(); i++) {
             for (int j = 0; j < test.getHeight(); j++) {
-                setCell(i, j, false);
+                setCell(new Point(i,j), false);
             }
         }
-        setCell(0, 0, true);
+        setCell(new Point(5, 5), true);
         menu.add(item1);
         menu.add(item2);
 
@@ -39,6 +45,7 @@ public class GoLTest extends JPanel {
         menu.add(subMenu);
         menuBar.add(menu);
         menuBar.setBackground(Color.LIGHT_GRAY);
+        frame.addKeyListener(this);
         frame.setJMenuBar(menuBar);
         frame.setSize(new Dimension(1000, 1000));
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -58,13 +65,45 @@ public class GoLTest extends JPanel {
         this.deadCellColor = color;
     }
 
-    public void setCell(int x, int y, boolean isAlive) {
-        test.setRGB(x, y, isAlive ? aliveCellColor.getRGB() : deadCellColor.getRGB());
+    public void setCell(Point p, boolean isAlive) {
+        if (isAlive) {
+            test.setRGB(p.x, p.y, aliveCellColor.getRGB());
+            aliveCells.add(p);
+        }else{
+            test.setRGB(p.x, p.y, deadCellColor.getRGB());
+            aliveCells.remove(p);
+        }
+    }
+    public boolean isCellAlive(Point p){
+        return aliveCells.contains(p);
+    }
+
+    public void calculateNextGeneration() {
+        for(Point p: aliveCells){
+            if(!isCellAlive(new Point(p.x+1,p.y))){
+                setCell(new Point(p.x+1,p.y),true);
+            }
+        }
     }
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(test, 0, 0, getWidth(), getHeight(), null);
         repaint();
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        calculateNextGeneration();
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 }
