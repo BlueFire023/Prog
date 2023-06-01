@@ -55,8 +55,7 @@ public class GoLTest extends JPanel implements KeyListener, MouseListener, Mouse
                 setCell(new Point(i, j), false);
             }
         }
-        for (Point p: aliveCells
-             ) {
+        for (Point p : aliveCells) {
             setCell(p, true);
         }
     }
@@ -171,8 +170,8 @@ public class GoLTest extends JPanel implements KeyListener, MouseListener, Mouse
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        int x = e.getX() / (frame.getWidth() / canvas.getWidth());
-        int y = e.getY() / (frame.getWidth() / canvas.getWidth());
+        int x = (e.getX() - (frame.getWidth() - getWidth())) * canvas.getWidth() / getWidth() + 1;
+        int y = (e.getY() - (frame.getHeight() - getHeight())) * canvas.getHeight() / getHeight() + 1;
         drawLineBresenham(prevX, prevY, x, y);
         prevX = x;
         prevY = y;
@@ -190,8 +189,8 @@ public class GoLTest extends JPanel implements KeyListener, MouseListener, Mouse
 
     @Override
     public void mousePressed(MouseEvent e) {
-        prevX = e.getX() / (frame.getWidth() / canvas.getWidth());
-        prevY = e.getY() / (frame.getWidth() / canvas.getWidth());
+        prevX = (e.getX() - (frame.getWidth() - getWidth())) * canvas.getWidth() / getWidth() + 1;
+        prevY = (e.getY() - (frame.getHeight() - getHeight())) * canvas.getHeight() / getHeight() + 1;
         setCell(new Point(prevX, prevY), true);
     }
 
