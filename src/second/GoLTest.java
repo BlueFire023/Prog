@@ -29,11 +29,7 @@ public class GoLTest extends JPanel implements KeyListener, MouseListener, Mouse
     int prevX, prevY;
 
     public GoLTest() {
-        for (int i = 0; i < canvas.getWidth(); i++) {
-            for (int j = 0; j < canvas.getHeight(); j++) {
-                setCell(new Point(i, j), false);
-            }
-        }
+        updateCanvasColors();
         menu.add(item1);
         menu.add(item2);
 
@@ -51,6 +47,18 @@ public class GoLTest extends JPanel implements KeyListener, MouseListener, Mouse
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
         frame.setContentPane(this);
         frame.setVisible(true);
+    }
+
+    private void updateCanvasColors() {
+        for (int i = 0; i < canvas.getWidth(); i++) {
+            for (int j = 0; j < canvas.getHeight(); j++) {
+                setCell(new Point(i, j), false);
+            }
+        }
+        for (Point p: aliveCells
+             ) {
+            setCell(p, true);
+        }
     }
 
     public static void main(String[] args) {
