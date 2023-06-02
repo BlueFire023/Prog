@@ -97,56 +97,42 @@ public class GoLTest extends JPanel implements KeyListener, MouseListener, Mouse
     public void calculateNextGeneration() {
         Set<Point> cellsToAdd = new HashSet<>();
         Set<Point> cellsToRemove = new HashSet<>();
-        Set<Point> deadCellsToCheck = new HashSet<>();
-        int newX, newY, aliveCellsCount;
+        Set<Point> cellsToCheck = new HashSet<>(aliveCells);
+        int aliveCellsCount;
+
         for (Point p : aliveCells) {
-            aliveCellsCount = 0;
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
-                    newX = p.x + i;
-                    newY = p.y + j;
-                    if (new Point(newX, newY).equals(p)) {
-                        continue;
-                    }
-                    if (isCellAlive(calculateWrap(new Point(newX, newY)))) {
-                        aliveCellsCount++;
-                    } else {
-                        deadCellsToCheck.add(new Point(newX, newY));
+                    Point neighbour = calculateWrap(new Point(p.x + i, p.y + j));
+                    if (!neighbour.equals(p)) {
+                        cellsToCheck.add(neighbour);
                     }
                 }
-            }
-            if (aliveCellsCount < 2) {
-                cellsToRemove.add(p);
-            }
-            if (aliveCellsCount > 3) {
-                cellsToRemove.add(p);
             }
         }
-        for (Point p : deadCellsToCheck) {
+
+        for (Point p : cellsToCheck) {
             aliveCellsCount = 0;
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
-                    newX = p.x + i;
-                    newY = p.y + j;
-                    if (new Point(newX, newY).equals(p)) {
-                        continue;
-                    }
-                    if (isCellAlive(calculateWrap(new Point(newX, newY)))) {
+                    Point neighbor = calculateWrap(new Point(p.x + i, p.y + j));
+                    if (!neighbor.equals(p) && isCellAlive(neighbor)) {
                         aliveCellsCount++;
                     }
                 }
             }
-            if (aliveCellsCount == 3) {
+
+            if (isCellAlive(p) && (aliveCellsCount < 2 || aliveCellsCount > 3)) {
+                cellsToRemove.add(p);
+            } else if (!isCellAlive(p) && aliveCellsCount == 3) {
                 cellsToAdd.add(p);
             }
         }
-        for (Point p : cellsToRemove) {
-            setCell(p, false);
-        }
-        for (Point p : cellsToAdd) {
-            setCell(p, true);
-        }
+
+        cellsToRemove.forEach(p -> setCell(p, false));
+        cellsToAdd.forEach(p -> setCell(p, true));
     }
+
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
