@@ -7,20 +7,20 @@ import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.Set;
 
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
-
 /**
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
  * @version 1, 31/05/2023
  */
-public class GoLTest extends JPanel implements KeyListener, MouseListener, MouseMotionListener, ActionListener {
-    BufferedImage canvas = new BufferedImage(200, 200, 1);
+public class GoLTest extends JPanel implements KeyListener, MouseListener, MouseMotionListener, ActionListener, Runnable {
+    BufferedImage canvas = new BufferedImage(1000
+            , 1000, 1);
     Set<Point> aliveCells = new HashSet<>();
     Color aliveCellColor = Color.BLACK;
     Color deadCellColor = Color.WHITE;
     JMenuBar menuBar = new JMenuBar();
     JMenu menu = new JMenu("Menü");
     JMenuItem clearButton = new JMenuItem("Clear");
+    JMenuItem setSizeButton = new JMenuItem("Set Size");
     JFrame frame = new JFrame();
     Point lastCell = new Point(0, 0);
     int prevX, prevY;
@@ -28,7 +28,9 @@ public class GoLTest extends JPanel implements KeyListener, MouseListener, Mouse
     public GoLTest() {
         updateCanvasColors();
         clearButton.addActionListener(this);
+        setSizeButton.addActionListener(this);
         menu.add(clearButton);
+        menu.add(setSizeButton);
         menuBar.add(menu);
         menuBar.setBackground(Color.LIGHT_GRAY);
         frame.setTitle("Game of Life");
@@ -36,10 +38,11 @@ public class GoLTest extends JPanel implements KeyListener, MouseListener, Mouse
         frame.addMouseMotionListener(this);
         frame.addMouseListener(this);
         frame.setJMenuBar(menuBar);
-        frame.setSize(new Dimension(1000, 1000));
-        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        frame.setSize(new Dimension(1014, 1060));
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setContentPane(this);
         frame.setVisible(true);
+        new Thread(this).start();
     }
 
     private void updateCanvasColors() {
@@ -76,7 +79,7 @@ public class GoLTest extends JPanel implements KeyListener, MouseListener, Mouse
         }
     }
 
-    public void clearCanvas(){
+    public void clearCanvas() {
         aliveCells.clear();
         updateCanvasColors();
     }
@@ -147,7 +150,7 @@ public class GoLTest extends JPanel implements KeyListener, MouseListener, Mouse
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(canvas, 0, 0, getWidth(), getHeight(), null);
+        g.drawImage(canvas, 0, 0, frame.getWidth(), frame.getHeight(), null);
         repaint();
     }
 
@@ -169,7 +172,7 @@ public class GoLTest extends JPanel implements KeyListener, MouseListener, Mouse
     @Override
     public void mouseDragged(MouseEvent e) {
         int x = (e.getX() - (frame.getWidth() - getWidth())) * canvas.getWidth() / getWidth();
-        int y = (e.getY() - (frame.getHeight() - getHeight())) * canvas.getHeight() / getHeight() + 1;
+        int y = (e.getY() - (frame.getHeight() - getHeight())) * canvas.getHeight() / getHeight();
         drawLineBresenham(prevX, prevY, x, y);
         prevX = x;
         prevY = y;
@@ -178,7 +181,7 @@ public class GoLTest extends JPanel implements KeyListener, MouseListener, Mouse
     @Override
     public void mouseMoved(MouseEvent e) {
         int x = (e.getX() - (frame.getWidth() - getWidth())) * canvas.getWidth() / getWidth();
-        int y = (e.getY() - (frame.getHeight() - getHeight())) * canvas.getHeight() / getHeight() + 1;
+        int y = (e.getY() - (frame.getHeight() - getHeight())) * canvas.getHeight() / getHeight();
         try {
             if (!isCellAlive(new Point(x, y))) {
                 canvas.setRGB(lastCell.x, lastCell.y, isCellAlive(lastCell) ? aliveCellColor.getRGB() : deadCellColor.getRGB());
@@ -199,7 +202,7 @@ public class GoLTest extends JPanel implements KeyListener, MouseListener, Mouse
     @Override
     public void mousePressed(MouseEvent e) {
         prevX = (e.getX() - (frame.getWidth() - getWidth())) * canvas.getWidth() / getWidth();
-        prevY = (e.getY() - (frame.getHeight() - getHeight())) * canvas.getHeight() / getHeight() + 1;
+        prevY = (e.getY() - (frame.getHeight() - getHeight())) * canvas.getHeight() / getHeight();
         setCell(new Point(prevX, prevY), true);
     }
 
@@ -239,10 +242,36 @@ public class GoLTest extends JPanel implements KeyListener, MouseListener, Mouse
         }
     }
 
+    public void updateCanvasSize() {
+        JFrame setSizeFrame = new JFrame();
+        setSizeFrame.setLayout(new FlowLayout());
+        JTextField widthTextArea = new JTextField(String.valueOf(canvas.getTileWidth()));
+        JTextField heightTextArea = new JTextField(String.valueOf(canvas.getTileHeight()));
+        setSizeFrame.add(widthTextArea);
+        setSizeFrame.add(heightTextArea);
+        setSizeFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setSizeFrame.setSize(100, 200);
+        setSizeFrame.setVisible(true);
+        JButton applyButton = new JButton("Apply");
+        setSizeFrame.add(applyButton);
+        applyButton.addActionListener(e -> {
+            clearCanvas();
+            canvas = new BufferedImage(Integer.parseInt(widthTextArea.getText()), Integer.parseInt(heightTextArea.getText()), 1);
+            setSizeFrame.dispose();
+            updateCanvasColors();
+        });
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        switch (e.getActionCommand()){
+        switch (e.getActionCommand()) {
             case "Clear" -> clearCanvas();
+            case "Set Size" -> updateCanvasSize();
         }
+    }
+
+    @Override
+    public void run() {
+
     }
 }
