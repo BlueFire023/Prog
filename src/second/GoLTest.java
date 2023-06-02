@@ -13,32 +13,25 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
  * @version 1, 31/05/2023
  */
-public class GoLTest extends JPanel implements KeyListener, MouseListener, MouseMotionListener {
-    BufferedImage canvas = new BufferedImage(100, 100, 1);
+public class GoLTest extends JPanel implements KeyListener, MouseListener, MouseMotionListener, ActionListener {
+    BufferedImage canvas = new BufferedImage(200, 200, 1);
     Set<Point> aliveCells = new HashSet<>();
     Color aliveCellColor = Color.BLACK;
     Color deadCellColor = Color.WHITE;
     JMenuBar menuBar = new JMenuBar();
     JMenu menu = new JMenu("Menü");
-    JMenu subMenu = new JMenu("SubMenü");
-    JMenuItem item1 = new JMenuItem("Item1");
-    JMenuItem item2 = new JMenuItem("Item2");
-    JMenuItem item3 = new JMenuItem("Item3");
-    JMenuItem item4 = new JMenuItem("Item4");
+    JMenuItem clearButton = new JMenuItem("Clear");
     JFrame frame = new JFrame();
+    Point lastCell = new Point(0, 0);
     int prevX, prevY;
 
     public GoLTest() {
         updateCanvasColors();
-        menu.add(item1);
-        menu.add(item2);
-
-        subMenu.add(item3);
-        subMenu.add(item4);
-
-        menu.add(subMenu);
+        clearButton.addActionListener(this);
+        menu.add(clearButton);
         menuBar.add(menu);
         menuBar.setBackground(Color.LIGHT_GRAY);
+        frame.setTitle("Game of Life");
         frame.addKeyListener(this);
         frame.addMouseMotionListener(this);
         frame.addMouseListener(this);
@@ -81,6 +74,11 @@ public class GoLTest extends JPanel implements KeyListener, MouseListener, Mouse
             canvas.setRGB(nextCellPosition.x, nextCellPosition.y, deadCellColor.getRGB());
             aliveCells.remove(nextCellPosition);
         }
+    }
+
+    public void clearCanvas(){
+        aliveCells.clear();
+        updateCanvasColors();
     }
 
     public boolean isCellAlive(Point p) {
@@ -170,7 +168,7 @@ public class GoLTest extends JPanel implements KeyListener, MouseListener, Mouse
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        int x = (e.getX() - (frame.getWidth() - getWidth())) * canvas.getWidth() / getWidth() + 1;
+        int x = (e.getX() - (frame.getWidth() - getWidth())) * canvas.getWidth() / getWidth();
         int y = (e.getY() - (frame.getHeight() - getHeight())) * canvas.getHeight() / getHeight() + 1;
         drawLineBresenham(prevX, prevY, x, y);
         prevX = x;
@@ -179,7 +177,18 @@ public class GoLTest extends JPanel implements KeyListener, MouseListener, Mouse
 
     @Override
     public void mouseMoved(MouseEvent e) {
-
+        int x = (e.getX() - (frame.getWidth() - getWidth())) * canvas.getWidth() / getWidth();
+        int y = (e.getY() - (frame.getHeight() - getHeight())) * canvas.getHeight() / getHeight() + 1;
+        try {
+            if (!isCellAlive(new Point(x, y))) {
+                canvas.setRGB(lastCell.x, lastCell.y, isCellAlive(lastCell) ? aliveCellColor.getRGB() : deadCellColor.getRGB());
+                canvas.setRGB(x, y, Color.GRAY.getRGB());
+                lastCell = new Point(x, y);
+            } else {
+                canvas.setRGB(x, y, isCellAlive(new Point(x, y)) ? aliveCellColor.getRGB() : deadCellColor.getRGB());
+            }
+        } catch (Exception ignored) {
+        }
     }
 
     @Override
@@ -189,7 +198,7 @@ public class GoLTest extends JPanel implements KeyListener, MouseListener, Mouse
 
     @Override
     public void mousePressed(MouseEvent e) {
-        prevX = (e.getX() - (frame.getWidth() - getWidth())) * canvas.getWidth() / getWidth() + 1;
+        prevX = (e.getX() - (frame.getWidth() - getWidth())) * canvas.getWidth() / getWidth();
         prevY = (e.getY() - (frame.getHeight() - getHeight())) * canvas.getHeight() / getHeight() + 1;
         setCell(new Point(prevX, prevY), true);
     }
@@ -227,6 +236,13 @@ public class GoLTest extends JPanel implements KeyListener, MouseListener, Mouse
                 err += dx;
                 y0 += sy;
             }
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        switch (e.getActionCommand()){
+            case "Clear" -> clearCanvas();
         }
     }
 }
