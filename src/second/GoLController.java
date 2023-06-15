@@ -128,7 +128,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             case "Set Color" -> view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
             case "size" -> {
                 clearCanvas();
-                model.setCanvas(new BufferedImage(view.getNewWidth(), view.getNewHeight(), 1));
+                model.setCanvas(new BufferedImage(view.getNewWidth(), view.getNewHeight(), BufferedImage.TYPE_INT_RGB));
                 view.disposeSetSizeFrame();
                 view.updateCanvasObject(model.getCanvas());
                 updateCanvasColors();
