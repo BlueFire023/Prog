@@ -12,8 +12,7 @@ import java.util.Set;
  * @version 1, 31/05/2023
  */
 public class GoLTest extends JPanel implements KeyListener, MouseListener, MouseMotionListener, ActionListener, Runnable {
-    BufferedImage canvas = new BufferedImage(1000
-            , 1000, 1);
+    BufferedImage canvas = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
     Set<Point> aliveCells = new HashSet<>();
     Color aliveCellColor = Color.BLACK;
     Color deadCellColor = Color.WHITE;
