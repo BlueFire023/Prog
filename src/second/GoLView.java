@@ -75,7 +75,8 @@ public class GoLView extends JPanel {
         setSizeFrame.dispose();
     }
 
-    public Color[] updateCellColor(Color aColor, Color dColor) {
+    public void updateCellColor(Color aColor, Color dColor) {
+        Color colors[] = new Color[2];
         JFrame setColorFrame = new JFrame();
         setColorFrame.setLayout(new FlowLayout());
         JLabel activeColorTag = new JLabel("Active Cell color:");
@@ -95,6 +96,7 @@ public class GoLView extends JPanel {
             if (newColor == null) {
                 newColor = aColor;
             }
+            colors[0] = newColor;
             ((JButton) e.getSource()).setBackground(newColor);
         });
         deadColorDisplay.addActionListener(e -> {
@@ -102,14 +104,9 @@ public class GoLView extends JPanel {
             if (newColor == null) {
                 newColor = dColor;
             }
+            colors[1] = newColor;
             ((JButton) e.getSource()).setBackground(newColor);
         });
-
-        Color colors[] = new Color[2];
-        colors[0] = aColor;
-        colors[1] = dColor;
-
-        return colors;
     }
     public Color[] getNewCellColors(){
         Color[] c = new Color[2];
