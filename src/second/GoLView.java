@@ -22,7 +22,10 @@ public class GoLView extends JPanel {
     JFrame setSizeFrame = new JFrame();
     JTextField widthTextArea;
     JTextField heightTextArea;
-    JButton applyButton = new JButton("Apply");
+    JButton applySizeButton = new JButton("Apply");
+    JButton applyColorButton = new JButton("Apply");
+    JButton activeColorDisplay = new JButton();
+    JButton deadColorDisplay = new JButton();
     JFrame frame = new JFrame();
 
     public GoLView(BufferedImage canvas) {
@@ -34,6 +37,10 @@ public class GoLView extends JPanel {
         menu.add(setColorButton);
         menuBar.add(menu);
         menuBar.setBackground(Color.LIGHT_GRAY);
+
+        applyColorButton.setActionCommand("color");
+        applySizeButton.setActionCommand("size");
+
         frame.setTitle("Game of Life");
         frame.setJMenuBar(menuBar);
         frame.setSize(new Dimension(1014, 1060));
@@ -49,8 +56,9 @@ public class GoLView extends JPanel {
         frame.addMouseListener(ml);
         clearButton.addActionListener(al);
         setSizeButton.addActionListener(al);
-        applyButton.addActionListener(al);
+        applySizeButton.addActionListener(al);
         setColorButton.addActionListener(al);
+        applyColorButton.addActionListener(al);
     }
 
     public void updateCanvasSize() {
@@ -60,7 +68,7 @@ public class GoLView extends JPanel {
         setSizeFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setSizeFrame.setSize(100, 200);
         setSizeFrame.setVisible(true);
-        setSizeFrame.add(applyButton);
+        setSizeFrame.add(applySizeButton);
     }
 
     public void disposeSetSizeFrame() {
@@ -72,14 +80,14 @@ public class GoLView extends JPanel {
         setColorFrame.setLayout(new FlowLayout());
         JLabel activeColorTag = new JLabel("Active Cell color:");
         JLabel deadColorTag = new JLabel("Dead Cell color:");
-        JButton activeColorDisplay = new JButton();
-        JButton deadColorDisplay = new JButton();
+
         activeColorDisplay.setBackground(aColor);
         deadColorDisplay.setBackground(dColor);
         setColorFrame.add(activeColorTag);
         setColorFrame.add(activeColorDisplay);
         setColorFrame.add(deadColorTag);
         setColorFrame.add(deadColorDisplay);
+        setColorFrame.add(applyColorButton);
         setColorFrame.setSize(100, 200);
         setColorFrame.setVisible(true);
         activeColorDisplay.addActionListener(e -> {
@@ -102,6 +110,13 @@ public class GoLView extends JPanel {
         colors[1] = dColor;
 
         return colors;
+    }
+    public Color[] getNewCellColors(){
+        Color[] c = new Color[2];
+        c[0] = activeColorDisplay.getBackground();
+        c[1] = deadColorDisplay.getBackground();
+        return c;
+
     }
     public void updateCanvasObject(BufferedImage canvas){
         this.canvas = canvas;

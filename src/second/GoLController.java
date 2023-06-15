@@ -115,11 +115,8 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     private void updateCanvasColors() {
         for (int i = 0; i < model.getCanvasWidth(); i++) {
             for (int j = 0; j < model.getCanvasHeight(); j++) {
-                model.setCell(calculateWrap(i, j), false);
+                model.setCell(calculateWrap(i, j), model.isCellAlive(new Point(i, j)));
             }
-        }
-        for (Point p : model.getAliveCells()) {
-            model.setCell(calculateWrap(p.x, p.y), true);
         }
     }
 
@@ -128,16 +125,18 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         switch (e.getActionCommand()) {
             case "Clear" -> clearCanvas();
             case "Set Size" -> view.updateCanvasSize();
-            case "Set Color" -> {
-                Color updatedColors[] = view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
-                model.setAliveCellColor(updatedColors[0]);
-                model.setDeadCellColor(updatedColors[1]);
-            }
-            case "Apply" -> {
+            case "Set Color" -> view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
+            case "size" -> {
                 clearCanvas();
                 model.setCanvas(new BufferedImage(view.getNewWidth(), view.getNewHeight(), 1));
                 view.disposeSetSizeFrame();
                 view.updateCanvasObject(model.getCanvas());
+                updateCanvasColors();
+            }
+            case "color" -> {
+                Color[] newColors = view.getNewCellColors();
+                model.setAliveCellColor(newColors[0]);
+                model.setDeadCellColor(newColors[1]);
                 updateCanvasColors();
             }
         }
