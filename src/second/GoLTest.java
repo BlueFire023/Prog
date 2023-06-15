@@ -188,7 +188,7 @@ public class GoLTest extends JPanel implements KeyListener, MouseListener, Mouse
                 canvas.setRGB(x, y, Color.GRAY.getRGB());
                 lastCell = new Point(x, y);
             } else {
-                canvas.setRGB(x, y, isCellAlive(new Point(x, y)) ? aliveCellColor.getRGB() : deadCellColor.getRGB());
+                canvas.setRGB(x, y, isCellAlive(lastCell) ? aliveCellColor.getRGB() : deadCellColor.getRGB());
             }
         } catch (Exception ignored) {
         }
