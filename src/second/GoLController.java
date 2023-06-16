@@ -204,7 +204,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     public void mouseMoved(MouseEvent e) {
         Point pos = calculateMousePosition(e.getX(), e.getY());
         try {
-            if (!model.isCellAlive(new Point(pos.x, pos.y))) {
+            if (!model.isCellAlive(pos)) {
                 model.setCanvasRGB(lastCell.x, lastCell.y, model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
                 model.setCanvasRGB(pos.x, pos.y, invertColor(model.getDeadCellColor()));
                 lastCell = pos;
@@ -225,6 +225,10 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     private Point calculateMousePosition(int x, int y) {
-        return new Point(x / (view.getWidth() / model.getCanvasWidth()), y / (view.getHeight() / model.getCanvasHeight()));
+        double scaleX = (double) model.getCanvasWidth() / view.getWidth();
+        double scaleY = (double) model.getCanvasHeight() / view.getHeight();
+        int posOnCanvasX = (int) (x * scaleX);
+        int posOnCanvasY = (int) (y * scaleY);
+        return new Point(posOnCanvasX, posOnCanvasY);
     }
 }

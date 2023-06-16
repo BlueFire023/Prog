@@ -14,8 +14,6 @@ public class GoLModel {
     private Set<Point> aliveCells = new HashSet<>();
     private Color aliveCellColor = Color.BLACK;
     private Color deadCellColor = Color.WHITE;
-    private int frameWidth = 1014;
-    private int frameHeight = 1060;
 
     public void setCell(Point nextCellPosition, boolean isAlive) {
         if (isAlive) {
@@ -74,22 +72,6 @@ public class GoLModel {
 
     public int getCanvasHeight() {
         return canvas.getHeight();
-    }
-
-    public int getFrameWidth() {
-        return frameWidth;
-    }
-
-    public void setFrameWidth(int frameWidth) {
-        this.frameWidth = frameWidth;
-    }
-
-    public int getFrameHeight() {
-        return frameHeight;
-    }
-
-    public void setFrameHeight(int frameHeight) {
-        this.frameHeight = frameHeight;
     }
 
     public boolean isCellAlive(Point p) {

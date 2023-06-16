@@ -108,4 +108,7 @@ public class GoLView extends JPanel {
     public int getNewHeight() {
         return Integer.parseInt(heightTextArea.getText());
     }
+    public int getFrameWidth(){
+        return frame.getWidth();
+    }
 }
