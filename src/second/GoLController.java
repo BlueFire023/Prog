@@ -14,8 +14,12 @@ import java.util.Set;
 public class GoLController implements ActionListener, KeyListener, MouseMotionListener, MouseListener, Runnable {
     private GoLModel model = new GoLModel();
     private GoLView view;
-    Point prevPos = new Point();
+    private Point prevPos = new Point();
     private Point lastCell = new Point(0, 0);
+    private Set<Point> savedFigure = new HashSet<Point>();
+    private boolean placingFigure = false;
+    private int highestX, highestY;
+    Set<Point> lastCells = new HashSet<>();
 
     public GoLController() {
         view = new GoLView(model.getCanvas());
@@ -149,6 +153,34 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 ((JButton) e.getSource()).setBackground(newColor);
                 updateCanvasColors();
             }
+            case "Save" -> {
+                savedFigure.clear();
+                highestX = 0;
+                highestY = 0;
+                int lowestX = model.getCanvasWidth(), lowestY = model.getCanvasHeight();
+                for (Point p : model.getAliveCells()) {
+                    if (lowestX > p.x) {
+                        lowestX = p.x;
+                    }
+                    if (highestX < p.x) {
+                        highestX = p.x;
+                    }
+                    if (lowestY > p.y) {
+                        lowestY = p.y;
+                    }
+                    if (highestY < p.y) {
+                        highestY = p.y;
+                    }
+                }
+                highestX -= lowestX;
+                highestY -= lowestY;
+                for (Point p : model.getAliveCells()) {
+                    savedFigure.add(new Point(p.x - lowestX, p.y - lowestY));
+                }
+            }
+            case "Load" -> {
+                placingFigure = true;
+            }
         }
     }
 
@@ -175,7 +207,13 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     @Override
     public void mousePressed(MouseEvent e) {
         prevPos = calculateMousePosition(e.getX(), e.getY());
-        model.setCell(calculateWrap(prevPos), true);
+        if (!placingFigure) {
+            model.setCell(calculateWrap(prevPos), true);
+        } else {
+            for (Point p : savedFigure) {
+                model.setCell(calculateWrap(new Point(p.x + prevPos.x - (highestX / 2), p.y + prevPos.y - (highestY / 2))), true);
+            }
+        }
     }
 
     @Override
@@ -205,11 +243,23 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         Point pos = calculateMousePosition(e.getX(), e.getY());
         try {
             if (!model.isCellAlive(pos)) {
-                model.setCanvasRGB(lastCell.x, lastCell.y, model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
-                model.setCanvasRGB(pos.x, pos.y, invertColor(model.getDeadCellColor()));
-                lastCell = pos;
+                if (!placingFigure) {
+                    model.setCanvasRGB(lastCell, model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
+                    model.setCanvasRGB(pos, invertColor(model.getDeadCellColor()));
+                    lastCell = pos;
+                } else {
+                    for(Point p : lastCells){
+                        model.setCanvasRGB(p,model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
+                    }
+                    lastCells.clear();
+                    for (Point p : savedFigure) {
+                        Point calculatedPoint = new Point(p.x + pos.x - (highestX / 2), p.y + pos.y - (highestY / 2));
+                        model.setCanvasRGB(calculateWrap(calculatedPoint), model.isCellAlive(calculatedPoint) ? model.getAliveCellColor() : invertColor(model.getDeadCellColor()));
+                        lastCells.add(calculateWrap(calculatedPoint));
+                    }
+                }
             } else {
-                model.setCanvasRGB(lastCell.x, lastCell.y, model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
+                model.setCanvasRGB(lastCell, model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
             }
         } catch (Exception ignored) {
         }

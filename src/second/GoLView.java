@@ -13,19 +13,21 @@ import java.awt.image.BufferedImage;
  * @version 1, 15/06/2023
  */
 public class GoLView extends JPanel {
-    BufferedImage canvas;
-    JMenuBar menuBar = new JMenuBar();
-    JMenu menu = new JMenu("Menü");
-    JMenuItem clearButton = new JMenuItem("Clear");
-    JMenuItem setSizeButton = new JMenuItem("Set Size");
-    JMenuItem setColorButton = new JMenuItem("Set Color");
-    JFrame setSizeFrame = new JFrame();
-    JTextField widthTextArea;
-    JTextField heightTextArea;
-    JButton applySizeButton = new JButton("Apply");
-    JButton activeColorDisplay = new JButton();
-    JButton deadColorDisplay = new JButton();
-    JFrame frame = new JFrame();
+    private BufferedImage canvas;
+    private JMenuBar menuBar = new JMenuBar();
+    private JMenu menu = new JMenu("Menü");
+    private JMenuItem save = new JMenuItem("Save");
+    private JMenuItem load = new JMenuItem("Load");
+    private JMenuItem clearButton = new JMenuItem("Clear");
+    private JMenuItem setSizeButton = new JMenuItem("Set Size");
+    private JMenuItem setColorButton = new JMenuItem("Set Color");
+    private JFrame setSizeFrame = new JFrame();
+    private JTextField widthTextArea;
+    private JTextField heightTextArea;
+    private JButton applySizeButton = new JButton("Apply");
+    private JButton activeColorDisplay = new JButton();
+    private JButton deadColorDisplay = new JButton();
+    private JFrame frame = new JFrame();
 
     public GoLView(BufferedImage canvas) {
         this.canvas = canvas;
@@ -35,6 +37,8 @@ public class GoLView extends JPanel {
         menu.add(setSizeButton);
         menu.add(setColorButton);
         menuBar.add(menu);
+        menu.add(save);
+        menu.add(load);
         menuBar.setBackground(Color.LIGHT_GRAY);
 
         applySizeButton.setActionCommand("size");
@@ -60,6 +64,8 @@ public class GoLView extends JPanel {
         setColorButton.addActionListener(al);
         activeColorDisplay.addActionListener(al);
         deadColorDisplay.addActionListener(al);
+        save.addActionListener(al);
+        load.addActionListener(al);
     }
 
     public void updateCanvasSize() {

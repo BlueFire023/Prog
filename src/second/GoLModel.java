@@ -25,8 +25,8 @@ public class GoLModel {
         }
     }
 
-    public void setCanvasRGB(int x, int y, Color c) {
-        canvas.setRGB(x, y, c.getRGB());
+    public void setCanvasRGB(Point pos, Color c) {
+        canvas.setRGB(pos.x, pos.y, c.getRGB());
     }
 
 
