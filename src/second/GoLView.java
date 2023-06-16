@@ -23,7 +23,6 @@ public class GoLView extends JPanel {
     JTextField widthTextArea;
     JTextField heightTextArea;
     JButton applySizeButton = new JButton("Apply");
-    JButton applyColorButton = new JButton("Apply");
     JButton activeColorDisplay = new JButton();
     JButton deadColorDisplay = new JButton();
     JFrame frame = new JFrame();
@@ -38,8 +37,9 @@ public class GoLView extends JPanel {
         menuBar.add(menu);
         menuBar.setBackground(Color.LIGHT_GRAY);
 
-        applyColorButton.setActionCommand("color");
         applySizeButton.setActionCommand("size");
+        activeColorDisplay.setActionCommand("acc");
+        deadColorDisplay.setActionCommand("dcc");
 
         frame.setTitle("Game of Life");
         frame.setJMenuBar(menuBar);
@@ -58,7 +58,8 @@ public class GoLView extends JPanel {
         setSizeButton.addActionListener(al);
         applySizeButton.addActionListener(al);
         setColorButton.addActionListener(al);
-        applyColorButton.addActionListener(al);
+        activeColorDisplay.addActionListener(al);
+        deadColorDisplay.addActionListener(al);
     }
 
     public void updateCanvasSize() {
@@ -76,7 +77,6 @@ public class GoLView extends JPanel {
     }
 
     public void updateCellColor(Color aColor, Color dColor) {
-        Color colors[] = new Color[2];
         JFrame setColorFrame = new JFrame();
         setColorFrame.setLayout(new FlowLayout());
         JLabel activeColorTag = new JLabel("Active Cell color:");
@@ -88,32 +88,8 @@ public class GoLView extends JPanel {
         setColorFrame.add(activeColorDisplay);
         setColorFrame.add(deadColorTag);
         setColorFrame.add(deadColorDisplay);
-        setColorFrame.add(applyColorButton);
         setColorFrame.setSize(100, 200);
         setColorFrame.setVisible(true);
-        activeColorDisplay.addActionListener(e -> {
-            Color newColor = JColorChooser.showDialog(this, "Wähle eine Farbe", aColor);
-            if (newColor == null) {
-                newColor = aColor;
-            }
-            colors[0] = newColor;
-            ((JButton) e.getSource()).setBackground(newColor);
-        });
-        deadColorDisplay.addActionListener(e -> {
-            Color newColor = JColorChooser.showDialog(this, "Wähle eine Farbe", dColor);
-            if (newColor == null) {
-                newColor = dColor;
-            }
-            colors[1] = newColor;
-            ((JButton) e.getSource()).setBackground(newColor);
-        });
-    }
-    public Color[] getNewCellColors(){
-        Color[] c = new Color[2];
-        c[0] = activeColorDisplay.getBackground();
-        c[1] = deadColorDisplay.getBackground();
-        return c;
-
     }
     public void updateCanvasObject(BufferedImage canvas){
         this.canvas = canvas;

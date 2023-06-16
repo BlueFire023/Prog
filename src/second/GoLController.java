@@ -1,5 +1,6 @@
 package second;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -133,10 +134,22 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 view.updateCanvasObject(model.getCanvas());
                 updateCanvasColors();
             }
-            case "color" -> {
-                Color[] newColors = view.getNewCellColors();
-                model.setAliveCellColor(newColors[0]);
-                model.setDeadCellColor(newColors[1]);
+            case "acc" -> {
+                Color newColor = JColorChooser.showDialog(view, "Wähle eine Farbe", model.getAliveCellColor());
+                if (newColor == null) {
+                    newColor = model.getAliveCellColor();
+                }
+                model.setAliveCellColor(newColor);
+                ((JButton) e.getSource()).setBackground(newColor);
+                updateCanvasColors();
+            }
+            case "dcc" -> {
+                Color newColor = JColorChooser.showDialog(view, "Wähle eine Farbe", model.getDeadCellColor());
+                if (newColor == null) {
+                    newColor = model.getDeadCellColor();
+                }
+                model.setDeadCellColor(newColor);
+                ((JButton) e.getSource()).setBackground(newColor);
                 updateCanvasColors();
             }
         }
@@ -200,7 +213,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         try {
             if (!model.isCellAlive(new Point(x, y))) {
                 model.setCanvasRGB(lastCell.x, lastCell.y, model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
-                model.setCanvasRGB(x, y, Color.GRAY);
+                model.setCanvasRGB(x, y, invertColor(model.getDeadCellColor()));
                 lastCell = new Point(x, y);
             } else {
                 model.setCanvasRGB(lastCell.x, lastCell.y, model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
@@ -212,5 +225,8 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     @Override
     public void run() {
 
+    }
+    private Color invertColor(Color initalColor) {
+        return new Color(255 - initalColor.getRed(), 255 - initalColor.getGreen(), 255 - initalColor.getBlue());
     }
 }
