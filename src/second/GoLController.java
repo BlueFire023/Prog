@@ -14,9 +14,8 @@ import java.util.Set;
 public class GoLController implements ActionListener, KeyListener, MouseMotionListener, MouseListener, Runnable {
     private GoLModel model = new GoLModel();
     private GoLView view;
-    int prevX, prevY;
+    Point prevPos = new Point();
     private Point lastCell = new Point(0, 0);
-
 
     public GoLController() {
         view = new GoLView(model.getCanvas());
@@ -33,20 +32,19 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         Set<Point> cellsToAdd = new HashSet<>();
         Set<Point> cellsToRemove = new HashSet<>();
         Set<Point> deadCellsToCheck = new HashSet<>();
-        int newX, newY, aliveCellsCount;
+        int aliveCellsCount;
         for (Point p : model.getAliveCells()) {
             aliveCellsCount = 0;
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
-                    newX = p.x + i;
-                    newY = p.y + j;
-                    if (new Point(newX, newY).equals(p)) {
+                    Point newPos = new Point(p.x + i, p.y + j);
+                    if (newPos.equals(p)) {
                         continue;
                     }
-                    if (model.isCellAlive(calculateWrap(newX, newY))) {
+                    if (model.isCellAlive(calculateWrap(newPos))) {
                         aliveCellsCount++;
                     } else {
-                        deadCellsToCheck.add(new Point(newX, newY));
+                        deadCellsToCheck.add(new Point(newPos.x, newPos.y));
                     }
                 }
             }
@@ -61,12 +59,11 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             aliveCellsCount = 0;
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
-                    newX = p.x + i;
-                    newY = p.y + j;
-                    if (new Point(newX, newY).equals(p)) {
+                    Point newPos = new Point(p.x + i, p.y + j);
+                    if (newPos.equals(p)) {
                         continue;
                     }
-                    if (model.isCellAlive(calculateWrap(newX, newY))) {
+                    if (model.isCellAlive(calculateWrap(newPos))) {
                         aliveCellsCount++;
                     }
                 }
@@ -76,36 +73,36 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             }
         }
         for (Point p : cellsToRemove) {
-            model.setCell(calculateWrap(p.x, p.y), false);
+            model.setCell(calculateWrap(p), false);
         }
         for (Point p : cellsToAdd) {
-            model.setCell(calculateWrap(p.x, p.y), true);
+            model.setCell(calculateWrap(p), true);
         }
     }
 
-    private void drawLineBresenham(int x0, int y0, int x1, int y1) {
-        int dx = Math.abs(x1 - x0), dy = Math.abs(y1 - y0);
-        int sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1;
+    private void drawLineBresenham(Point prev, Point curr) {
+        int dx = Math.abs(curr.x - prev.x), dy = Math.abs(curr.y - prev.y);
+        int sx = prev.x < curr.x ? 1 : -1, sy = prev.y < curr.y ? 1 : -1;
         int err = dx - dy, e2;
         while (true) {
-            model.setCell(calculateWrap(x0, y0), true);
-            if (x0 == x1 && y0 == y1) {
+            model.setCell(calculateWrap(prev), true);
+            if (prev.x == curr.x && prev.y == curr.y) {
                 break;
             }
             e2 = err * 2;
             if (e2 > -dy) {
                 err -= dy;
-                x0 += sx;
+                prev.x += sx;
             }
             if (e2 < dx) {
                 err += dx;
-                y0 += sy;
+                prev.y += sy;
             }
         }
     }
 
-    public Point calculateWrap(int x, int y) {
-        return new Point(Math.floorMod(x, model.getCanvasWidth()), Math.floorMod(y, model.getCanvasHeight()));
+    public Point calculateWrap(Point pos) {
+        return new Point(Math.floorMod(pos.x, model.getCanvasWidth()), Math.floorMod(pos.y, model.getCanvasHeight()));
     }
 
     public void clearCanvas() {
@@ -116,7 +113,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     private void updateCanvasColors() {
         for (int i = 0; i < model.getCanvasWidth(); i++) {
             for (int j = 0; j < model.getCanvasHeight(); j++) {
-                model.setCell(calculateWrap(i, j), model.isCellAlive(new Point(i, j)));
+                model.setCell(calculateWrap(new Point(i, j)), model.isCellAlive(new Point(i, j)));
             }
         }
     }
@@ -177,9 +174,8 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     @Override
     public void mousePressed(MouseEvent e) {
-        prevX = (e.getX() - (model.getFrameWidth() - view.getWidth())) * model.getCanvasWidth() / view.getWidth();
-        prevY = (e.getY() - (model.getFrameHeight() - view.getHeight())) * model.getCanvasHeight() / view.getHeight();
-        model.setCell(calculateWrap(prevX, prevY), true);
+        prevPos = calculateMousePosition(e.getX(), e.getY());
+        model.setCell(calculateWrap(prevPos), true);
     }
 
     @Override
@@ -199,22 +195,19 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        int x = (e.getX() - (model.getFrameWidth() - view.getWidth())) * model.getCanvasWidth() / view.getWidth();
-        int y = (e.getY() - (model.getFrameHeight() - view.getHeight())) * model.getCanvasHeight() / view.getHeight();
-        drawLineBresenham(prevX, prevY, x, y);
-        prevX = x;
-        prevY = y;
+        Point pos = calculateMousePosition(e.getX(), e.getY());
+        drawLineBresenham(prevPos, pos);
+        prevPos = pos;
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        int x = (e.getX() - (model.getFrameWidth() - view.getWidth())) * model.getCanvasWidth() / view.getWidth();
-        int y = (e.getY() - (model.getFrameHeight() - view.getHeight())) * model.getCanvasHeight() / view.getHeight();
+        Point pos = calculateMousePosition(e.getX(), e.getY());
         try {
-            if (!model.isCellAlive(new Point(x, y))) {
+            if (!model.isCellAlive(new Point(pos.x, pos.y))) {
                 model.setCanvasRGB(lastCell.x, lastCell.y, model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
-                model.setCanvasRGB(x, y, invertColor(model.getDeadCellColor()));
-                lastCell = new Point(x, y);
+                model.setCanvasRGB(pos.x, pos.y, invertColor(model.getDeadCellColor()));
+                lastCell = pos;
             } else {
                 model.setCanvasRGB(lastCell.x, lastCell.y, model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
             }
@@ -226,7 +219,12 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     public void run() {
 
     }
+
     private Color invertColor(Color initalColor) {
         return new Color(255 - initalColor.getRed(), 255 - initalColor.getGreen(), 255 - initalColor.getBlue());
+    }
+
+    private Point calculateMousePosition(int x, int y) {
+        return new Point(x / (view.getWidth() / model.getCanvasWidth()), y / (view.getHeight() / model.getCanvasHeight()));
     }
 }
