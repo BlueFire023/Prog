@@ -203,7 +203,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 model.setCanvasRGB(x, y, Color.GRAY);
                 lastCell = new Point(x, y);
             } else {
-                model.setCanvasRGB(x, y, model.isCellAlive(new Point(x, y)) ? model.getAliveCellColor() : model.getDeadCellColor());
+                model.setCanvasRGB(lastCell.x, lastCell.y, model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
             }
         } catch (Exception ignored) {
         }
