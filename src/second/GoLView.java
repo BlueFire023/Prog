@@ -106,9 +106,7 @@ public class GoLView extends JPanel {
     public void figureSelect() {
         JFrame figureFrame = new JFrame();
         figureFrame.add(test);
-
         figureFrame.setVisible(true);
-
     }
 
     public void updateCanvasObject(BufferedImage canvas) {

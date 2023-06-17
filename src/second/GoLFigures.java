@@ -278,20 +278,45 @@ public class GoLFigures {
         figures.add(acorn);
 
         Set<Point> gopserGGSet = new HashSet<>();
-        gopserGGSet.add(new Point(0, 0));
-        gopserGGSet.add(new Point(1, 0));
-        gopserGGSet.add(new Point(0,1));
-        gopserGGSet.add(new Point(1,1));
+        gopserGGSet.add(new Point(24, 0));
+        gopserGGSet.add(new Point(22, 1));
+        gopserGGSet.add(new Point(24, 1));
+        gopserGGSet.add(new Point(12, 2));
 
-        gopserGGSet.add(new Point(7,0));
-        gopserGGSet.add(new Point(8,0));
-        gopserGGSet.add(new Point(7,1));
-        gopserGGSet.add(new Point(8,1));
+        gopserGGSet.add(new Point(13, 2));
+        gopserGGSet.add(new Point(20, 2));
+        gopserGGSet.add(new Point(21, 2));
+        gopserGGSet.add(new Point(34, 2));
+        gopserGGSet.add(new Point(35, 2));
+        gopserGGSet.add(new Point(11, 3));
 
-        gopserGGSet.add(new Point(4,0));
-        gopserGGSet.add(new Point(5,0));
-        gopserGGSet.add(new Point(4,1));
-        gopserGGSet.add(new Point(5,1));
+        gopserGGSet.add(new Point(15, 3));
+        gopserGGSet.add(new Point(20, 3));
+        gopserGGSet.add(new Point(21, 3));
+        gopserGGSet.add(new Point(34, 3));
+        gopserGGSet.add(new Point(35, 3));
+        gopserGGSet.add(new Point(0, 4));
+        gopserGGSet.add(new Point(1, 4));
+        gopserGGSet.add(new Point(10, 4));
+        gopserGGSet.add(new Point(16, 4));
+        gopserGGSet.add(new Point(20, 4));
+        gopserGGSet.add(new Point(21, 4));
+        gopserGGSet.add(new Point(0, 5));
+        gopserGGSet.add(new Point(1, 5));
+        gopserGGSet.add(new Point(10, 5));
+        gopserGGSet.add(new Point(14, 5));
+        gopserGGSet.add(new Point(16, 5));
+        gopserGGSet.add(new Point(17, 5));
+        gopserGGSet.add(new Point(22, 5));
+        gopserGGSet.add(new Point(24, 5));
+        gopserGGSet.add(new Point(10, 6));
+        gopserGGSet.add(new Point(16, 6));
+        gopserGGSet.add(new Point(24, 6));
+        gopserGGSet.add(new Point(11, 7));
+        gopserGGSet.add(new Point(15, 7));
+        gopserGGSet.add(new Point(12, 8));
+        gopserGGSet.add(new Point(13, 8));
+
 
         gosperGG = new GoLPrefab("Gosper Glider Gun", gopserGGSet);
         figures.add(gosperGG);
