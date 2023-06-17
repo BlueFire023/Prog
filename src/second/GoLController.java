@@ -257,7 +257,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             if (!placingFigure) {
                 model.setCell(calculateWrap(prevPos), painting);
             } else {
-                for (Point p : model.getFigure(0).getCells()) {
+                for (Point p : model.getCurrentFigure().getCells()) {
                     model.setCell(calculateWrap(new Point(p.x + prevPos.x - (highestX / 2), p.y + prevPos.y - (highestY / 2))), true);
                 }
             }
@@ -301,7 +301,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                     model.setCanvasRGB(p, model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
                 }
                 lastCells.clear();
-                for (Point p : model.getFigure(0).getCells()) {
+                for (Point p : model.getCurrentFigure().getCells()) {
                     Point calculatedPoint = new Point(p.x + pos.x - (highestX / 2), p.y + pos.y - (highestY / 2));
                     model.setCanvasRGB(calculateWrap(calculatedPoint), model.getInvertedColor());
                     lastCells.add(calculateWrap(calculatedPoint));
