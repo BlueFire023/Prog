@@ -288,10 +288,10 @@ public class GoLFigures {
         gopserGGSet.add(new Point(7,1));
         gopserGGSet.add(new Point(8,1));
 
-        gopserGGSet.add(new Point(7,0));
-        gopserGGSet.add(new Point(8,0));
-        gopserGGSet.add(new Point(7,1));
-        gopserGGSet.add(new Point(8,1));
+        gopserGGSet.add(new Point(4,0));
+        gopserGGSet.add(new Point(5,0));
+        gopserGGSet.add(new Point(4,1));
+        gopserGGSet.add(new Point(5,1));
 
         gosperGG = new GoLPrefab("Gosper Glider Gun", gopserGGSet);
         figures.add(gosperGG);
