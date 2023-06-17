@@ -17,10 +17,13 @@ public class GoLModel {
     private Color deadCellColor = Color.WHITE;
     private Color invertedColor = Color.BLACK;
     private ArrayList<GoLPrefab> figures = new ArrayList<>();
+    private GoLFigures preMadeFigures = new GoLFigures();
+    private GoLPrefab currentFigure;
     private int speed = 10;
     private static boolean laufen;
     private boolean malen;
     private boolean setzen;
+
 
     public void setCell(Point nextCellPosition, boolean isAlive) {
         if (isAlive) {
@@ -100,12 +103,32 @@ public class GoLModel {
     public void setFigures(ArrayList<GoLPrefab> figures) {
         this.figures = figures;
     }
-    public void addFigure(GoLPrefab figure){
+
+    public void addFigure(GoLPrefab figure) {
         figures.add(figure);
     }
-    public GoLPrefab getFigure(int position){
+
+    public GoLPrefab getFigure(int position) {
         return figures.get(position);
     }
+
+
+    public GoLPrefab getCurrentFigure() {
+        return currentFigure;
+    }
+
+    public void setCurrentFigure(GoLPrefab figure) {
+        this.currentFigure = figure;
+    }
+
+    public GoLPrefab getPreMadeFigures(int position) {
+        return preMadeFigures.getFigure(position);
+    }
+
+    public void setPreMadeFigures(GoLFigures preMadeFigures) {
+        this.preMadeFigures = preMadeFigures;
+    }
+
     public void setSpeed(int speed) { this.speed = speed; }
     public int getSpeed() { return speed; }
 
@@ -122,5 +145,6 @@ public class GoLModel {
     public boolean getLaufen(){return laufen;}
     public boolean getMalen(){return malen;}
     public boolean getSetzen(){return setzen;}
+
 
 }

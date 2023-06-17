@@ -53,12 +53,6 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                     } else {
                         deadCellsToCheck.add(newPos);
                     }
-                    if (aliveCellsCount > 3) {
-                        break;
-                    }
-                }
-                if (aliveCellsCount > 3) {
-                    break;
                 }
             }
             if (aliveCellsCount < 2 || aliveCellsCount > 3) {
@@ -188,11 +182,17 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 for (Point p : model.getAliveCells()) {
                     figureConstruct.add(new Point(p.x - lowestX, p.y - lowestY));
                 }
-                GoLPrefab figureToSave = new GoLPrefab("Test",figureConstruct);
+                GoLPrefab figureToSave = new GoLPrefab("Test", figureConstruct);
+                System.out.println(figureToSave.getCells());
                 model.addFigure(figureToSave);
             }
             case "Laden" -> {
+                view.figureSelect();
+            }
+            case "h" -> {
                 placingFigure = true;
+                model.setCurrentFigure(model.getPreMadeFigures(view.getChoosenFigure()));
+                calculateHighestPoints();
             }
             case "Laufen" -> {
                 model.setLaufen(true);
@@ -327,8 +327,21 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         return new Point(posOnCanvasX, posOnCanvasY);
     }
 
+    private void calculateHighestPoints() {
+        highestY = 0;
+        highestX = 0;
+        for (Point p : model.getCurrentFigure().getCells()) {
+            if (highestX < p.x) {
+                highestX = p.x;
+            }
+            if (highestY < p.y) {
+                highestY = p.y;
+            }
+        }
+
     @Override
     public void stateChanged(ChangeEvent e) {
+
 
     }
 }

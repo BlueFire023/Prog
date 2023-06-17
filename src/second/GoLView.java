@@ -30,6 +30,7 @@ public class GoLView extends JPanel {
     private JMenuItem malenButton = new JMenuItem("Malen");
     private JMenuItem setzenButton = new JMenuItem("Setzen");
     private JFrame setSizeFrame = new JFrame();
+    private JTextField test = new JTextField("");
     private JTextField widthTextArea;
     private JTextField heightTextArea;
     private JButton applySizeButton = new JButton("Apply");
@@ -76,6 +77,7 @@ public class GoLView extends JPanel {
         applySizeButton.setActionCommand("size");
         activeColorDisplay.setActionCommand("acc");
         deadColorDisplay.setActionCommand("dcc");
+        test.setActionCommand("h");
 
         frame.setTitle("Game of Life");
         frame.setJMenuBar(menuBar);
@@ -102,7 +104,9 @@ public class GoLView extends JPanel {
         deadColorDisplay.addActionListener(al);
         save.addActionListener(al);
         load.addActionListener(al);
+        test.addActionListener(al);
         gSlider.addChangeListener(cl);
+
     }
 
     public void updateCanvasSize() {
@@ -134,7 +138,14 @@ public class GoLView extends JPanel {
         setColorFrame.setSize(100, 200);
         setColorFrame.setVisible(true);
     }
-    public void updateCanvasObject(BufferedImage canvas){
+
+    public void figureSelect() {
+        JFrame figureFrame = new JFrame();
+        figureFrame.add(test);
+        figureFrame.setVisible(true);
+    }
+
+    public void updateCanvasObject(BufferedImage canvas) {
         this.canvas = canvas;
     }
 
@@ -151,8 +162,14 @@ public class GoLView extends JPanel {
     public int getNewHeight() {
         return Integer.parseInt(heightTextArea.getText());
     }
-    public int getFrameWidth(){
+
+    public int getFrameWidth() {
         return frame.getWidth();
     }
+
+    public int getChoosenFigure() {
+        return Integer.parseInt(test.getText());
+    }
+  
     public int getSliderstat(){ return gSlider.getValue();}
 }
