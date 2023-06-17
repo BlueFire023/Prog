@@ -19,6 +19,11 @@ public class GoLModel {
     private ArrayList<GoLPrefab> figures = new ArrayList<>();
     private GoLFigures preMadeFigures = new GoLFigures();
     private GoLPrefab currentFigure;
+    private int speed = 10;
+    private static boolean laufen;
+    private boolean malen;
+    private boolean setzen;
+
 
     public void setCell(Point nextCellPosition, boolean isAlive) {
         if (isAlive) {
@@ -107,6 +112,7 @@ public class GoLModel {
         return figures.get(position);
     }
 
+
     public GoLPrefab getCurrentFigure() {
         return currentFigure;
     }
@@ -122,4 +128,23 @@ public class GoLModel {
     public void setPreMadeFigures(GoLFigures preMadeFigures) {
         this.preMadeFigures = preMadeFigures;
     }
+
+    public void setSpeed(int speed) { this.speed = speed; }
+    public int getSpeed() { return speed; }
+
+    public void setLaufen(boolean laufen) {
+        this.laufen = laufen;
+    }
+
+    public void setMalen(boolean malen) {
+        this.malen = malen;
+    }
+    public void setSetzen(boolean setzen) {
+        this.setzen = setzen;
+    }
+    public boolean getLaufen(){return laufen;}
+    public boolean getMalen(){return malen;}
+    public boolean getSetzen(){return setzen;}
+
+
 }
