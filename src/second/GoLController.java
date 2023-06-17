@@ -13,6 +13,7 @@ import java.util.Set;
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
  * @version 1, 15/06/2023
  */
+
 public class GoLController implements ActionListener, KeyListener, MouseMotionListener, MouseListener, Runnable {
     private GoLModel model = new GoLModel();
     private GoLView view;
