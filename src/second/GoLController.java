@@ -18,9 +18,9 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     private GoLView view;
     private Point prevPos = new Point();
     private Point lastCell = new Point(0, 0);
-    private boolean placingFigure = false;
+    private boolean placingFigure = false, painting;
     private int highestX, highestY;
-    Set<Point> lastCells = new HashSet<>();
+    private Set<Point> lastCells = new HashSet<>();
 
     public GoLController() {
         view = new GoLView(model.getCanvas());
@@ -89,12 +89,12 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         }
     }
 
-    private void drawLineBresenham(Point prev, Point curr) {
+    private void drawLineBresenham(Point prev, Point curr, Boolean paint) {
         int dx = Math.abs(curr.x - prev.x), dy = Math.abs(curr.y - prev.y);
         int sx = prev.x < curr.x ? 1 : -1, sy = prev.y < curr.y ? 1 : -1;
         int err = dx - dy, e2;
         while (true) {
-            model.setCell(calculateWrap(prev), true);
+            model.setCell(calculateWrap(prev), paint);
             if (prev.x == curr.x && prev.y == curr.y) {
                 break;
             }
@@ -215,8 +215,9 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     @Override
     public void mousePressed(MouseEvent e) {
         prevPos = calculateMousePosition(e.getPoint());
+        painting = e.getButton() == 1;
         if (!placingFigure) {
-            model.setCell(calculateWrap(prevPos), true);
+            model.setCell(calculateWrap(prevPos), painting);
         } else {
             for (Point p : model.getFigure(0).getCells()) {
                 model.setCell(calculateWrap(new Point(p.x + prevPos.x - (highestX / 2), p.y + prevPos.y - (highestY / 2))), true);
@@ -242,7 +243,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     @Override
     public void mouseDragged(MouseEvent e) {
         Point currPos = calculateMousePosition(e.getPoint());
-        drawLineBresenham(prevPos, currPos);
+        drawLineBresenham(prevPos, currPos, painting);
         prevPos = currPos;
     }
 
