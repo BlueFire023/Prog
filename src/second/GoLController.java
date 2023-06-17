@@ -206,7 +206,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     @Override
     public void mousePressed(MouseEvent e) {
-        prevPos = calculateMousePosition(e.getX(), e.getY());
+        prevPos = calculateMousePosition(e.getPoint());
         if (!placingFigure) {
             model.setCell(calculateWrap(prevPos), true);
         } else {
@@ -233,14 +233,14 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        Point pos = calculateMousePosition(e.getX(), e.getY());
+        Point pos = calculateMousePosition(e.getPoint());
         drawLineBresenham(prevPos, pos);
         prevPos = pos;
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        Point pos = calculateMousePosition(e.getX(), e.getY());
+        Point pos = calculateMousePosition(e.getPoint());
         try {
             if (!model.isCellAlive(pos)) {
                 if (!placingFigure) {
@@ -248,8 +248,8 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                     model.setCanvasRGB(pos, invertColor(model.getDeadCellColor()));
                     lastCell = pos;
                 } else {
-                    for(Point p : lastCells){
-                        model.setCanvasRGB(p,model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
+                    for (Point p : lastCells) {
+                        model.setCanvasRGB(p, model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
                     }
                     lastCells.clear();
                     for (Point p : savedFigure) {
@@ -274,11 +274,11 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         return new Color(255 - initalColor.getRed(), 255 - initalColor.getGreen(), 255 - initalColor.getBlue());
     }
 
-    private Point calculateMousePosition(int x, int y) {
+    private Point calculateMousePosition(Point pos) {
         double scaleX = (double) model.getCanvasWidth() / view.getWidth();
         double scaleY = (double) model.getCanvasHeight() / view.getHeight();
-        int posOnCanvasX = (int) (x * scaleX);
-        int posOnCanvasY = (int) (y * scaleY);
+        int posOnCanvasX = (int) (pos.x * scaleX);
+        int posOnCanvasY = (int) (pos.y * scaleY);
         return new Point(posOnCanvasX, posOnCanvasY);
     }
 }
