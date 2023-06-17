@@ -42,7 +42,9 @@ public class GoLView extends JPanel {
     public GoLView(BufferedImage canvas) {
         this.canvas = canvas;
         widthTextArea = new JTextField(String.valueOf(canvas.getTileWidth()));
+        widthTextArea.setColumns(7);
         heightTextArea = new JTextField(String.valueOf(canvas.getTileHeight()));
+        heightTextArea.setColumns(7);
 
         gSlider.setMinimum(1);
         gSlider.setMaximum(100);
@@ -78,6 +80,7 @@ public class GoLView extends JPanel {
         activeColorDisplay.setActionCommand("acc");
         deadColorDisplay.setActionCommand("dcc");
         test.setActionCommand("h");
+        test.setColumns(7);
 
         frame.setTitle("Game of Life");
         frame.setJMenuBar(menuBar);
@@ -141,6 +144,8 @@ public class GoLView extends JPanel {
 
     public void figureSelect() {
         JFrame figureFrame = new JFrame();
+        figureFrame.setSize(new Dimension(500,500));
+        figureFrame.setLayout(new FlowLayout());
         figureFrame.add(test);
         figureFrame.setVisible(true);
     }

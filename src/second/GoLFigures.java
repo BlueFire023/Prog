@@ -282,14 +282,12 @@ public class GoLFigures {
         gopserGGSet.add(new Point(22, 1));
         gopserGGSet.add(new Point(24, 1));
         gopserGGSet.add(new Point(12, 2));
-
         gopserGGSet.add(new Point(13, 2));
         gopserGGSet.add(new Point(20, 2));
         gopserGGSet.add(new Point(21, 2));
         gopserGGSet.add(new Point(34, 2));
         gopserGGSet.add(new Point(35, 2));
         gopserGGSet.add(new Point(11, 3));
-
         gopserGGSet.add(new Point(15, 3));
         gopserGGSet.add(new Point(20, 3));
         gopserGGSet.add(new Point(21, 3));
@@ -316,8 +314,6 @@ public class GoLFigures {
         gopserGGSet.add(new Point(15, 7));
         gopserGGSet.add(new Point(12, 8));
         gopserGGSet.add(new Point(13, 8));
-
-
         gosperGG = new GoLPrefab("Gosper Glider Gun", gopserGGSet);
         figures.add(gosperGG);
 
