@@ -17,6 +17,10 @@ public class GoLModel {
     private Color deadCellColor = Color.WHITE;
     private Color invertedColor = Color.BLACK;
     private ArrayList<GoLPrefab> figures = new ArrayList<>();
+    private int speed = 10;
+    private static boolean laufen;
+    private boolean malen;
+    private boolean setzen;
 
     public void setCell(Point nextCellPosition, boolean isAlive) {
         if (isAlive) {
@@ -102,4 +106,21 @@ public class GoLModel {
     public GoLPrefab getFigure(int position){
         return figures.get(position);
     }
+    public void setSpeed(int speed) { this.speed = speed; }
+    public int getSpeed() { return speed; }
+
+    public void setLaufen(boolean laufen) {
+        this.laufen = laufen;
+    }
+
+    public void setMalen(boolean malen) {
+        this.malen = malen;
+    }
+    public void setSetzen(boolean setzen) {
+        this.setzen = setzen;
+    }
+    public boolean getLaufen(){return laufen;}
+    public boolean getMalen(){return malen;}
+    public boolean getSetzen(){return setzen;}
+
 }
