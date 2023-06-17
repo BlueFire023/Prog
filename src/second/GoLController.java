@@ -18,7 +18,6 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     private GoLView view;
     private Point prevPos = new Point();
     private Point lastCell = new Point(0, 0);
-    private Set<Point> savedFigure = new HashSet<>();
     private boolean placingFigure = false;
     private int highestX, highestY;
     Set<Point> lastCells = new HashSet<>();
@@ -161,7 +160,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 updateCanvasColors();
             }
             case "Speichern" -> {
-                savedFigure.clear();
+                Set<Point> figureConstruct = new HashSet<>();
                 highestX = 0;
                 highestY = 0;
                 int lowestX = model.getCanvasWidth(), lowestY = model.getCanvasHeight();
@@ -182,8 +181,10 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 highestX -= lowestX;
                 highestY -= lowestY;
                 for (Point p : model.getAliveCells()) {
-                    savedFigure.add(new Point(p.x - lowestX, p.y - lowestY));
+                    figureConstruct.add(new Point(p.x - lowestX, p.y - lowestY));
                 }
+                GoLPrefab figureToSave = new GoLPrefab("Test",figureConstruct);
+                model.addFigure(figureToSave);
             }
             case "Laden" -> {
                 placingFigure = true;
@@ -217,7 +218,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         if (!placingFigure) {
             model.setCell(calculateWrap(prevPos), true);
         } else {
-            for (Point p : savedFigure) {
+            for (Point p : model.getFigure(0).getCells()) {
                 model.setCell(calculateWrap(new Point(p.x + prevPos.x - (highestX / 2), p.y + prevPos.y - (highestY / 2))), true);
             }
         }
@@ -257,7 +258,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 model.setCanvasRGB(p, model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
             }
             lastCells.clear();
-            for (Point p : savedFigure) {
+            for (Point p : model.getFigure(0).getCells()) {
                 Point calculatedPoint = new Point(p.x + pos.x - (highestX / 2), p.y + pos.y - (highestY / 2));
                 model.setCanvasRGB(calculateWrap(calculatedPoint), model.isCellAlive(calculatedPoint) ? model.getAliveCellColor() : model.getInvertedColor());
                 lastCells.add(calculateWrap(calculatedPoint));

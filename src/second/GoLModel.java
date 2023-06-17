@@ -2,6 +2,7 @@ package second;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,6 +16,7 @@ public class GoLModel {
     private Color aliveCellColor = Color.BLACK;
     private Color deadCellColor = Color.WHITE;
     private Color invertedColor = Color.BLACK;
+    private ArrayList<GoLPrefab> figures = new ArrayList<>();
 
     public void setCell(Point nextCellPosition, boolean isAlive) {
         if (isAlive) {
@@ -85,5 +87,19 @@ public class GoLModel {
 
     public void setInvertedColor(Color invertedColor) {
         this.invertedColor = invertedColor;
+    }
+
+    public ArrayList<GoLPrefab> getFigures() {
+        return figures;
+    }
+
+    public void setFigures(ArrayList<GoLPrefab> figures) {
+        this.figures = figures;
+    }
+    public void addFigure(GoLPrefab figure){
+        figures.add(figure);
+    }
+    public GoLPrefab getFigure(int position){
+        return figures.get(position);
     }
 }
