@@ -233,9 +233,9 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        Point pos = calculateMousePosition(e.getPoint());
-        drawLineBresenham(prevPos, pos);
-        prevPos = pos;
+        Point currPos = calculateMousePosition(e.getPoint());
+        drawLineBresenham(prevPos, currPos);
+        prevPos = currPos;
     }
 
     @Override
