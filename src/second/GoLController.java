@@ -338,6 +338,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 highestY = p.y;
             }
         }
+    }
 
     @Override
     public void stateChanged(ChangeEvent e) {
