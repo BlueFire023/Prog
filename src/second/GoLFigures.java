@@ -309,8 +309,10 @@ public class GoLFigures {
         simkinGGSet.add(new Point(5, 3));
         simkinGGSet.add(new Point(4, 4));
         simkinGGSet.add(new Point(5, 4));
-        simkinGGSet.add(new Point(31,0));
-        simkinGGSet.add(new Point(32,0));
+        simkinGGSet.add(new Point(31,11));
+        simkinGGSet.add(new Point(31,12));
+        simkinGGSet.add(new Point(32,11));
+        simkinGGSet.add(new Point(0,0));
         simkinGG = new GoLPrefab("Simkin Glider Gun", simkinGGSet);
         figures.add(simkinGG);
 
