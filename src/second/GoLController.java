@@ -29,7 +29,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     public GoLController() {
         view = new GoLView(model.getCanvas());
         view.setListeners(this, this, this, this, this);
-        updateCanvasColors();
+        refreshCanvas();
         new Thread(this).start();
     }
 
@@ -114,13 +114,13 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     public void clearCanvas() {
         model.clearAliveCells();
-        updateCanvasColors();
+        refreshCanvas();
     }
 
-    private void updateCanvasColors() {
+    private void refreshCanvas() {
         for (int i = 0; i < model.getCanvasWidth(); i++) {
             for (int j = 0; j < model.getCanvasHeight(); j++) {
-                model.setCell(calculateWrap(new Point(i, j)), model.isCellAlive(new Point(i, j)));
+                model.setCell(new Point(i, j), model.isCellAlive(new Point(i, j)));
             }
         }
     }
@@ -137,7 +137,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 model.setCanvas(new BufferedImage(view.getNewWidth(), view.getNewHeight(), BufferedImage.TYPE_INT_RGB));
                 view.disposeSetSizeFrame();
                 view.updateCanvasObject(model.getCanvas());
-                updateCanvasColors();
+                refreshCanvas();
             }
             case "acc" -> {
                 Color newColor = JColorChooser.showDialog(view, "Wähle eine Farbe", model.getAliveCellColor());
@@ -146,7 +146,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 }
                 model.setAliveCellColor(newColor);
                 ((JButton) e.getSource()).setBackground(newColor);
-                updateCanvasColors();
+                refreshCanvas();
             }
             case "dcc" -> {
                 Color newColor = JColorChooser.showDialog(view, "Wähle eine Farbe", model.getDeadCellColor());
@@ -156,7 +156,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 model.setDeadCellColor(newColor);
                 model.setInvertedColor(invertColor(newColor));
                 ((JButton) e.getSource()).setBackground(newColor);
-                updateCanvasColors();
+                refreshCanvas();
             }
             case "Speichern" -> {
                 Set<Point> figureConstruct = new HashSet<>();
@@ -190,6 +190,9 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 view.figureSelect();
             }
             case "h" -> {
+                model.setLaufen(false);
+                model.setMalen(false);
+                model.setSetzen(true);
                 placingFigure = true;
                 model.setCurrentFigure(model.getPreMadeFigures(view.getChoosenFigure()));
                 calculateHighestPoints();
@@ -199,14 +202,14 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 model.setMalen(false);
                 model.setSetzen(false);
 
-                updateCanvasColors();
+                refreshCanvas();
 
                 Runnable runningTask = () -> {
-                    while(model.getLaufen()){
+                    while (model.getLaufen()) {
                         model.setSpeed(view.getSliderstat());
-                        long loopDelay = 1000/model.getSpeed();
+                        long loopDelay = 1000 / model.getSpeed();
                         calculateNextGeneration();
-                        try{
+                        try {
                             Thread.sleep(loopDelay);
                         } catch (InterruptedException ex) {
                             throw new RuntimeException(ex);
@@ -220,11 +223,14 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 model.setLaufen(false);
                 model.setMalen(true);
                 model.setSetzen(false);
+                refreshCanvas();
             }
             case "Setzen" -> {
                 model.setLaufen(false);
                 model.setMalen(false);
                 model.setSetzen(true);
+                placingFigure = false;
+                refreshCanvas();
             }
         }
     }
@@ -251,15 +257,15 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if(model.getSetzen()|| model.getMalen()) {
+        if (model.getSetzen() || model.getMalen()) {
             prevPos = calculateMousePosition(e.getPoint());
             painting = e.getButton() == 1;
-            if (!placingFigure) {
-                model.setCell(calculateWrap(prevPos), painting);
-            } else {
+            if (placingFigure && !model.getMalen()) {
                 for (Point p : model.getCurrentFigure().getCells()) {
                     model.setCell(calculateWrap(new Point(p.x + prevPos.x - (highestX / 2), p.y + prevPos.y - (highestY / 2))), true);
                 }
+            } else {
+                model.setCell(calculateWrap(prevPos), painting);
             }
         }
     }
@@ -281,7 +287,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if(model.getMalen()) {
+        if (model.getMalen()) {
             Point currPos = calculateMousePosition(e.getPoint());
             drawLineBresenham(prevPos, currPos, painting);
             prevPos = currPos;
@@ -290,13 +296,9 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if(model.getSetzen()|| model.getMalen()) {
+        if (model.getSetzen() || model.getMalen()) {
             Point pos = calculateMousePosition(e.getPoint());
-            if (!placingFigure) {
-                model.setCanvasRGB(calculateWrap(lastCell), model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
-                model.setCanvasRGB(pos, model.getInvertedColor());
-                lastCell = pos;
-            } else {
+            if (placingFigure && !model.getMalen()) {
                 for (Point p : lastCells) {
                     model.setCanvasRGB(p, model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
                 }
@@ -306,6 +308,10 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                     model.setCanvasRGB(calculateWrap(calculatedPoint), model.getInvertedColor());
                     lastCells.add(calculateWrap(calculatedPoint));
                 }
+            } else {
+                model.setCanvasRGB(calculateWrap(lastCell), model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
+                model.setCanvasRGB(pos, model.getInvertedColor());
+                lastCell = pos;
             }
         }
     }
