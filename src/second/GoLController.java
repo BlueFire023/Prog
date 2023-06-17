@@ -50,12 +50,6 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                     } else {
                         deadCellsToCheck.add(newPos);
                     }
-                    if (aliveCellsCount > 3) {
-                        break;
-                    }
-                }
-                if (aliveCellsCount > 3) {
-                    break;
                 }
             }
             if (aliveCellsCount < 2 || aliveCellsCount > 3) {
@@ -194,7 +188,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             case "h" -> {
                 placingFigure = true;
                 model.setCurrentFigure(model.getPreMadeFigures(view.getChoosenFigure()));
-                calculatehighestPoints();
+                calculateHighestPoints();
             }
         }
     }
@@ -291,7 +285,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         return new Point(posOnCanvasX, posOnCanvasY);
     }
 
-    private void calculatehighestPoints() {
+    private void calculateHighestPoints() {
         highestY = 0;
         highestX = 0;
         for (Point p : model.getCurrentFigure().getCells()) {
