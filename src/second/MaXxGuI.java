@@ -14,13 +14,10 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.io.*;
 
-public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Serializable {
+public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Serializable, MouseListener {
     private final JPanel gamePanel = new JPanel(); //Erstellung des Panels, in dem sich später die einzelnen Felder
     // wiederfinden
     private final GameBoard board; //Spielfeld, welches im Hintergrund steht
@@ -69,6 +66,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
                 fractionLabels[i][j].setFont(new Font("Courier", Font.PLAIN, 15));
 
                 fractionPanels[i][j].add(fractionLabels[i][j]);
+                fractionPanels[i][j].addMouseListener(this);
                 gamePanel.add(fractionPanels[i][j]);
             }
         }
@@ -111,7 +109,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
         add(instructionPanel, BorderLayout.SOUTH);
 
         //Setzen der Größe und Sichtbarkeit des Fensters
-        setSize(1000,1000);
+        setSize(1000, 1000);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
         fractionPanels[players[currentPlayerIndex].getYPosition()][players[currentPlayerIndex].getXPosition()].setBorder(borderFocusedPlayer);
@@ -222,27 +220,7 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
             case KeyEvent.VK_C -> direction = "SO";
             default -> direction = "nix";
         }
-        try {
-            board.setValue(players[currentPlayerIndex].getXPosition(), players[currentPlayerIndex].getYPosition(), "0"); //Der Wert des Feldes, auf dem der Spieler zuvor war, wird auf 0 gesetzt
-            players[currentPlayerIndex].move(direction); //Der Spieler, der aktuell dran ist, bewegt sich in die Richtung, die durch die Tastatur angegeben wurde
-        } catch (Exception ex) {
-            //Catchen der Exceptions
-            if (ex.getClass().equals(ArrayIndexOutOfBoundsException.class)) {
-                instructionLabel.setText("Unmögliche Bewegung!");
-            } else {
-                instructionLabel.setText(ex.getMessage());
-            }
-            throw new RuntimeException(ex);
-        }
-
-        //Der Spieler wird gewechselt, der im Fokus steht
-        currentPlayerIndex++;
-        if (currentPlayerIndex == PLAYERCOUNT) {
-            currentPlayerIndex = 0;
-        }
-        instructionLabel.setText(players[currentPlayerIndex].getName() + " ist dran!");
-        updateBoard();
-        updateScore();
+        move();
     }
 
     @Override
@@ -293,5 +271,130 @@ public class MaXxGuI extends JFrame implements ActionListener, KeyListener, Seri
 
     public static double getSCORESTOWIN() {
         return SCORESTOWIN;
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        Point mousePosition = getMousePosition((JPanel) e.getSource());
+        checkMoveSet(mousePosition);
+        move();
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        int PY = players[currentPlayerIndex].getXPosition();
+        int PX = players[currentPlayerIndex].getYPosition();
+        Point mousePosition = getMousePosition((JPanel) e.getSource());
+        boolean isPlayer = isPlayer(mousePosition.y, mousePosition.x);
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                if (!isPlayer) {
+                    if (mousePosition.x + i == PX && mousePosition.y + j == PY && checkMoveSet(mousePosition)) {
+                        ((JPanel) e.getSource()).setBackground(Color.GREEN);
+                        break;
+                    } else {
+                        ((JPanel) e.getSource()).setBackground(Color.RED);
+                    }
+                }
+            }
+            if (((JPanel) e.getSource()).getBackground().equals(Color.GREEN)) {
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        Point mousePosition = getMousePosition((JPanel) e.getSource());
+        boolean isPlayer = isPlayer(mousePosition.y, mousePosition.x);
+        if (!isPlayer) {
+            ((JPanel) e.getSource()).setBackground(Color.LIGHT_GRAY);
+        }
+    }
+
+    private void move() {
+        try {
+            board.setValue(players[currentPlayerIndex].getXPosition(), players[currentPlayerIndex].getYPosition(), "0"); //Der Wert des Feldes, auf dem der Spieler zuvor war, wird auf 0 gesetzt
+            players[currentPlayerIndex].move(direction); //Der Spieler, der aktuell dran ist, bewegt sich in die Richtung, die durch die Tastatur angegeben wurde
+        } catch (Exception ex) {
+            //Catchen der Exceptions
+            if (ex.getClass().equals(ArrayIndexOutOfBoundsException.class)) {
+                instructionLabel.setText("Unmögliche Bewegung!");
+            } else if (direction != null) {
+                instructionLabel.setText(ex.getMessage());
+            } else {
+                instructionLabel.setText("Unmögliche Bewegung!");
+            }
+            return;
+        }
+        //Der Spieler wird gewechselt, der im Fokus steht
+        currentPlayerIndex++;
+        if (currentPlayerIndex == PLAYERCOUNT) {
+            currentPlayerIndex = 0;
+        }
+        instructionLabel.setText(players[currentPlayerIndex].getName() + " ist dran!");
+        updateBoard();
+        updateScore();
+    }
+
+    private boolean isPlayer(int y, int x) {
+        for (Player player : players) {
+            if (player.getXPosition() == y && player.getYPosition() == x) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Point getMousePosition(JPanel currentPanel) {
+        int MX = 0, MY = 0;
+        for (int x = 0; x < BOARDSIZE; x++) {
+            for (int y = 0; y < BOARDSIZE; y++) {
+                if (currentPanel.equals(fractionPanels[y][x])) {
+                    MY = x;
+                    MX = y;
+                }
+            }
+        }
+        return new Point(MX, MY);
+    }
+
+    private boolean checkMoveSet(Point mP){
+        int PY = players[currentPlayerIndex].getXPosition();
+        int PX = players[currentPlayerIndex].getYPosition();
+        int r = 0;
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                if (mP.x + i == PX && mP.y + j == PY) {
+                    switch (r) {
+                        case 0 -> direction = "SO";
+                        case 1 -> direction = "S";
+                        case 2 -> direction = "SW";
+                        case 3 -> direction = "O";
+                        case 5 -> direction = "W";
+                        case 6 -> direction = "NO";
+                        case 7 -> direction = "N";
+                        case 8 -> direction = "NW";
+                    }
+                    break;
+                } else {
+                    direction = null;
+                }
+                r++;
+            }
+            if (direction != null) {
+                break;
+            }
+        }
+        return players[currentPlayerIndex].isInMoveSet(direction);
     }
 }

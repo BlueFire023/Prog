@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
  * @version 1, 06/04/2023
  */
 public class IdealWeight extends JFrame implements ActionListener {
-    private JRadioButton genderM, genderF;
+    private JRadioButton genderM, genderF, genderD;
     private ButtonGroup genderGroup;
     private JPanel genderPanel;
     private JRadioButton heightA, heightB, heightC, heightD, heightE;
@@ -20,10 +20,10 @@ public class IdealWeight extends JFrame implements ActionListener {
     private JLabel resultLabel;
     private JPanel resultPanel;
     private boolean male = true;
-    private float height = 60f;
+    private float height = 62f;
 
     public IdealWeight() {
-        setTitle("Your Ideal Weight");
+        setTitle("Your 'Ideal Weight'");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         // Erstellt die beiden Radio-Buttons für Geschlecht (Male und Female) und fügt sie einer ButtonGroup hinzu
@@ -33,16 +33,21 @@ public class IdealWeight extends JFrame implements ActionListener {
         genderF = new JRadioButton("Female", false);
         genderF.setActionCommand("F");
         genderF.addActionListener(this);
+        genderD = new JRadioButton("Diverse", false);
+        genderD.setActionCommand("Di");
+        genderD.addActionListener(this);
         genderGroup = new ButtonGroup();
         genderGroup.add(genderM);
         genderGroup.add(genderF);
+        genderGroup.add(genderD);
 
         // Erstellt ein JPanel für die Geschlechtsauswahl, fügt eine Beschriftung hinzu und die beiden Radio-Buttons
         genderPanel = new JPanel();
         genderPanel.setLayout(new BoxLayout(genderPanel, BoxLayout.Y_AXIS));
-        genderPanel.add(new JLabel("Your Gender"));
+        genderPanel.add(new JLabel(" Your Gender"));
         genderPanel.add(genderM);
         genderPanel.add(genderF);
+        genderPanel.add(genderD);
 
         // Erstellt die Radio-Buttons für die Größen-Auswahl und fügt sie einer ButtonGroup hinzu
         heightA = new JRadioButton("60 to 64 inches", true);
@@ -78,13 +83,12 @@ public class IdealWeight extends JFrame implements ActionListener {
         heightPanel.add(heightE);
 
         // Erstellt ein JTextField für die Ergebnis-Anzeige und setzt es auf nicht editierbar
-        resultText = new JTextField(12);
-        resultText.setText(String.format("%.02f", calculateIdealWeight(male, height)) + " - " + String.format("%.02f"
-                , calculateIdealWeight(male, height + 4f)) + " lbs");
+        resultText = new JTextField(7);
+        resultText.setText(String.format("%.02f", calculateIdealWeight(male, height)));
         resultText.setEditable(false);
 
         // Erstellt eine JLabel für das Ergebnis und ein JPanel für die Anzeige des Ergebnisses
-        resultLabel = new JLabel("Ideal Weight:");
+        resultLabel = new JLabel("'Ideal Weight'");
         resultPanel = new JPanel();
         resultPanel.add(resultLabel);
         resultPanel.add(resultText);
@@ -115,21 +119,11 @@ public class IdealWeight extends JFrame implements ActionListener {
     }
 
     // Diese Methode wird aufgerufen, wenn der Benutzer eine Aktion ausführt (z.B. einen RadioButton auswählt).
-    // Die Methode verwendet eine switch-Anweisung, um festzustellen, welche Aktion ausgeführt wurde,
-    // und aktualisiert dann die Variablen male (für Geschlecht) und height (für Höhe) entsprechend.
     // Schließlich wird das berechnete ideale Gewicht im Textfeld angezeigt.
     @Override
     public void actionPerformed(ActionEvent e) {
-        switch (e.getActionCommand()) {
-            case "M" -> male = true;
-            case "F" -> male = false;
-            case "A" -> height = 60f;
-            case "B" -> height = 64f;
-            case "C" -> height = 68f;
-            case "D" -> height = 72f;
-            case "E" -> height = 74f;
-        }
-        resultText.setText(String.format("%.02f", calculateIdealWeight(male, height)) + " - " + String.format("%.02f"
-                , calculateIdealWeight(male, height + 4f)) + " lbs");
+        int genderConstant = genderM.isSelected()? 30 : genderF.isSelected()? 28 : 29;
+        int heightConstant = heightA.isSelected()? 60 : heightB.isSelected()? 64 : heightC.isSelected()? 68 : heightC.isSelected()? 72 : 78;
+        resultText.setText(((heightConstant*heightConstant)/genderConstant) + " pounds");
     }
 }
