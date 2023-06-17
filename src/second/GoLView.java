@@ -17,6 +17,7 @@ public class GoLView extends JPanel {
     private JMenuBar menuBar = new JMenuBar();
     private JMenu optionsMenu = new JMenu("Menü");
     private JMenu figuresMenu = new JMenu("Figuren");
+    private JMenuItem newWindow = new JMenuItem("Neues Fenster");
     private JMenuItem save = new JMenuItem("Speichern");
     private JMenuItem load = new JMenuItem("Laden");
     private JMenuItem clearButton = new JMenuItem("Löschen");
@@ -37,6 +38,7 @@ public class GoLView extends JPanel {
         optionsMenu.add(clearButton);
         optionsMenu.add(setSizeButton);
         optionsMenu.add(setColorButton);
+        optionsMenu.add(newWindow);
         menuBar.add(optionsMenu);
         figuresMenu.add(save);
         figuresMenu.add(load);
@@ -61,6 +63,7 @@ public class GoLView extends JPanel {
         addMouseMotionListener(mml);
         addMouseListener(ml);
         clearButton.addActionListener(al);
+        newWindow.addActionListener(al);
         setSizeButton.addActionListener(al);
         applySizeButton.addActionListener(al);
         setColorButton.addActionListener(al);
