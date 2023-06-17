@@ -18,7 +18,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     private GoLView view;
     private Point prevPos = new Point();
     private Point lastCell = new Point(0, 0);
-    private Set<Point> savedFigure = new HashSet<Point>();
+    private Set<Point> savedFigure = new HashSet<>();
     private boolean placingFigure = false;
     private int highestX, highestY;
     Set<Point> lastCells = new HashSet<>();
@@ -131,9 +131,9 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
-            case "Clear" -> clearCanvas();
-            case "Set Size" -> view.updateCanvasSize();
-            case "Set Color" -> view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
+            case "Löschen" -> clearCanvas();
+            case "Auflösung" -> view.updateCanvasSize();
+            case "Farben" -> view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
             case "size" -> {
                 clearCanvas();
                 model.setCanvas(new BufferedImage(view.getNewWidth(), view.getNewHeight(), BufferedImage.TYPE_INT_RGB));
@@ -156,10 +156,11 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                     newColor = model.getDeadCellColor();
                 }
                 model.setDeadCellColor(newColor);
+                model.setInvertedColor(invertColor(newColor));
                 ((JButton) e.getSource()).setBackground(newColor);
                 updateCanvasColors();
             }
-            case "Save" -> {
+            case "Speichern" -> {
                 savedFigure.clear();
                 highestX = 0;
                 highestY = 0;
@@ -184,7 +185,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                     savedFigure.add(new Point(p.x - lowestX, p.y - lowestY));
                 }
             }
-            case "Load" -> {
+            case "Laden" -> {
                 placingFigure = true;
             }
         }
@@ -249,7 +250,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         Point pos = calculateMousePosition(e.getPoint());
         if (!placingFigure) {
             model.setCanvasRGB(lastCell, model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
-            model.setCanvasRGB(pos, model.isCellAlive(pos) ? model.getAliveCellColor() : invertColor(model.getDeadCellColor()));
+            model.setCanvasRGB(pos, model.isCellAlive(pos) ? model.getAliveCellColor() : model.getInvertedColor());
             lastCell = pos;
         } else {
             for (Point p : lastCells) {
@@ -258,7 +259,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             lastCells.clear();
             for (Point p : savedFigure) {
                 Point calculatedPoint = new Point(p.x + pos.x - (highestX / 2), p.y + pos.y - (highestY / 2));
-                model.setCanvasRGB(calculateWrap(calculatedPoint), model.isCellAlive(calculatedPoint) ? model.getAliveCellColor() : invertColor(model.getDeadCellColor()));
+                model.setCanvasRGB(calculateWrap(calculatedPoint), model.isCellAlive(calculatedPoint) ? model.getAliveCellColor() : model.getInvertedColor());
                 lastCells.add(calculateWrap(calculatedPoint));
             }
         }

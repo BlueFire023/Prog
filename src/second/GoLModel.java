@@ -14,6 +14,7 @@ public class GoLModel {
     private Set<Point> aliveCells = new HashSet<>();
     private Color aliveCellColor = Color.BLACK;
     private Color deadCellColor = Color.WHITE;
+    private Color invertedColor = Color.BLACK;
 
     public void setCell(Point nextCellPosition, boolean isAlive) {
         if (isAlive) {
@@ -76,5 +77,13 @@ public class GoLModel {
 
     public boolean isCellAlive(Point p) {
         return aliveCells.contains(p);
+    }
+
+    public Color getInvertedColor() {
+        return invertedColor;
+    }
+
+    public void setInvertedColor(Color invertedColor) {
+        this.invertedColor = invertedColor;
     }
 }
