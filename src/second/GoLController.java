@@ -36,40 +36,48 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         Set<Point> cellsToAdd = new HashSet<>();
         Set<Point> cellsToRemove = new HashSet<>();
         Set<Point> deadCellsToCheck = new HashSet<>();
-        int aliveCellsCount;
         for (Point p : model.getAliveCells()) {
-            aliveCellsCount = 0;
+            int aliveCellsCount = 0;
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
-                    Point newPos = new Point(p.x + i, p.y + j);
-                    if (newPos.equals(p)) {
+                    if (i == 0 && j == 0) {
                         continue;
                     }
+                    Point newPos = new Point(p.x + i, p.y + j);
                     if (model.isCellAlive(calculateWrap(newPos))) {
                         aliveCellsCount++;
                     } else {
-                        deadCellsToCheck.add(new Point(newPos.x, newPos.y));
+                        deadCellsToCheck.add(newPos);
+                    }
+                    if (aliveCellsCount > 3) {
+                        break;
                     }
                 }
+                if (aliveCellsCount > 3) {
+                    break;
+                }
             }
-            if (aliveCellsCount < 2) {
-                cellsToRemove.add(p);
-            }
-            if (aliveCellsCount > 3) {
+            if (aliveCellsCount < 2 || aliveCellsCount > 3) {
                 cellsToRemove.add(p);
             }
         }
         for (Point p : deadCellsToCheck) {
-            aliveCellsCount = 0;
+            int aliveCellsCount = 0;
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
-                    Point newPos = new Point(p.x + i, p.y + j);
-                    if (newPos.equals(p)) {
+                    if (i == 0 && j == 0) {
                         continue;
                     }
+                    Point newPos = new Point(p.x + i, p.y + j);
                     if (model.isCellAlive(calculateWrap(newPos))) {
                         aliveCellsCount++;
                     }
+                    if (aliveCellsCount > 3) {
+                        break;
+                    }
+                }
+                if (aliveCellsCount > 3) {
+                    break;
                 }
             }
             if (aliveCellsCount == 3) {
