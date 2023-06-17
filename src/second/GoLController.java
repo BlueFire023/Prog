@@ -135,6 +135,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case "Löschen" -> clearCanvas();
+            case "Neues Fenster" -> new GoLController();
             case "Auflösung" -> view.updateCanvasSize();
             case "Farben" -> view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
             case "size" -> {

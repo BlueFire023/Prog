@@ -36,6 +36,7 @@ public class GoLView extends JPanel {
     private JButton activeColorDisplay = new JButton();
     private JButton deadColorDisplay = new JButton();
     private JFrame frame = new JFrame();
+    private JMenuItem newWindow = new JMenuItem("Neues Fenster");
 
     public GoLView(BufferedImage canvas) {
         this.canvas = canvas;
@@ -63,6 +64,7 @@ public class GoLView extends JPanel {
         optionsMenu.add(startButton);
         optionsMenu.add(malenButton);
         optionsMenu.add(setzenButton);
+        optionsMenu.add(newWindow);
         menuBar.add(optionsMenu);
         figuresMenu.add(save);
         figuresMenu.add(load);
@@ -95,6 +97,7 @@ public class GoLView extends JPanel {
         startButton.addActionListener(al);
         malenButton.addActionListener(al);
         setzenButton.addActionListener(al);
+        newWindow.addActionListener(al);
         activeColorDisplay.addActionListener(al);
         deadColorDisplay.addActionListener(al);
         save.addActionListener(al);

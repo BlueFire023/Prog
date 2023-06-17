@@ -18,7 +18,7 @@ public class GoLModel {
     private Color invertedColor = Color.BLACK;
     private ArrayList<GoLPrefab> figures = new ArrayList<>();
     private int speed = 10;
-    private boolean laufen;
+    private static boolean laufen;
     private boolean malen;
     private boolean setzen;
 
