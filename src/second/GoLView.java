@@ -20,7 +20,7 @@ public class GoLView extends JPanel {
     private JMenu optionsMenu = new JMenu("Menü");
     private JMenu figuresMenu = new JMenu("Figuren");
     private JMenu sliderMenu = new JMenu("Geschwindigkeit");
-    private JSlider gSlider = new JSlider();
+    private JSlider speedSlider = new JSlider();
     private JMenuItem save = new JMenuItem("Speichern");
     private JMenuItem load = new JMenuItem("Laden");
     private JMenuItem clearButton = new JMenuItem("Löschen");
@@ -46,20 +46,19 @@ public class GoLView extends JPanel {
         heightTextArea = new JTextField(String.valueOf(canvas.getTileHeight()));
         heightTextArea.setColumns(7);
 
-        gSlider.setMinimum(1);
-        gSlider.setMaximum(100);
-        gSlider.setMajorTickSpacing(10);
-        gSlider.setMinorTickSpacing(5);
-        gSlider.createStandardLabels(5);
-        gSlider.setPaintTicks(true);
-        gSlider.setPaintLabels(true);
-        gSlider.setValue(10);
+        speedSlider.setMinimum(1);
+        speedSlider.setMaximum(100);
+        speedSlider.setMajorTickSpacing(10);
+        speedSlider.setMinorTickSpacing(5);
+        speedSlider.createStandardLabels(5);
+        speedSlider.setPaintTicks(true);
+        speedSlider.setPaintLabels(true);
+        speedSlider.setValue(10);
         Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
         for (int i = 10; i <= 100; i += 10) {
             labelTable.put(i, new JLabel(Integer.toString(i)));
         }
-        gSlider.setLabelTable(labelTable);
-
+        speedSlider.setLabelTable(labelTable);
 
         optionsMenu.add(clearButton);
         optionsMenu.add(setSizeButton);
@@ -72,7 +71,7 @@ public class GoLView extends JPanel {
         figuresMenu.add(save);
         figuresMenu.add(load);
         menuBar.add(figuresMenu);
-        sliderMenu.add(gSlider);
+        sliderMenu.add(speedSlider);
         menuBar.add(sliderMenu);
         menuBar.setBackground(Color.LIGHT_GRAY);
 
@@ -89,7 +88,6 @@ public class GoLView extends JPanel {
         frame.setContentPane(this);
         frame.setVisible(true);
     }
-
 
     public void setListeners(ActionListener al, KeyListener kl, MouseListener ml, MouseMotionListener mml, ChangeListener cl) {
         frame.addKeyListener(kl);
@@ -108,8 +106,7 @@ public class GoLView extends JPanel {
         save.addActionListener(al);
         load.addActionListener(al);
         test.addActionListener(al);
-        gSlider.addChangeListener(cl);
-
+        speedSlider.addChangeListener(cl);
     }
 
     public void updateCanvasSize() {
@@ -144,7 +141,7 @@ public class GoLView extends JPanel {
 
     public void figureSelect() {
         JFrame figureFrame = new JFrame();
-        figureFrame.setSize(new Dimension(500,500));
+        figureFrame.setSize(new Dimension(500, 500));
         figureFrame.setLayout(new FlowLayout());
         figureFrame.add(test);
         figureFrame.setVisible(true);
@@ -168,13 +165,11 @@ public class GoLView extends JPanel {
         return Integer.parseInt(heightTextArea.getText());
     }
 
-    public int getFrameWidth() {
-        return frame.getWidth();
-    }
-
-    public int getChoosenFigure() {
+    public int getChosenFigure() {
         return Integer.parseInt(test.getText());
     }
-  
-    public int getSliderstat(){ return gSlider.getValue();}
+
+    public int getSliderstat() {
+        return speedSlider.getValue();
+    }
 }

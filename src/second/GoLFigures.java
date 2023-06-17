@@ -10,41 +10,7 @@ import java.util.Set;
  * @version 1, 17/06/2023
  */
 public class GoLFigures {
-    ArrayList<GoLPrefab> figures = new ArrayList<>();
-
-    //Still lifes
-    GoLPrefab block;
-    GoLPrefab beehive;
-    GoLPrefab loaf;
-    GoLPrefab boat;
-    GoLPrefab tub;
-
-    //Oscillators
-    GoLPrefab blinker;
-    GoLPrefab toad;
-    GoLPrefab beacon;
-    GoLPrefab pulsar;
-    GoLPrefab pentadecathlon;
-
-    //Spaceships
-    GoLPrefab glider;
-    GoLPrefab LWSS;
-    GoLPrefab MWSS;
-    GoLPrefab HWSS;
-
-    //Methuselahs
-    GoLPrefab rpentomino;
-    GoLPrefab diehard;
-    GoLPrefab acorn;
-
-    //Glider guns
-    GoLPrefab gosperGG;
-    GoLPrefab simkinGG;
-
-    //Indefinites
-    GoLPrefab infinite_1;
-    GoLPrefab infinite_2;
-    GoLPrefab infinite_3;
+    private final ArrayList<GoLPrefab> figures = new ArrayList<>();
 
     public GoLFigures() {
         Set<Point> blockSet = new HashSet<>();
@@ -52,8 +18,7 @@ public class GoLFigures {
         blockSet.add(new Point(0, 1));
         blockSet.add(new Point(1, 0));
         blockSet.add(new Point(1, 1));
-        block = new GoLPrefab("Block", blockSet);
-        figures.add(block);
+        figures.add(new GoLPrefab("Block", blockSet));
 
         Set<Point> beehiveSet = new HashSet<>();
         beehiveSet.add(new Point(0, 1));
@@ -62,8 +27,7 @@ public class GoLFigures {
         beehiveSet.add(new Point(1, 2));
         beehiveSet.add(new Point(2, 2));
         beehiveSet.add(new Point(3, 1));
-        beehive = new GoLPrefab("Beehive", beehiveSet);
-        figures.add(beehive);
+        figures.add(new GoLPrefab("Beehive", beehiveSet));
 
         Set<Point> loafSet = new HashSet<>();
         loafSet.add(new Point(1, 0));
@@ -73,8 +37,7 @@ public class GoLFigures {
         loafSet.add(new Point(2, 3));
         loafSet.add(new Point(3, 1));
         loafSet.add(new Point(3, 2));
-        loaf = new GoLPrefab("Loaf", loafSet);
-        figures.add(loaf);
+        figures.add(new GoLPrefab("Loaf", loafSet));
 
         Set<Point> boatSet = new HashSet<>();
         boatSet.add(new Point(0, 1));
@@ -82,23 +45,20 @@ public class GoLFigures {
         boatSet.add(new Point(0, 0));
         boatSet.add(new Point(2, 1));
         boatSet.add(new Point(1, 2));
-        boat = new GoLPrefab("Boat", boatSet);
-        figures.add(boat);
+        figures.add(new GoLPrefab("Boat", boatSet));
 
         Set<Point> tubSet = new HashSet<>();
         tubSet.add(new Point(1, 0));
         tubSet.add(new Point(1, 2));
         tubSet.add(new Point(0, 1));
         tubSet.add(new Point(2, 1));
-        tub = new GoLPrefab("Tub", tubSet);
-        figures.add(tub);
+        figures.add(new GoLPrefab("Tub", tubSet));
 
         Set<Point> blinkerSet = new HashSet<>();
         blinkerSet.add(new Point(0, 0));
         blinkerSet.add(new Point(1, 0));
         blinkerSet.add(new Point(2, 0));
-        blinker = new GoLPrefab("Blinker", blinkerSet);
-        figures.add(blinker);
+        figures.add(new GoLPrefab("Blinker", blinkerSet));
 
         Set<Point> toadSet = new HashSet<>();
         toadSet.add(new Point(1, 0));
@@ -107,8 +67,7 @@ public class GoLFigures {
         toadSet.add(new Point(0, 1));
         toadSet.add(new Point(1, 1));
         toadSet.add(new Point(2, 1));
-        toad = new GoLPrefab("Toad", toadSet);
-        figures.add(toad);
+        figures.add(new GoLPrefab("Toad", toadSet));
 
         Set<Point> beaconSet = new HashSet<>();
         beaconSet.add(new Point(0, 0));
@@ -117,8 +76,7 @@ public class GoLFigures {
         beaconSet.add(new Point(3, 2));
         beaconSet.add(new Point(3, 3));
         beaconSet.add(new Point(2, 3));
-        beacon = new GoLPrefab("Beacon", beaconSet);
-        figures.add(beacon);
+        figures.add(new GoLPrefab("Beacon", beaconSet));
 
         Set<Point> pulsarSet = new HashSet<>();
         pulsarSet.add(new Point(2, 0));
@@ -169,8 +127,7 @@ public class GoLFigures {
         pulsarSet.add(new Point(7, 8));
         pulsarSet.add(new Point(4, 5));
         pulsarSet.add(new Point(10, 12));
-        pulsar = new GoLPrefab("Pulsar", pulsarSet);
-        figures.add(pulsar);
+        figures.add(new GoLPrefab("Pulsar", pulsarSet));
 
         Set<Point> pentadecathlonSet = new HashSet<>();
         pentadecathlonSet.add(new Point(0, 2));
@@ -185,8 +142,7 @@ public class GoLFigures {
         pentadecathlonSet.add(new Point(0, 7));
         pentadecathlonSet.add(new Point(2, 2));
         pentadecathlonSet.add(new Point(2, 7));
-        pentadecathlon = new GoLPrefab("Pentadecathlon", pentadecathlonSet);
-        figures.add(pentadecathlon);
+        figures.add(new GoLPrefab("Pentadecathlon", pentadecathlonSet));
 
         Set<Point> gliderSet = new HashSet<>();
         gliderSet.add(new Point(0, 0));
@@ -194,8 +150,7 @@ public class GoLFigures {
         gliderSet.add(new Point(2, 1));
         gliderSet.add(new Point(0, 2));
         gliderSet.add(new Point(1, 2));
-        glider = new GoLPrefab("Glider", gliderSet);
-        figures.add(glider);
+        figures.add(new GoLPrefab("Glider", gliderSet));
 
         Set<Point> LWSSSet = new HashSet<>();
         LWSSSet.add(new Point(0, 0));
@@ -207,8 +162,7 @@ public class GoLFigures {
         LWSSSet.add(new Point(2, 3));
         LWSSSet.add(new Point(3, 3));
         LWSSSet.add(new Point(4, 3));
-        LWSS = new GoLPrefab("LWSS", LWSSSet);
-        figures.add(LWSS);
+        figures.add(new GoLPrefab("LWSS", LWSSSet));
 
         Set<Point> MWSSSet = new HashSet<>();
         MWSSSet.add(new Point(3, 0));
@@ -226,8 +180,7 @@ public class GoLFigures {
         MWSSSet.add(new Point(1, 3));
         MWSSSet.add(new Point(2, 3));
         MWSSSet.add(new Point(3, 3));
-        MWSS = new GoLPrefab("MWSS", MWSSSet);
-        figures.add(MWSS);
+        figures.add(new GoLPrefab("MWSS", MWSSSet));
 
         Set<Point> HWSSSet = new HashSet<>();
         HWSSSet.add(new Point(4, 4));
@@ -243,8 +196,7 @@ public class GoLFigures {
         HWSSSet.add(new Point(3, 4));
         HWSSSet.add(new Point(6, 2));
         HWSSSet.add(new Point(0, 3));
-        HWSS = new GoLPrefab("HWSS", HWSSSet);
-        figures.add(HWSS);
+        figures.add(new GoLPrefab("HWSS", HWSSSet));
 
         Set<Point> rpentominoSet = new HashSet<>();
         rpentominoSet.add(new Point(0, 1));
@@ -252,8 +204,7 @@ public class GoLFigures {
         rpentominoSet.add(new Point(1, 0));
         rpentominoSet.add(new Point(1, 1));
         rpentominoSet.add(new Point(1, 2));
-        rpentomino = new GoLPrefab("R-Pentomino", rpentominoSet);
-        figures.add(rpentomino);
+        figures.add(new GoLPrefab("R-Pentomino", rpentominoSet));
 
         Set<Point> diehardSet = new HashSet<>();
         diehardSet.add(new Point(0, 1));
@@ -263,8 +214,7 @@ public class GoLFigures {
         diehardSet.add(new Point(5, 2));
         diehardSet.add(new Point(6, 2));
         diehardSet.add(new Point(7, 2));
-        diehard = new GoLPrefab("Diehard", diehardSet);
-        figures.add(diehard);
+        figures.add(new GoLPrefab("Diehard", diehardSet));
 
         Set<Point> acornSet = new HashSet<>();
         acornSet.add(new Point(1, 2));
@@ -274,8 +224,7 @@ public class GoLFigures {
         acornSet.add(new Point(5, 2));
         acornSet.add(new Point(6, 2));
         acornSet.add(new Point(7, 2));
-        acorn = new GoLPrefab("Acorn", acornSet);
-        figures.add(acorn);
+        figures.add(new GoLPrefab("Acorn", acornSet));
 
         Set<Point> gopserGGSet = new HashSet<>();
         gopserGGSet.add(new Point(24, 0));
@@ -314,8 +263,7 @@ public class GoLFigures {
         gopserGGSet.add(new Point(15, 7));
         gopserGGSet.add(new Point(12, 8));
         gopserGGSet.add(new Point(13, 8));
-        gosperGG = new GoLPrefab("Gosper Glider Gun", gopserGGSet);
-        figures.add(gosperGG);
+        figures.add(new GoLPrefab("Gosper Glider Gun", gopserGGSet));
 
         Set<Point> simkinGGSet = new HashSet<>();
         simkinGGSet.add(new Point(0, 0));
@@ -354,8 +302,7 @@ public class GoLFigures {
         simkinGGSet.add(new Point(20, 17));
         simkinGGSet.add(new Point(21, 17));
         simkinGGSet.add(new Point(23, 20));
-        simkinGG = new GoLPrefab("Simkin Glider Gun", simkinGGSet);
-        figures.add(simkinGG);
+        figures.add(new GoLPrefab("Simkin Glider Gun", simkinGGSet));
 
         Set<Point> infinite_1Set = new HashSet<>();
         infinite_1Set.add(new Point(0, 5));
@@ -368,8 +315,7 @@ public class GoLFigures {
         infinite_1Set.add(new Point(6, 1));
         infinite_1Set.add(new Point(6, 2));
         infinite_1Set.add(new Point(7, 1));
-        infinite_1 = new GoLPrefab("Infinite 1", infinite_1Set);
-        figures.add(infinite_1);
+        figures.add(new GoLPrefab("Infinite 1", infinite_1Set));
 
         Set<Point> infinite_2Set = new HashSet<>();
         infinite_2Set.add(new Point(0, 0));
@@ -385,8 +331,7 @@ public class GoLFigures {
         infinite_2Set.add(new Point(0, 4));
         infinite_2Set.add(new Point(2, 4));
         infinite_2Set.add(new Point(4, 4));
-        infinite_2 = new GoLPrefab("Infinite 2", infinite_2Set);
-        figures.add(infinite_2);
+        figures.add(new GoLPrefab("Infinite 2", infinite_2Set));
 
         Set<Point> infinite_3Set = new HashSet<>();
         infinite_3Set.add(new Point(0, 0));
@@ -417,8 +362,7 @@ public class GoLFigures {
         infinite_3Set.add(new Point(37, 0));
         infinite_3Set.add(new Point(38, 0));
         infinite_3Set.add(new Point(39, 0));
-        infinite_3 = new GoLPrefab("Infinite 3", infinite_3Set);
-        figures.add(infinite_3);
+        figures.add(new GoLPrefab("Infinite 3", infinite_3Set));
     }
 
     public GoLPrefab getFigure(int position) {

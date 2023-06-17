@@ -17,13 +17,10 @@ public class GoLModel {
     private Color deadCellColor = Color.WHITE;
     private Color invertedColor = Color.BLACK;
     private ArrayList<GoLPrefab> figures = new ArrayList<>();
-    private GoLFigures preMadeFigures = new GoLFigures();
+    private final GoLFigures preMadeFigures = new GoLFigures();
     private GoLPrefab currentFigure;
     private int speed = 10;
-    private static boolean laufen;
-    private boolean malen;
-    private boolean setzen;
-
+    private boolean laufen, malen, setzen;
 
     public void setCell(Point nextCellPosition, boolean isAlive) {
         if (isAlive) {
@@ -39,7 +36,6 @@ public class GoLModel {
         canvas.setRGB(pos.x, pos.y, c.getRGB());
     }
 
-
     public BufferedImage getCanvas() {
         return canvas;
     }
@@ -54,10 +50,6 @@ public class GoLModel {
 
     public void clearAliveCells() {
         aliveCells.clear();
-    }
-
-    public void setAliveCells(Set<Point> aliveCells) {
-        this.aliveCells = aliveCells;
     }
 
     public Color getAliveCellColor() {
@@ -112,7 +104,6 @@ public class GoLModel {
         return figures.get(position);
     }
 
-
     public GoLPrefab getCurrentFigure() {
         return currentFigure;
     }
@@ -125,12 +116,13 @@ public class GoLModel {
         return preMadeFigures.getFigure(position);
     }
 
-    public void setPreMadeFigures(GoLFigures preMadeFigures) {
-        this.preMadeFigures = preMadeFigures;
+    public void setSpeed(int speed) {
+        this.speed = speed;
     }
 
-    public void setSpeed(int speed) { this.speed = speed; }
-    public int getSpeed() { return speed; }
+    public int getSpeed() {
+        return speed;
+    }
 
     public void setLaufen(boolean laufen) {
         this.laufen = laufen;
@@ -139,12 +131,22 @@ public class GoLModel {
     public void setMalen(boolean malen) {
         this.malen = malen;
     }
+
     public void setSetzen(boolean setzen) {
         this.setzen = setzen;
     }
-    public boolean getLaufen(){return laufen;}
-    public boolean getMalen(){return malen;}
-    public boolean getSetzen(){return setzen;}
+
+    public boolean isLaufen() {
+        return laufen;
+    }
+
+    public boolean isMalen() {
+        return malen;
+    }
+
+    public boolean isSetzen() {
+        return setzen;
+    }
 
 
 }
