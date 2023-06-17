@@ -241,27 +241,20 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     @Override
     public void mouseMoved(MouseEvent e) {
         Point pos = calculateMousePosition(e.getPoint());
-        try {
-            if (!model.isCellAlive(pos)) {
-                if (!placingFigure) {
-                    model.setCanvasRGB(lastCell, model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
-                    model.setCanvasRGB(pos, invertColor(model.getDeadCellColor()));
-                    lastCell = pos;
-                } else {
-                    for (Point p : lastCells) {
-                        model.setCanvasRGB(p, model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
-                    }
-                    lastCells.clear();
-                    for (Point p : savedFigure) {
-                        Point calculatedPoint = new Point(p.x + pos.x - (highestX / 2), p.y + pos.y - (highestY / 2));
-                        model.setCanvasRGB(calculateWrap(calculatedPoint), model.isCellAlive(calculatedPoint) ? model.getAliveCellColor() : invertColor(model.getDeadCellColor()));
-                        lastCells.add(calculateWrap(calculatedPoint));
-                    }
-                }
-            } else {
-                model.setCanvasRGB(lastCell, model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
+        if (!placingFigure) {
+            model.setCanvasRGB(lastCell, model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
+            model.setCanvasRGB(pos, model.isCellAlive(pos) ? model.getAliveCellColor() : invertColor(model.getDeadCellColor()));
+            lastCell = pos;
+        } else {
+            for (Point p : lastCells) {
+                model.setCanvasRGB(p, model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
             }
-        } catch (Exception ignored) {
+            lastCells.clear();
+            for (Point p : savedFigure) {
+                Point calculatedPoint = new Point(p.x + pos.x - (highestX / 2), p.y + pos.y - (highestY / 2));
+                model.setCanvasRGB(calculateWrap(calculatedPoint), model.isCellAlive(calculatedPoint) ? model.getAliveCellColor() : invertColor(model.getDeadCellColor()));
+                lastCells.add(calculateWrap(calculatedPoint));
+            }
         }
     }
 
