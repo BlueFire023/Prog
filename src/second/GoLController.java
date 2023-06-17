@@ -4,7 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -33,8 +35,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     public void calculateNextGeneration() {
-        Set<Point> cellsToAdd = new HashSet<>();
-        Set<Point> cellsToRemove = new HashSet<>();
+        Map<Point, Boolean> cellsToUpdate = new HashMap<>();
         Set<Point> deadCellsToCheck = new HashSet<>();
         for (Point p : model.getAliveCells()) {
             int aliveCellsCount = 0;
@@ -58,7 +59,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 }
             }
             if (aliveCellsCount < 2 || aliveCellsCount > 3) {
-                cellsToRemove.add(p);
+                cellsToUpdate.put(p, false);
             }
         }
         for (Point p : deadCellsToCheck) {
@@ -81,14 +82,11 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 }
             }
             if (aliveCellsCount == 3) {
-                cellsToAdd.add(p);
+                cellsToUpdate.put(p, true);
             }
         }
-        for (Point p : cellsToRemove) {
-            model.setCell(calculateWrap(p), false);
-        }
-        for (Point p : cellsToAdd) {
-            model.setCell(calculateWrap(p), true);
+        for (Map.Entry<Point, Boolean> entry : cellsToUpdate.entrySet()) {
+            model.setCell(calculateWrap(entry.getKey()), entry.getValue());
         }
     }
 
