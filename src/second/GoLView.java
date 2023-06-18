@@ -25,7 +25,7 @@ public class GoLView extends JPanel {
     private final JMenu shipsMenu = new JMenu("Raum Schiffe");
     private final JMenu methMenu = new JMenu("Methuselahs");
     private final JMenu gunsMenu = new JMenu("Gleiter Kanonen");
-    private final JMenu infMenu = new JMenu("Unendliche");
+    private final JMenu otherMenu = new JMenu("Andere");
     private final ArrayList<JMenuItem> figures = new ArrayList<>();
 
     private final JSlider speedSlider = new JSlider();
@@ -47,7 +47,7 @@ public class GoLView extends JPanel {
     private final JFrame frame = new JFrame();
     private final JMenuItem newWindow = new JMenuItem("Neues Fenster");
     private BufferedImage canvas;
-    private final int stillLifesCount = 5, oscillatorsCount = 5, spaceshipsCount = 4, methuselahsCount = 3, ggCount = 2, infCount = 3;
+    private final int stillLifesCount = 8, oscillatorsCount = 9, spaceshipsCount = 4, methuselahsCount = 3, ggCount = 2, otherCount = 4;
 
     public GoLView(BufferedImage canvas) {
         this.canvas = canvas;
@@ -86,7 +86,7 @@ public class GoLView extends JPanel {
         figuresMenu.add(shipsMenu);
         figuresMenu.add(methMenu);
         figuresMenu.add(gunsMenu);
-        figuresMenu.add(infMenu);
+        figuresMenu.add(otherMenu);
 
         menuBar.add(figuresMenu);
         sliderMenu.add(speedSlider);
@@ -215,9 +215,9 @@ public class GoLView extends JPanel {
             gunsMenu.add(figures.get(i));
         }
         count += ggCount;
-        for (int i = count; i < infCount + count; i++) {
+        for (int i = count; i < otherCount + count; i++) {
             figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
-            infMenu.add(figures.get(i));
+            otherMenu.add(figures.get(i));
         }
     }
 }
