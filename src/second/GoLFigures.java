@@ -350,18 +350,18 @@ public class GoLFigures {
         infinite_3Set.add(new Point(17, 0));
         infinite_3Set.add(new Point(18, 0));
         infinite_3Set.add(new Point(19, 0));
+        infinite_3Set.add(new Point(26, 0));
         infinite_3Set.add(new Point(27, 0));
         infinite_3Set.add(new Point(28, 0));
         infinite_3Set.add(new Point(29, 0));
         infinite_3Set.add(new Point(30, 0));
         infinite_3Set.add(new Point(31, 0));
         infinite_3Set.add(new Point(32, 0));
-        infinite_3Set.add(new Point(33, 0));
+        infinite_3Set.add(new Point(34, 0));
         infinite_3Set.add(new Point(35, 0));
         infinite_3Set.add(new Point(36, 0));
         infinite_3Set.add(new Point(37, 0));
         infinite_3Set.add(new Point(38, 0));
-        infinite_3Set.add(new Point(39, 0));
         figures.add(new GoLPrefab("Infinite 3", infinite_3Set));
     }
 

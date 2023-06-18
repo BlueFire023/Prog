@@ -29,6 +29,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     public GoLController() {
         view = new GoLView(model.getCanvas());
+        view.initFiguresMenu(model.getPreMadeFigures());
         view.setListeners(this, this, this, this, this);
         refreshCanvas();
     }
@@ -130,7 +131,10 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         switch (e.getActionCommand()) {
             case "Löschen" -> clearCanvas();
             case "Neues Fenster" -> new GoLController();
-            case "Auflösung" -> view.updateCanvasSize();
+            case "Auflösung" -> {
+                lastCells.clear();
+                view.updateCanvasSize();
+            }
             case "Farben" -> view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
             case "size" -> {
                 clearCanvas();
@@ -187,6 +191,13 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             case "Setzen" -> {
                 activeMode = Mode.SETZEN;
                 placingFigure = false;
+                refreshCanvas();
+            }
+            default -> {
+                model.setCurrentFigure(model.getPreMadeFigures(Integer.parseInt(e.getActionCommand())));
+                activeMode = Mode.SETZEN;
+                placingFigure = true;
+                calculateCenter();
                 refreshCanvas();
             }
         }
@@ -277,7 +288,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             painting = e.getButton() == 1;
             if (placingFigure && activeMode != Mode.MALEN) {
                 for (Point p : model.getCurrentFigure().cells()) {
-                    model.setCell(calculateWrap(new Point(p.x + prevPos.x - (model.getCenter().x / 2), p.y + prevPos.y - (model.getCenter().y / 2))), true);
+                    model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), true);
                 }
             } else {
                 model.setCell(calculateWrap(prevPos), painting);
@@ -319,7 +330,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 }
                 lastCells.clear();
                 for (Point p : model.getCurrentFigure().cells()) {
-                    Point calculatedPoint = new Point(p.x + pos.x - (model.getCenter().x / 2), p.y + pos.y - (model.getCenter().y / 2));
+                    Point calculatedPoint = new Point(p.x + pos.x - model.getCenter().x, p.y + pos.y - model.getCenter().y);
                     model.setCanvasRGB(calculateWrap(calculatedPoint), model.getInvertedColor());
                     lastCells.add(calculateWrap(calculatedPoint));
                 }
@@ -357,6 +368,8 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 center.y = p.y;
             }
         }
+        center.x /= 2;
+        center.y /= 2;
         model.setCenter(center);
     }
 

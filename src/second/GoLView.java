@@ -8,6 +8,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 /**
@@ -19,6 +20,14 @@ public class GoLView extends JPanel {
     private final JMenu optionsMenu = new JMenu("Menü");
     private final JMenu figuresMenu = new JMenu("Figuren");
     private final JMenu sliderMenu = new JMenu("Geschwindigkeit");
+    private final JMenu staticMenu = new JMenu("Statische");
+    private final JMenu oscMenu = new JMenu("Oszillierende");
+    private final JMenu shipsMenu = new JMenu("Raum Schiffe");
+    private final JMenu methMenu = new JMenu("Methuselahs");
+    private final JMenu gunsMenu = new JMenu("Gleiter Kanonen");
+    private final JMenu infMenu = new JMenu("Unendliche");
+    private final ArrayList<JMenuItem> figures = new ArrayList<>();
+
     private final JSlider speedSlider = new JSlider();
     private final JMenuItem save = new JMenuItem("Speichern");
     private final JMenuItem load = new JMenuItem("Laden");
@@ -38,6 +47,7 @@ public class GoLView extends JPanel {
     private final JFrame frame = new JFrame();
     private final JMenuItem newWindow = new JMenuItem("Neues Fenster");
     private BufferedImage canvas;
+    private final int stillLifesCount = 5, oscillatorsCount = 5, spaceshipsCount = 4, methuselahsCount = 3, ggCount = 2, infCount = 3;
 
     public GoLView(BufferedImage canvas) {
         this.canvas = canvas;
@@ -68,8 +78,16 @@ public class GoLView extends JPanel {
         optionsMenu.add(setzenButton);
         optionsMenu.add(newWindow);
         menuBar.add(optionsMenu);
+
         figuresMenu.add(save);
         figuresMenu.add(load);
+        figuresMenu.add(staticMenu);
+        figuresMenu.add(oscMenu);
+        figuresMenu.add(shipsMenu);
+        figuresMenu.add(methMenu);
+        figuresMenu.add(gunsMenu);
+        figuresMenu.add(infMenu);
+
         menuBar.add(figuresMenu);
         sliderMenu.add(speedSlider);
         menuBar.add(sliderMenu);
@@ -107,6 +125,11 @@ public class GoLView extends JPanel {
         load.addActionListener(al);
         test.addActionListener(al);
         speedSlider.addChangeListener(cl);
+        int index = 0;
+        for(JMenuItem j: figures){
+            j.addActionListener(al);
+            j.setActionCommand(String.valueOf(index++));
+        }
     }
 
     public void updateCanvasSize() {
@@ -163,5 +186,38 @@ public class GoLView extends JPanel {
 
     public int getSliderstat() {
         return speedSlider.getValue();
+    }
+
+    public void initFiguresMenu(GoLFigures preMadeFigures) {
+        int count = 0;
+        for (int i = 0; i < stillLifesCount; i++) {
+            figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
+            staticMenu.add(figures.get(i));
+        }
+        count += stillLifesCount;
+        for (int i = count; i < oscillatorsCount + count; i++) {
+            figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
+            oscMenu.add(figures.get(i));
+        }
+        count += oscillatorsCount;
+        for (int i = count; i < spaceshipsCount + count; i++) {
+            figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
+            shipsMenu.add(figures.get(i));
+        }
+        count += spaceshipsCount;
+        for (int i = count; i < methuselahsCount + count; i++) {
+            figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
+            methMenu.add(figures.get(i));
+        }
+        count += methuselahsCount;
+        for (int i = count; i < ggCount + count; i++) {
+            figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
+            gunsMenu.add(figures.get(i));
+        }
+        count += ggCount;
+        for (int i = count; i < infCount + count; i++) {
+            figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
+            infMenu.add(figures.get(i));
+        }
     }
 }

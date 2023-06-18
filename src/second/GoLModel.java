@@ -114,4 +114,8 @@ public class GoLModel {
     public void setCenter(Point center) {
         this.center = center;
     }
+
+    public GoLFigures getPreMadeFigures() {
+        return preMadeFigures;
+    }
 }
