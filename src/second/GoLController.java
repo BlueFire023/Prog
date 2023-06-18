@@ -6,6 +6,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -22,9 +23,9 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     private Point prevPos = new Point();
     private Point lastCell = new Point(0, 0);
     private boolean placingFigure = false, painting;
-    private int highestX, highestY;
     private Set<Point> lastCells = new HashSet<>();
 
+    private JFileChooser fileChooser = new JFileChooser();
 
     public GoLController() {
         view = new GoLView(model.getCanvas());
@@ -158,43 +159,22 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 refreshCanvas();
             }
             case "Speichern" -> {
-                Set<Point> figureConstruct = new HashSet<>();
-                highestX = 0;
-                highestY = 0;
-                int lowestX = model.getCanvasWidth(), lowestY = model.getCanvasHeight();
-                for (Point p : model.getAliveCells()) {
-                    if (lowestX > p.x) {
-                        lowestX = p.x;
-                    }
-                    if (highestX < p.x) {
-                        highestX = p.x;
-                    }
-                    if (lowestY > p.y) {
-                        lowestY = p.y;
-                    }
-                    if (highestY < p.y) {
-                        highestY = p.y;
-                    }
-                }
-                highestX -= lowestX;
-                highestY -= lowestY;
-                for (Point p : model.getAliveCells()) {
-                    figureConstruct.add(new Point(p.x - lowestX, p.y - lowestY));
-                }
-                GoLPrefab figureToSave = new GoLPrefab("Test", figureConstruct);
-                System.out.println(figureToSave.cells());
-                model.addFigure(figureToSave);
-            }
-            case "Laden" -> {
-                view.figureSelect();
-            }
-            case "h" -> {
+                saveFigure();
+                calculateCenter();
+                refreshCanvas();
                 model.setLaufen(false);
                 model.setMalen(false);
                 model.setSetzen(true);
                 placingFigure = true;
-                model.setCurrentFigure(model.getPreMadeFigures(view.getChosenFigure()));
-                calculateHighestPoints();
+            }
+            case "Laden" -> {
+                loadSavedFigure();
+                calculateCenter();
+                refreshCanvas();
+                model.setLaufen(false);
+                model.setMalen(false);
+                model.setSetzen(true);
+                placingFigure = true;
             }
             case "Laufen" -> {
                 model.setLaufen(true);
@@ -234,6 +214,56 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         }
     }
 
+    private void saveFigure() {
+        Set<Point> figureConstruct = new HashSet<>();
+        int lowestX = model.getCanvasWidth(), lowestY = model.getCanvasHeight();
+        for (Point p : model.getAliveCells()) {
+            if (lowestX > p.x) {
+                lowestX = p.x;
+            }
+            if (lowestY > p.y) {
+                lowestY = p.y;
+            }
+        }
+        for (Point p : model.getAliveCells()) {
+            figureConstruct.add(new Point(p.x - lowestX, p.y - lowestY));
+        }
+        GoLPrefab figureToSave = new GoLPrefab("Test", figureConstruct);
+        model.setCurrentFigure(figureToSave);
+
+        int returnValue = fileChooser.showSaveDialog(null);
+
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            String filePath = selectedFile.getAbsolutePath();
+            try {
+                FileOutputStream fileOut = new FileOutputStream(filePath);
+                ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+                objectOut.writeObject(figureToSave);
+                objectOut.close();
+                fileOut.close();
+                JOptionPane.showMessageDialog(null, "Das Objekt wurde erfolgreich gespeichert.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Fehler beim Schreiben des Objekts: " + e.getMessage());
+            }
+        }
+    }
+
+    private void loadSavedFigure() {
+        int returnValue = fileChooser.showOpenDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+            try {
+                FileInputStream fs = new FileInputStream(filePath);
+                ObjectInputStream os = new ObjectInputStream(fs);
+                GoLPrefab m = (GoLPrefab) os.readObject();
+                model.setCurrentFigure(m);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Fehler beim laden des Objekts: " + e.getMessage());
+            }
+        }
+    }
+
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -261,7 +291,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             painting = e.getButton() == 1;
             if (placingFigure && !model.isMalen()) {
                 for (Point p : model.getCurrentFigure().cells()) {
-                    model.setCell(calculateWrap(new Point(p.x + prevPos.x - (highestX / 2), p.y + prevPos.y - (highestY / 2))), true);
+                    model.setCell(calculateWrap(new Point(p.x + prevPos.x - (model.getCenter().x / 2), p.y + prevPos.y - (model.getCenter().y / 2))), true);
                 }
             } else {
                 model.setCell(calculateWrap(prevPos), painting);
@@ -303,7 +333,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 }
                 lastCells.clear();
                 for (Point p : model.getCurrentFigure().cells()) {
-                    Point calculatedPoint = new Point(p.x + pos.x - (highestX / 2), p.y + pos.y - (highestY / 2));
+                    Point calculatedPoint = new Point(p.x + pos.x - (model.getCenter().x / 2), p.y + pos.y - (model.getCenter().y / 2));
                     model.setCanvasRGB(calculateWrap(calculatedPoint), model.getInvertedColor());
                     lastCells.add(calculateWrap(calculatedPoint));
                 }
@@ -328,22 +358,20 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         return new Point(posOnCanvasX, posOnCanvasY);
     }
 
-    private void calculateHighestPoints() {
-        highestY = 0;
-        highestX = 0;
-        for (Point p : model.getCurrentFigure().cells()) {
-            if (highestX < p.x) {
-                highestX = p.x;
-            }
-            if (highestY < p.y) {
-                highestY = p.y;
-            }
-        }
-    }
-
     @Override
     public void stateChanged(ChangeEvent e) {
+    }
 
-
+    private void calculateCenter() {
+        Point center = new Point(0, 0);
+        for (Point p : model.getCurrentFigure().cells()) {
+            if (center.x < p.x) {
+                center.x = p.x;
+            }
+            if (center.y < p.y) {
+                center.y = p.y;
+            }
+        }
+        model.setCenter(center);
     }
 }

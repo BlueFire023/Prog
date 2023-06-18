@@ -2,7 +2,6 @@ package second;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,9 +15,9 @@ public class GoLModel {
     private Color aliveCellColor = Color.BLACK;
     private Color deadCellColor = Color.WHITE;
     private Color invertedColor = Color.BLACK;
-    private ArrayList<GoLPrefab> figures = new ArrayList<>();
     private final GoLFigures preMadeFigures = new GoLFigures();
     private GoLPrefab currentFigure;
+    private Point center;
     private int speed = 10;
     private boolean laufen, malen, setzen;
 
@@ -88,22 +87,6 @@ public class GoLModel {
         this.invertedColor = invertedColor;
     }
 
-    public ArrayList<GoLPrefab> getFigures() {
-        return figures;
-    }
-
-    public void setFigures(ArrayList<GoLPrefab> figures) {
-        this.figures = figures;
-    }
-
-    public void addFigure(GoLPrefab figure) {
-        figures.add(figure);
-    }
-
-    public GoLPrefab getFigure(int position) {
-        return figures.get(position);
-    }
-
     public GoLPrefab getCurrentFigure() {
         return currentFigure;
     }
@@ -148,5 +131,11 @@ public class GoLModel {
         return setzen;
     }
 
+    public Point getCenter() {
+        return center;
+    }
 
+    public void setCenter(Point center) {
+        this.center = center;
+    }
 }

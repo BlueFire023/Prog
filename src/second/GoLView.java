@@ -139,14 +139,6 @@ public class GoLView extends JPanel {
         setColorFrame.setVisible(true);
     }
 
-    public void figureSelect() {
-        JFrame figureFrame = new JFrame();
-        figureFrame.setSize(new Dimension(500, 500));
-        figureFrame.setLayout(new FlowLayout());
-        figureFrame.add(test);
-        figureFrame.setVisible(true);
-    }
-
     public void updateCanvasObject(BufferedImage canvas) {
         this.canvas = canvas;
     }
