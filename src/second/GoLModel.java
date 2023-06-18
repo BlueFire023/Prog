@@ -2,7 +2,6 @@ package second;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,12 +10,16 @@ import java.util.Set;
  * @version 1, 15/06/2023
  */
 public class GoLModel {
+    private final GoLFigures preMadeFigures = new GoLFigures();
     private BufferedImage canvas = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
-    private Set<Point> aliveCells = new HashSet<>();
+    private final Set<Point> aliveCells = new HashSet<>();
     private Color aliveCellColor = Color.BLACK;
     private Color deadCellColor = Color.WHITE;
     private Color invertedColor = Color.BLACK;
-    private ArrayList<GoLPrefab> figures = new ArrayList<>();
+    private GoLPrefab currentFigure;
+    private Point center;
+    private int speed = 10;
+
 
     public void setCell(Point nextCellPosition, boolean isAlive) {
         if (isAlive) {
@@ -32,7 +35,6 @@ public class GoLModel {
         canvas.setRGB(pos.x, pos.y, c.getRGB());
     }
 
-
     public BufferedImage getCanvas() {
         return canvas;
     }
@@ -47,10 +49,6 @@ public class GoLModel {
 
     public void clearAliveCells() {
         aliveCells.clear();
-    }
-
-    public void setAliveCells(Set<Point> aliveCells) {
-        this.aliveCells = aliveCells;
     }
 
     public Color getAliveCellColor() {
@@ -89,17 +87,35 @@ public class GoLModel {
         this.invertedColor = invertedColor;
     }
 
-    public ArrayList<GoLPrefab> getFigures() {
-        return figures;
+    public GoLPrefab getCurrentFigure() {
+        return currentFigure;
     }
 
-    public void setFigures(ArrayList<GoLPrefab> figures) {
-        this.figures = figures;
+    public void setCurrentFigure(GoLPrefab figure) {
+        this.currentFigure = figure;
     }
-    public void addFigure(GoLPrefab figure){
-        figures.add(figure);
+
+    public GoLPrefab getPreMadeFigures(int position) {
+        return preMadeFigures.getFigure(position);
     }
-    public GoLPrefab getFigure(int position){
-        return figures.get(position);
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public Point getCenter() {
+        return center;
+    }
+
+    public void setCenter(Point center) {
+        this.center = center;
+    }
+
+    public GoLFigures getPreMadeFigures() {
+        return preMadeFigures;
     }
 }

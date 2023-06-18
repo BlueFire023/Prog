@@ -1,33 +1,38 @@
 package second;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
+import java.util.List;
 
 /**
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
  * @version 1, 15/06/2023
  */
 
-public class GoLController implements ActionListener, KeyListener, MouseMotionListener, MouseListener, Runnable {
-    private GoLModel model = new GoLModel();
-    private GoLView view;
+public class GoLController implements Runnable, ActionListener, KeyListener, MouseMotionListener, MouseListener, ChangeListener {
+    private final GoLModel model = new GoLModel();
+    private final GoLView view;
     private Point prevPos = new Point();
     private Point lastCell = new Point(0, 0);
-    private boolean placingFigure = false, painting;
-    private int highestX, highestY;
-    private Set<Point> lastCells = new HashSet<>();
+    private boolean painting;
+    private final Set<Point> lastCells = new HashSet<>();
+    private final JFileChooser fileChooser = new JFileChooser();
+    private Mode activeMode = Mode.MALEN;
+    private static List<GoLController> instances = new ArrayList<>();
+
 
     public GoLController() {
         view = new GoLView(model.getCanvas());
-        view.setListeners(this, this, this, this);
-        updateCanvasColors();
-        new Thread(this).start();
+        view.initFiguresMenu(model.getPreMadeFigures());
+        view.setListeners(this, this, this, this, this);
+        refreshCanvas();
+        instances.add(this);
     }
 
     public static void main(String[] args) {
@@ -50,12 +55,6 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                     } else {
                         deadCellsToCheck.add(newPos);
                     }
-                    if (aliveCellsCount > 3) {
-                        break;
-                    }
-                }
-                if (aliveCellsCount > 3) {
-                    break;
                 }
             }
             if (aliveCellsCount < 2 || aliveCellsCount > 3) {
@@ -90,6 +89,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         }
     }
 
+
     private void drawLineBresenham(Point prev, Point curr, Boolean paint) {
         int dx = Math.abs(curr.x - prev.x), dy = Math.abs(curr.y - prev.y);
         int sx = prev.x < curr.x ? 1 : -1, sy = prev.y < curr.y ? 1 : -1;
@@ -117,14 +117,34 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     public void clearCanvas() {
         model.clearAliveCells();
-        updateCanvasColors();
+        refreshCanvas();
     }
 
-    private void updateCanvasColors() {
+    private void refreshCanvas() {
         for (int i = 0; i < model.getCanvasWidth(); i++) {
             for (int j = 0; j < model.getCanvasHeight(); j++) {
-                model.setCell(calculateWrap(new Point(i, j)), model.isCellAlive(new Point(i, j)));
+                model.setCell(new Point(i, j), model.isCellAlive(new Point(i, j)));
             }
+        }
+    }
+
+    public void calculateNextGenerationAll() {
+        for (GoLController instance : instances) {
+            instance.activeMode = Mode.LAUFEN;
+            instance.refreshCanvas();
+
+            Runnable runningTask = () -> {
+                while (instance.activeMode == Mode.LAUFEN) {
+                    instance.calculateNextGeneration();
+                    try {
+                        Thread.sleep(1000 / instance.view.getSliderstat());
+                    } catch (InterruptedException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            };
+            Thread runningThread = new Thread(runningTask);
+            runningThread.start();
         }
     }
 
@@ -133,14 +153,17 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         switch (e.getActionCommand()) {
             case "Löschen" -> clearCanvas();
             case "Neues Fenster" -> new GoLController();
-            case "Auflösung" -> view.updateCanvasSize();
+            case "Auflösung" -> {
+                lastCells.clear();
+                view.updateCanvasSize();
+            }
             case "Farben" -> view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
             case "size" -> {
                 clearCanvas();
                 model.setCanvas(new BufferedImage(view.getNewWidth(), view.getNewHeight(), BufferedImage.TYPE_INT_RGB));
                 view.disposeSetSizeFrame();
                 view.updateCanvasObject(model.getCanvas());
-                updateCanvasColors();
+                refreshCanvas();
             }
             case "acc" -> {
                 Color newColor = JColorChooser.showDialog(view, "Wähle eine Farbe", model.getAliveCellColor());
@@ -149,7 +172,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 }
                 model.setAliveCellColor(newColor);
                 ((JButton) e.getSource()).setBackground(newColor);
-                updateCanvasColors();
+                refreshCanvas();
             }
             case "dcc" -> {
                 Color newColor = JColorChooser.showDialog(view, "Wähle eine Farbe", model.getDeadCellColor());
@@ -159,54 +182,97 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 model.setDeadCellColor(newColor);
                 model.setInvertedColor(invertColor(newColor));
                 ((JButton) e.getSource()).setBackground(newColor);
-                updateCanvasColors();
+                refreshCanvas();
             }
-            case "Speichern" -> {
-                Set<Point> figureConstruct = new HashSet<>();
-                highestX = 0;
-                highestY = 0;
-                int lowestX = model.getCanvasWidth(), lowestY = model.getCanvasHeight();
-                for (Point p : model.getAliveCells()) {
-                    if (lowestX > p.x) {
-                        lowestX = p.x;
-                    }
-                    if (highestX < p.x) {
-                        highestX = p.x;
-                    }
-                    if (lowestY > p.y) {
-                        lowestY = p.y;
-                    }
-                    if (highestY < p.y) {
-                        highestY = p.y;
-                    }
-                }
-                highestX -= lowestX;
-                highestY -= lowestY;
-                for (Point p : model.getAliveCells()) {
-                    figureConstruct.add(new Point(p.x - lowestX, p.y - lowestY));
-                }
-                GoLPrefab figureToSave = new GoLPrefab("Test",figureConstruct);
-                model.addFigure(figureToSave);
+            case "Speichern" -> saveFigure();
+            case "Laden" -> loadSavedFigure();
+            case "Laufen" -> calculateNextGenerationAll();
+            case "Malen" -> {
+                activeMode = Mode.MALEN;
+                refreshCanvas();
             }
-            case "Laden" -> {
-                placingFigure = true;
+            case "Setzen" -> {
+                activeMode = Mode.SETZEN;
+                refreshCanvas();
+            }
+            default -> {
+                model.setCurrentFigure(model.getPreMadeFigures(Integer.parseInt(e.getActionCommand())));
+                activeMode = Mode.PLACING;
+                calculateCenter();
+                refreshCanvas();
+            }
+        }
+    }
+
+    private void saveFigure() {
+        Set<Point> figureConstruct = new HashSet<>();
+        int lowestX = model.getCanvasWidth(), lowestY = model.getCanvasHeight();
+        for (Point p : model.getAliveCells()) {
+            if (lowestX > p.x) {
+                lowestX = p.x;
+            }
+            if (lowestY > p.y) {
+                lowestY = p.y;
+            }
+        }
+        for (Point p : model.getAliveCells()) {
+            figureConstruct.add(new Point(p.x - lowestX, p.y - lowestY));
+        }
+        GoLPrefab figureToSave = new GoLPrefab("Test", figureConstruct);
+        model.setCurrentFigure(figureToSave);
+
+        int returnValue = fileChooser.showSaveDialog(null);
+
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            String filePath = selectedFile.getAbsolutePath();
+            try {
+                FileOutputStream fileOut = new FileOutputStream(filePath);
+                ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+                objectOut.writeObject(figureToSave);
+                objectOut.close();
+                fileOut.close();
+                calculateCenter();
+                refreshCanvas();
+                activeMode = Mode.PLACING;
+                JOptionPane.showMessageDialog(null, "Das Objekt wurde erfolgreich gespeichert.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Fehler beim Schreiben des Objekts: " + e.getMessage());
+            }
+        }
+    }
+
+    private void loadSavedFigure() {
+        int returnValue = fileChooser.showOpenDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+            try {
+                FileInputStream fs = new FileInputStream(filePath);
+                ObjectInputStream os = new ObjectInputStream(fs);
+                GoLPrefab m = (GoLPrefab) os.readObject();
+                model.setCurrentFigure(m);
+                calculateCenter();
+                refreshCanvas();
+                activeMode = Mode.PLACING;
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Fehler beim laden des Objekts: " + e.getMessage());
             }
         }
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        calculateNextGeneration();
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-
+        if (activeMode != Mode.LAUFEN) {
+            calculateNextGeneration();
+        }
     }
 
     @Override
@@ -218,60 +284,54 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     public void mousePressed(MouseEvent e) {
         prevPos = calculateMousePosition(e.getPoint());
         painting = e.getButton() == 1;
-        if (!placingFigure) {
-            model.setCell(calculateWrap(prevPos), painting);
-        } else {
-            for (Point p : model.getFigure(0).getCells()) {
-                model.setCell(calculateWrap(new Point(p.x + prevPos.x - (highestX / 2), p.y + prevPos.y - (highestY / 2))), true);
+        if (activeMode == Mode.PLACING) {
+            for (Point p : model.getCurrentFigure().cells()) {
+                model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), true);
             }
+        } else {
+            model.setCell(calculateWrap(prevPos), painting);
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        Point currPos = calculateMousePosition(e.getPoint());
-        drawLineBresenham(prevPos, currPos, painting);
-        prevPos = currPos;
+        if (activeMode == Mode.MALEN) {
+            Point currPos = calculateMousePosition(e.getPoint());
+            drawLineBresenham(prevPos, currPos, painting);
+            prevPos = currPos;
+        }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
         Point pos = calculateMousePosition(e.getPoint());
-        if (!placingFigure) {
-            model.setCanvasRGB(calculateWrap(lastCell), model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
-            model.setCanvasRGB(pos, model.getInvertedColor());
-            lastCell = pos;
-        } else {
+        if (activeMode == Mode.PLACING) {
             for (Point p : lastCells) {
                 model.setCanvasRGB(p, model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
             }
             lastCells.clear();
-            for (Point p : model.getFigure(0).getCells()) {
-                Point calculatedPoint = new Point(p.x + pos.x - (highestX / 2), p.y + pos.y - (highestY / 2));
+            for (Point p : model.getCurrentFigure().cells()) {
+                Point calculatedPoint = new Point(p.x + pos.x - model.getCenter().x, p.y + pos.y - model.getCenter().y);
                 model.setCanvasRGB(calculateWrap(calculatedPoint), model.getInvertedColor());
                 lastCells.add(calculateWrap(calculatedPoint));
             }
+        } else {
+            model.setCanvasRGB(calculateWrap(lastCell), model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
+            model.setCanvasRGB(pos, model.getInvertedColor());
+            lastCell = pos;
         }
-    }
-
-    @Override
-    public void run() {
-
     }
 
     private Color invertColor(Color initalColor) {
@@ -284,5 +344,34 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         int posOnCanvasX = (int) (pos.x * scaleX);
         int posOnCanvasY = (int) (pos.y * scaleY);
         return new Point(posOnCanvasX, posOnCanvasY);
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+    }
+
+    private void calculateCenter() {
+        Point center = new Point(0, 0);
+        for (Point p : model.getCurrentFigure().cells()) {
+            if (center.x < p.x) {
+                center.x = p.x;
+            }
+            if (center.y < p.y) {
+                center.y = p.y;
+            }
+        }
+        center.x /= 2;
+        center.y /= 2;
+        model.setCenter(center);
+    }
+
+    @Override
+    public void run() {
+
+
+    }
+
+    private enum Mode {
+        LAUFEN, MALEN, SETZEN, PLACING, LINE
     }
 }
