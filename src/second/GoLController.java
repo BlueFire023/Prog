@@ -18,17 +18,13 @@ import java.util.Set;
  */
 
 public class GoLController implements ActionListener, KeyListener, MouseMotionListener, MouseListener, ChangeListener {
-    private GoLModel model = new GoLModel();
-    private GoLView view;
+    private final GoLModel model = new GoLModel();
+    private final GoLView view;
     private Point prevPos = new Point();
     private Point lastCell = new Point(0, 0);
     private boolean placingFigure = false, painting;
-    private Set<Point> lastCells = new HashSet<>();
-
-    private JFileChooser fileChooser = new JFileChooser();
-    private enum Mode {
-        LAUFEN, MALEN, SETZEN
-    }
+    private final Set<Point> lastCells = new HashSet<>();
+    private final JFileChooser fileChooser = new JFileChooser();
     private Mode activeMode = Mode.MALEN;
 
     public GoLController() {
@@ -256,17 +252,17 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     @Override
     public void keyTyped(KeyEvent e) {
-
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        //calculateNextGeneration();
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-
+        if (activeMode != Mode.LAUFEN) {
+            calculateNextGeneration();
+        }
     }
 
     @Override
@@ -335,7 +331,6 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         }
     }
 
-
     private Color invertColor(Color initalColor) {
         return new Color(255 - initalColor.getRed(), 255 - initalColor.getGreen(), 255 - initalColor.getBlue());
     }
@@ -363,5 +358,9 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             }
         }
         model.setCenter(center);
+    }
+
+    private enum Mode {
+        LAUFEN, MALEN, SETZEN
     }
 }

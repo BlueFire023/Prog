@@ -10,12 +10,12 @@ import java.util.Set;
  * @version 1, 15/06/2023
  */
 public class GoLModel {
+    private final GoLFigures preMadeFigures = new GoLFigures();
     private BufferedImage canvas = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
-    private Set<Point> aliveCells = new HashSet<>();
+    private final Set<Point> aliveCells = new HashSet<>();
     private Color aliveCellColor = Color.BLACK;
     private Color deadCellColor = Color.WHITE;
     private Color invertedColor = Color.BLACK;
-    private final GoLFigures preMadeFigures = new GoLFigures();
     private GoLPrefab currentFigure;
     private Point center;
     private int speed = 10;

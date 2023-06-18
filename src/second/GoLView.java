@@ -15,29 +15,29 @@ import java.util.Hashtable;
  * @version 1, 15/06/2023
  */
 public class GoLView extends JPanel {
+    private final JMenuBar menuBar = new JMenuBar();
+    private final JMenu optionsMenu = new JMenu("Menü");
+    private final JMenu figuresMenu = new JMenu("Figuren");
+    private final JMenu sliderMenu = new JMenu("Geschwindigkeit");
+    private final JSlider speedSlider = new JSlider();
+    private final JMenuItem save = new JMenuItem("Speichern");
+    private final JMenuItem load = new JMenuItem("Laden");
+    private final JMenuItem clearButton = new JMenuItem("Löschen");
+    private final JMenuItem setSizeButton = new JMenuItem("Auflösung");
+    private final JMenuItem setColorButton = new JMenuItem("Farben");
+    private final JMenuItem startButton = new JMenuItem("Laufen");
+    private final JMenuItem malenButton = new JMenuItem("Malen");
+    private final JMenuItem setzenButton = new JMenuItem("Setzen");
+    private final JFrame setSizeFrame = new JFrame();
+    private final JTextField test = new JTextField("");
+    private final JTextField widthTextArea;
+    private final JTextField heightTextArea;
+    private final JButton applySizeButton = new JButton("Apply");
+    private final JButton activeColorDisplay = new JButton();
+    private final JButton deadColorDisplay = new JButton();
+    private final JFrame frame = new JFrame();
+    private final JMenuItem newWindow = new JMenuItem("Neues Fenster");
     private BufferedImage canvas;
-    private JMenuBar menuBar = new JMenuBar();
-    private JMenu optionsMenu = new JMenu("Menü");
-    private JMenu figuresMenu = new JMenu("Figuren");
-    private JMenu sliderMenu = new JMenu("Geschwindigkeit");
-    private JSlider speedSlider = new JSlider();
-    private JMenuItem save = new JMenuItem("Speichern");
-    private JMenuItem load = new JMenuItem("Laden");
-    private JMenuItem clearButton = new JMenuItem("Löschen");
-    private JMenuItem setSizeButton = new JMenuItem("Auflösung");
-    private JMenuItem setColorButton = new JMenuItem("Farben");
-    private JMenuItem startButton = new JMenuItem("Laufen");
-    private JMenuItem malenButton = new JMenuItem("Malen");
-    private JMenuItem setzenButton = new JMenuItem("Setzen");
-    private JFrame setSizeFrame = new JFrame();
-    private JTextField test = new JTextField("");
-    private JTextField widthTextArea;
-    private JTextField heightTextArea;
-    private JButton applySizeButton = new JButton("Apply");
-    private JButton activeColorDisplay = new JButton();
-    private JButton deadColorDisplay = new JButton();
-    private JFrame frame = new JFrame();
-    private JMenuItem newWindow = new JMenuItem("Neues Fenster");
 
     public GoLView(BufferedImage canvas) {
         this.canvas = canvas;
