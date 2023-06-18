@@ -49,7 +49,7 @@ public class GoLView extends JPanel {
     private BufferedImage canvas;
     private final int stillLifesCount = 8, oscillatorsCount = 9, spaceshipsCount = 4, methuselahsCount = 3, ggCount = 2, otherCount = 4;
 
-    public GoLView(BufferedImage canvas) {
+    public GoLView(BufferedImage canvas, boolean isMainWindow) {
         this.canvas = canvas;
         widthTextArea = new JTextField(String.valueOf(canvas.getTileWidth()));
         widthTextArea.setColumns(7);
@@ -102,7 +102,7 @@ public class GoLView extends JPanel {
         frame.setTitle("Game of Life");
         frame.setJMenuBar(menuBar);
         frame.setSize(new Dimension(1014, 1060));
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(isMainWindow ? WindowConstants.EXIT_ON_CLOSE : WindowConstants.DISPOSE_ON_CLOSE);
         frame.setContentPane(this);
         frame.setVisible(true);
     }
@@ -126,7 +126,7 @@ public class GoLView extends JPanel {
         test.addActionListener(al);
         speedSlider.addChangeListener(cl);
         int index = 0;
-        for(JMenuItem j: figures){
+        for (JMenuItem j : figures) {
             j.addActionListener(al);
             j.setActionCommand(String.valueOf(index++));
         }
