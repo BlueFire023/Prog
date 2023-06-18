@@ -8,6 +8,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 /**
@@ -15,49 +16,59 @@ import java.util.Hashtable;
  * @version 1, 15/06/2023
  */
 public class GoLView extends JPanel {
+    private final JMenuBar menuBar = new JMenuBar();
+    private final JMenu optionsMenu = new JMenu("Menü");
+    private final JMenu figuresMenu = new JMenu("Figuren");
+    private final JMenu sliderMenu = new JMenu("Geschwindigkeit");
+    private final JMenu staticMenu = new JMenu("Statische");
+    private final JMenu oscMenu = new JMenu("Oszillierende");
+    private final JMenu shipsMenu = new JMenu("Raum Schiffe");
+    private final JMenu methMenu = new JMenu("Methuselahs");
+    private final JMenu gunsMenu = new JMenu("Gleiter Kanonen");
+    private final JMenu infMenu = new JMenu("Unendliche");
+    private final ArrayList<JMenuItem> figures = new ArrayList<>();
+
+    private final JSlider speedSlider = new JSlider();
+    private final JMenuItem save = new JMenuItem("Speichern");
+    private final JMenuItem load = new JMenuItem("Laden");
+    private final JMenuItem clearButton = new JMenuItem("Löschen");
+    private final JMenuItem setSizeButton = new JMenuItem("Auflösung");
+    private final JMenuItem setColorButton = new JMenuItem("Farben");
+    private final JMenuItem startButton = new JMenuItem("Laufen");
+    private final JMenuItem malenButton = new JMenuItem("Malen");
+    private final JMenuItem setzenButton = new JMenuItem("Setzen");
+    private final JFrame setSizeFrame = new JFrame();
+    private final JTextField test = new JTextField("");
+    private final JTextField widthTextArea;
+    private final JTextField heightTextArea;
+    private final JButton applySizeButton = new JButton("Apply");
+    private final JButton activeColorDisplay = new JButton();
+    private final JButton deadColorDisplay = new JButton();
+    private final JFrame frame = new JFrame();
+    private final JMenuItem newWindow = new JMenuItem("Neues Fenster");
     private BufferedImage canvas;
-    private JMenuBar menuBar = new JMenuBar();
-    private JMenu optionsMenu = new JMenu("Menü");
-    private JMenu figuresMenu = new JMenu("Figuren");
-    private JMenu sliderMenu = new JMenu("Geschwindigkeit");
-    private JSlider gSlider = new JSlider();
-    private JMenuItem save = new JMenuItem("Speichern");
-    private JMenuItem load = new JMenuItem("Laden");
-    private JMenuItem clearButton = new JMenuItem("Löschen");
-    private JMenuItem setSizeButton = new JMenuItem("Auflösung");
-    private JMenuItem setColorButton = new JMenuItem("Farben");
-    private JMenuItem startButton = new JMenuItem("Laufen");
-    private JMenuItem malenButton = new JMenuItem("Malen");
-    private JMenuItem setzenButton = new JMenuItem("Setzen");
-    private JFrame setSizeFrame = new JFrame();
-    private JTextField test = new JTextField("");
-    private JTextField widthTextArea;
-    private JTextField heightTextArea;
-    private JButton applySizeButton = new JButton("Apply");
-    private JButton activeColorDisplay = new JButton();
-    private JButton deadColorDisplay = new JButton();
-    private JFrame frame = new JFrame();
-    private JMenuItem newWindow = new JMenuItem("Neues Fenster");
+    private final int stillLifesCount = 5, oscillatorsCount = 5, spaceshipsCount = 4, methuselahsCount = 3, ggCount = 2, infCount = 3;
 
     public GoLView(BufferedImage canvas) {
         this.canvas = canvas;
         widthTextArea = new JTextField(String.valueOf(canvas.getTileWidth()));
+        widthTextArea.setColumns(7);
         heightTextArea = new JTextField(String.valueOf(canvas.getTileHeight()));
+        heightTextArea.setColumns(7);
 
-        gSlider.setMinimum(1);
-        gSlider.setMaximum(100);
-        gSlider.setMajorTickSpacing(10);
-        gSlider.setMinorTickSpacing(5);
-        gSlider.createStandardLabels(5);
-        gSlider.setPaintTicks(true);
-        gSlider.setPaintLabels(true);
-        gSlider.setValue(10);
+        speedSlider.setMinimum(1);
+        speedSlider.setMaximum(100);
+        speedSlider.setMajorTickSpacing(10);
+        speedSlider.setMinorTickSpacing(5);
+        speedSlider.createStandardLabels(5);
+        speedSlider.setPaintTicks(true);
+        speedSlider.setPaintLabels(true);
+        speedSlider.setValue(10);
         Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
         for (int i = 10; i <= 100; i += 10) {
             labelTable.put(i, new JLabel(Integer.toString(i)));
         }
-        gSlider.setLabelTable(labelTable);
-
+        speedSlider.setLabelTable(labelTable);
 
         optionsMenu.add(clearButton);
         optionsMenu.add(setSizeButton);
@@ -67,10 +78,18 @@ public class GoLView extends JPanel {
         optionsMenu.add(setzenButton);
         optionsMenu.add(newWindow);
         menuBar.add(optionsMenu);
+
         figuresMenu.add(save);
         figuresMenu.add(load);
+        figuresMenu.add(staticMenu);
+        figuresMenu.add(oscMenu);
+        figuresMenu.add(shipsMenu);
+        figuresMenu.add(methMenu);
+        figuresMenu.add(gunsMenu);
+        figuresMenu.add(infMenu);
+
         menuBar.add(figuresMenu);
-        sliderMenu.add(gSlider);
+        sliderMenu.add(speedSlider);
         menuBar.add(sliderMenu);
         menuBar.setBackground(Color.LIGHT_GRAY);
 
@@ -78,6 +97,7 @@ public class GoLView extends JPanel {
         activeColorDisplay.setActionCommand("acc");
         deadColorDisplay.setActionCommand("dcc");
         test.setActionCommand("h");
+        test.setColumns(7);
 
         frame.setTitle("Game of Life");
         frame.setJMenuBar(menuBar);
@@ -86,7 +106,6 @@ public class GoLView extends JPanel {
         frame.setContentPane(this);
         frame.setVisible(true);
     }
-
 
     public void setListeners(ActionListener al, KeyListener kl, MouseListener ml, MouseMotionListener mml, ChangeListener cl) {
         frame.addKeyListener(kl);
@@ -105,8 +124,12 @@ public class GoLView extends JPanel {
         save.addActionListener(al);
         load.addActionListener(al);
         test.addActionListener(al);
-        gSlider.addChangeListener(cl);
-
+        speedSlider.addChangeListener(cl);
+        int index = 0;
+        for(JMenuItem j: figures){
+            j.addActionListener(al);
+            j.setActionCommand(String.valueOf(index++));
+        }
     }
 
     public void updateCanvasSize() {
@@ -139,12 +162,6 @@ public class GoLView extends JPanel {
         setColorFrame.setVisible(true);
     }
 
-    public void figureSelect() {
-        JFrame figureFrame = new JFrame();
-        figureFrame.add(test);
-        figureFrame.setVisible(true);
-    }
-
     public void updateCanvasObject(BufferedImage canvas) {
         this.canvas = canvas;
     }
@@ -163,13 +180,44 @@ public class GoLView extends JPanel {
         return Integer.parseInt(heightTextArea.getText());
     }
 
-    public int getFrameWidth() {
-        return frame.getWidth();
-    }
-
-    public int getChoosenFigure() {
+    public int getChosenFigure() {
         return Integer.parseInt(test.getText());
     }
-  
-    public int getSliderstat(){ return gSlider.getValue();}
+
+    public int getSliderstat() {
+        return speedSlider.getValue();
+    }
+
+    public void initFiguresMenu(GoLFigures preMadeFigures) {
+        int count = 0;
+        for (int i = 0; i < stillLifesCount; i++) {
+            figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
+            staticMenu.add(figures.get(i));
+        }
+        count += stillLifesCount;
+        for (int i = count; i < oscillatorsCount + count; i++) {
+            figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
+            oscMenu.add(figures.get(i));
+        }
+        count += oscillatorsCount;
+        for (int i = count; i < spaceshipsCount + count; i++) {
+            figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
+            shipsMenu.add(figures.get(i));
+        }
+        count += spaceshipsCount;
+        for (int i = count; i < methuselahsCount + count; i++) {
+            figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
+            methMenu.add(figures.get(i));
+        }
+        count += methuselahsCount;
+        for (int i = count; i < ggCount + count; i++) {
+            figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
+            gunsMenu.add(figures.get(i));
+        }
+        count += ggCount;
+        for (int i = count; i < infCount + count; i++) {
+            figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
+            infMenu.add(figures.get(i));
+        }
+    }
 }
