@@ -18,13 +18,14 @@ import java.util.*;
 public class GoLController implements Runnable, ActionListener, KeyListener, MouseMotionListener, MouseListener, ChangeListener {
     private final GoLModel model = new GoLModel();
     private final GoLView view;
-    private Point prevPos = new Point();
+    private Point prevPos = new Point(), testPos = new Point();
     private Point lastCell = new Point(0, 0);
     private boolean painting;
     private final Set<Point> lastCells = new HashSet<>();
     private final JFileChooser fileChooser = new JFileChooser();
     private Mode activeMode = Mode.PAINT;
     private static List<GoLController> instances = new ArrayList<>();
+    private Point mousePos = new Point(0, 0);
 
 
     public GoLController(Boolean isMainWindow) {
@@ -90,13 +91,20 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
     }
 
 
-    private void drawLineBresenham(Point prev, Point curr, Boolean paint) {
+    private void drawLineBresenham(Point curr, Boolean paint, Boolean preview) {
+        Point prev = new Point(prevPos.x, prevPos.y);
         int dx = Math.abs(curr.x - prev.x), dy = Math.abs(curr.y - prev.y);
         int sx = prev.x < curr.x ? 1 : -1, sy = prev.y < curr.y ? 1 : -1;
         int err = dx - dy, e2;
         while (true) {
-            model.setCell(calculateWrap(prev), paint);
+            if(preview){
+                model.setCanvasRGB(calculateWrap(prev), model.getInvertedColor());
+                lastCells.add(calculateWrap(prev));
+            }else{
+                model.setCell(calculateWrap(prev), paint);
+            }
             if (prev.x == curr.x && prev.y == curr.y) {
+
                 break;
             }
             e2 = err * 2;
@@ -195,6 +203,10 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
                 activeMode = Mode.SET;
                 refreshCanvas();
             }
+            case "Linien" -> {
+                activeMode = Mode.LINE;
+                refreshCanvas();
+            }
             default -> {
                 model.setCurrentFigure(model.getPreMadeFigures(Integer.parseInt(e.getActionCommand())));
                 activeMode = Mode.PLACING;
@@ -270,8 +282,11 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (activeMode != Mode.RUN) {
+        /*if (activeMode != Mode.RUN) {
             calculateNextGeneration();
+        }*/
+        if (e.getKeyCode() == KeyEvent.VK_R) { // Nur wenn die R-Taste losgelassen wird
+            rotate();
         }
     }
 
@@ -287,6 +302,8 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
             for (Point p : model.getCurrentFigure().cells()) {
                 model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), true);
             }
+        } else if (activeMode == Mode.LINE) {
+            testPos = calculateMousePosition(e.getPoint());
         } else {
             model.setCell(calculateWrap(prevPos), painting);
         }
@@ -294,6 +311,10 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        if (activeMode == Mode.LINE) {
+            mousePos = calculateMousePosition(e.getPoint());
+            drawLineBresenham(mousePos, true, false);
+        }
     }
 
     @Override
@@ -307,29 +328,48 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
     @Override
     public void mouseDragged(MouseEvent e) {
         if (activeMode == Mode.PAINT) {
-            Point currPos = calculateMousePosition(e.getPoint());
-            drawLineBresenham(prevPos, currPos, painting);
-            prevPos = currPos;
+            mousePos = calculateMousePosition(e.getPoint());
+            drawLineBresenham(mousePos, painting, false);
+            prevPos = mousePos;
+        } else {
+            mousePos = calculateMousePosition(e.getPoint());
+            if(!testPos.equals(mousePos)){
+                System.out.println("hi");
+                showPreview();
+                testPos = mousePos;
+            }
         }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        Point pos = calculateMousePosition(e.getPoint());
+        mousePos = calculateMousePosition(e.getPoint());
+        if(activeMode != Mode.LINE) {
+            showPreview();
+        }
+    }
+
+    private void showPreview() {
         if (activeMode == Mode.PLACING) {
             for (Point p : lastCells) {
                 model.setCanvasRGB(p, model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
             }
             lastCells.clear();
             for (Point p : model.getCurrentFigure().cells()) {
-                Point calculatedPoint = new Point(p.x + pos.x - model.getCenter().x, p.y + pos.y - model.getCenter().y);
+                Point calculatedPoint = new Point(p.x + mousePos.x - model.getCenter().x, p.y + mousePos.y - model.getCenter().y);
                 model.setCanvasRGB(calculateWrap(calculatedPoint), model.getInvertedColor());
                 lastCells.add(calculateWrap(calculatedPoint));
             }
+        } else if (activeMode == Mode.LINE) {
+            for (Point p : lastCells) {
+                model.setCanvasRGB(calculateWrap(p), model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
+            }
+            lastCells.clear();
+            drawLineBresenham(mousePos, painting, true);
         } else {
             model.setCanvasRGB(calculateWrap(lastCell), model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
-            model.setCanvasRGB(pos, model.getInvertedColor());
-            lastCell = pos;
+            model.setCanvasRGB(mousePos, model.getInvertedColor());
+            lastCell = mousePos;
         }
     }
 
@@ -370,5 +410,46 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
 
     private enum Mode {
         RUN, PAINT, SET, PLACING, LINE
+    }
+
+    private void rotate() {
+        Set<Point> objectPoints = new HashSet<>(model.getCurrentFigure().cells());
+        int centerX = 0;
+        int centerY = 0;
+        for (Point point : objectPoints) {
+            centerX += point.x;
+            centerY += point.y;
+        }
+        centerX /= objectPoints.size();
+        centerY /= objectPoints.size();
+        for (Point point : objectPoints) {
+            int relativeX = point.x - centerX;
+            int relativeY = point.y - centerY;
+
+            // Führe die Rotationsformel durch
+            double radians = Math.toRadians(90);
+            int rotatedX = (int) Math.round(relativeX * Math.cos(radians) - relativeY * Math.sin(radians));
+            int rotatedY = (int) Math.round(relativeX * Math.sin(radians) + relativeY * Math.cos(radians));
+
+            // Aktualisiere den Punkt aufgrund der Rotation
+            point.x = rotatedX + centerX;
+            point.y = rotatedY + centerY;
+        }
+        Set<Point> figureConstruct = new HashSet<>();
+        int lowestX = 0, lowestY = 0;
+        for (Point p : objectPoints) {
+            if (lowestX > p.x) {
+                lowestX = p.x;
+            }
+            if (lowestY > p.y) {
+                lowestY = p.y;
+            }
+        }
+        for (Point p : objectPoints) {
+            figureConstruct.add(new Point(p.x - lowestX, p.y - lowestY));
+        }
+        model.setCurrentFigure(new GoLPrefab("rotated", figureConstruct));
+        calculateCenter();
+        showPreview();
     }
 }

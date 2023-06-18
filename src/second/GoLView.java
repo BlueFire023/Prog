@@ -34,9 +34,10 @@ public class GoLView extends JPanel {
     private final JMenuItem clearButton = new JMenuItem("Löschen");
     private final JMenuItem setSizeButton = new JMenuItem("Auflösung");
     private final JMenuItem setColorButton = new JMenuItem("Farben");
-    private final JMenuItem startButton = new JMenuItem("Laufen");
-    private final JMenuItem malenButton = new JMenuItem("Malen");
-    private final JMenuItem setzenButton = new JMenuItem("Setzen");
+    private final JMenuItem runButton = new JMenuItem("Laufen");
+    private final JMenuItem paintButton = new JMenuItem("Malen");
+    private final JMenuItem setButton = new JMenuItem("Setzen");
+    private final JMenuItem lineButton = new JMenuItem("Linien");
     private final JFrame setSizeFrame = new JFrame();
     private final JTextField test = new JTextField("");
     private final JTextField widthTextArea;
@@ -73,9 +74,10 @@ public class GoLView extends JPanel {
         optionsMenu.add(clearButton);
         optionsMenu.add(setSizeButton);
         optionsMenu.add(setColorButton);
-        optionsMenu.add(startButton);
-        optionsMenu.add(malenButton);
-        optionsMenu.add(setzenButton);
+        optionsMenu.add(runButton);
+        optionsMenu.add(paintButton);
+        optionsMenu.add(setButton);
+        optionsMenu.add(lineButton);
         optionsMenu.add(newWindow);
         menuBar.add(optionsMenu);
 
@@ -115,9 +117,10 @@ public class GoLView extends JPanel {
         setSizeButton.addActionListener(al);
         applySizeButton.addActionListener(al);
         setColorButton.addActionListener(al);
-        startButton.addActionListener(al);
-        malenButton.addActionListener(al);
-        setzenButton.addActionListener(al);
+        runButton.addActionListener(al);
+        paintButton.addActionListener(al);
+        setButton.addActionListener(al);
+        lineButton.addActionListener(al);
         newWindow.addActionListener(al);
         activeColorDisplay.addActionListener(al);
         deadColorDisplay.addActionListener(al);
