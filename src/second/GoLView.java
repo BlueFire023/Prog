@@ -226,4 +226,7 @@ public class GoLView extends JPanel {
     public JFrame getFrame(){
         return frame;
     }
+    public void setNewTitle(int number){
+        frame.setTitle("Game of Life " + number);
+    }
 }

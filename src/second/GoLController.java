@@ -433,7 +433,10 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
 
     @Override
     public void windowClosed(WindowEvent e) {
-
+        int number = 1;
+        for(GoLController g : instances){
+            g.updateWindowCountTitle(number++);
+        }
     }
 
     @Override
@@ -499,5 +502,8 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
         model.setCurrentFigure(new GoLPrefab("rotated", figureConstruct));
         calculateCenter();
         showPreview();
+    }
+    private void updateWindowCountTitle(int number){
+        view.setNewTitle(number);
     }
 }
