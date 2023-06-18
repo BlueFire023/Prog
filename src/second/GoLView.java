@@ -47,7 +47,7 @@ public class GoLView extends JPanel {
     private BufferedImage canvas;
     private final int stillLifesCount = 8, oscillatorsCount = 9, spaceshipsCount = 4, methuselahsCount = 3, ggCount = 2, otherCount = 4;
 
-    public GoLView(BufferedImage canvas, boolean isMainWindow) {
+    public GoLView(BufferedImage canvas, int openWindows) {
         this.canvas = canvas;
         widthTextArea = new JTextField(String.valueOf(canvas.getTileWidth()));
         widthTextArea.setColumns(7);
@@ -98,15 +98,15 @@ public class GoLView extends JPanel {
         test.setActionCommand("h");
         test.setColumns(7);
 
-        frame.setTitle("Game of Life");
+        frame.setTitle("Game of Life " + openWindows);
         frame.setJMenuBar(menuBar);
         frame.setSize(new Dimension(1014, 1060));
-        frame.setDefaultCloseOperation(isMainWindow ? WindowConstants.EXIT_ON_CLOSE : WindowConstants.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(openWindows == 1 ? WindowConstants.EXIT_ON_CLOSE : WindowConstants.DISPOSE_ON_CLOSE);
         frame.setContentPane(this);
         frame.setVisible(true);
     }
 
-    public void setListeners(ActionListener al, KeyListener kl, MouseListener ml, MouseMotionListener mml, ChangeListener cl, WindowFocusListener wl) {
+    public void setListeners(ActionListener al, KeyListener kl, MouseListener ml, MouseMotionListener mml, ChangeListener cl, WindowFocusListener wfl, WindowListener wl) {
         frame.addKeyListener(kl);
         addMouseMotionListener(mml);
         addMouseListener(ml);
@@ -124,8 +124,9 @@ public class GoLView extends JPanel {
         save.addActionListener(al);
         load.addActionListener(al);
         test.addActionListener(al);
-        frame.addWindowFocusListener(wl);
+        frame.addWindowFocusListener(wfl);
         speedSlider.addChangeListener(cl);
+        frame.addWindowListener(wl);
         int index = 0;
         for (JMenuItem j : figures) {
             j.addActionListener(al);
@@ -220,5 +221,9 @@ public class GoLView extends JPanel {
             figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
             otherMenu.add(figures.get(i));
         }
+    }
+
+    public JFrame getFrame(){
+        return frame;
     }
 }

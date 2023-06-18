@@ -15,29 +15,28 @@ import java.util.*;
  * @version 1, 15/06/2023
  */
 
-public class GoLController implements Runnable, ActionListener, KeyListener, MouseMotionListener, MouseListener, ChangeListener, WindowFocusListener {
+public class GoLController implements Runnable, ActionListener, KeyListener, MouseMotionListener, MouseListener, ChangeListener, WindowFocusListener, WindowListener {
     private final GoLModel model = new GoLModel();
     private final GoLView view;
-    private Point prevPos = new Point();
-    private Point lastCell = new Point(0, 0);
+    private Point prevPos = new Point(),lastCell = new Point(),mousePos = new Point();
     private boolean painting, mouseHeld;
     private final Set<Point> lastCells = new HashSet<>();
     private final JFileChooser fileChooser = new JFileChooser();
     private Mode activeMode = Mode.PAINT;
     private static List<GoLController> instances = new ArrayList<>();
-    private Point mousePos = new Point(0, 0);
 
 
-    public GoLController(Boolean isMainWindow) {
-        view = new GoLView(model.getCanvas(), isMainWindow);
+    public GoLController() {
+
+        view = new GoLView(model.getCanvas(), instances.size() + 1);
         view.initFiguresMenu(model.getPreMadeFigures());
-        view.setListeners(this, this, this, this, this, this);
+        view.setListeners(this, this, this, this, this, this, this);
         refreshCanvas();
         instances.add(this);
     }
 
     public static void main(String[] args) {
-        new GoLController(true);
+        new GoLController();
     }
 
     public void calculateNextGeneration() {
@@ -163,7 +162,10 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
                 clearCanvas();
                 activeMode = Mode.SET;
             }
-            case "Neues Fenster" -> new GoLController(false);
+            case "Neues Fenster" -> {
+                new GoLController();
+                refreshCanvas();
+            }
             case "Auflösung" -> {
                 lastCells.clear();
                 view.updateCanvasSize();
@@ -417,6 +419,41 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
         for (Point p : lastCells) {
             model.setCanvasRGB(calculateWrap(p), model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
         }
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        instances.removeIf(g -> e.getSource().equals(g.view.getFrame()));
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
+
     }
 
     private enum Mode {
