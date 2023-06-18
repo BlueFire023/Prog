@@ -15,19 +15,17 @@ import java.util.*;
  * @version 1, 15/06/2023
  */
 
-public class GoLController implements Runnable, ActionListener, KeyListener, MouseMotionListener, MouseListener, ChangeListener, WindowFocusListener, WindowListener {
+public class GoLController implements ActionListener, KeyListener, MouseMotionListener, MouseListener, ChangeListener, WindowFocusListener, WindowListener {
     private final GoLModel model = new GoLModel();
     private final GoLView view;
-    private Point prevPos = new Point(),lastCell = new Point(),mousePos = new Point();
+    private Point prevPos = new Point(), lastCell = new Point(), mousePos = new Point();
     private boolean painting, mouseHeld;
     private final Set<Point> lastCells = new HashSet<>();
     private final JFileChooser fileChooser = new JFileChooser();
     private Mode activeMode = Mode.PAINT;
-    private static List<GoLController> instances = new ArrayList<>();
-
+    private static final List<GoLController> instances = new ArrayList<>();
 
     public GoLController() {
-
         view = new GoLView(model.getCanvas(), instances.size() + 1);
         view.initFiguresMenu(model.getPreMadeFigures());
         view.setListeners(this, this, this, this, this, this, this);
@@ -236,17 +234,14 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
             figureConstruct.add(new Point(p.x - lowestX, p.y - lowestY));
         }
         GoLPrefab figureToSave = new GoLPrefab("Test", figureConstruct);
-        model.setCurrentFigure(figureToSave);
-
-        int returnValue = fileChooser.showSaveDialog(null);
-
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
+        if (!figureToSave.cells().isEmpty() && fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             String filePath = selectedFile.getAbsolutePath();
             try {
                 FileOutputStream fileOut = new FileOutputStream(filePath);
                 ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
                 objectOut.writeObject(figureToSave);
+                model.setCurrentFigure(figureToSave);
                 objectOut.close();
                 fileOut.close();
                 calculateCenter();
@@ -256,6 +251,8 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Fehler beim Schreiben des Objekts: " + e.getMessage());
             }
+        } else {
+            JOptionPane.showMessageDialog(null, "Fehler beim Schreiben des Objekts: Leeres Objekt");
         }
     }
 
@@ -405,10 +402,6 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
     }
 
     @Override
-    public void run() {
-    }
-
-    @Override
     public void windowGainedFocus(WindowEvent e) {
 
     }
@@ -434,7 +427,7 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
     @Override
     public void windowClosed(WindowEvent e) {
         int number = 1;
-        for(GoLController g : instances){
+        for (GoLController g : instances) {
             g.updateWindowCountTitle(number++);
         }
     }
@@ -457,10 +450,6 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
     @Override
     public void windowDeactivated(WindowEvent e) {
 
-    }
-
-    private enum Mode {
-        RUN, PAINT, SET, PLACING, LINE
     }
 
     private void rotate() {
@@ -503,7 +492,14 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
         calculateCenter();
         showPreview();
     }
-    private void updateWindowCountTitle(int number){
+
+    private void updateWindowCountTitle(int number) {
         view.setNewTitle(number);
     }
+
+    private enum Mode {
+        RUN, PAINT, SET, PLACING, LINE
+    }
+
+
 }
