@@ -18,7 +18,7 @@ import java.util.*;
 public class GoLController implements Runnable, ActionListener, KeyListener, MouseMotionListener, MouseListener, ChangeListener, WindowFocusListener {
     private final GoLModel model = new GoLModel();
     private final GoLView view;
-    private Point prevPos = new Point(), testPos = new Point();
+    private Point prevPos = new Point();
     private Point lastCell = new Point(0, 0);
     private boolean painting, mouseHeld;
     private final Set<Point> lastCells = new HashSet<>();
@@ -298,22 +298,20 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
     public void mousePressed(MouseEvent e) {
         prevPos = calculateMousePosition(e.getPoint());
         painting = e.getButton() == 1;
+        mouseHeld = true;
         if (activeMode == Mode.PLACING) {
             for (Point p : model.getCurrentFigure().cells()) {
                 model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), true);
             }
-        } else if (activeMode == Mode.LINE) {
-            mouseHeld = true;
-            testPos = calculateMousePosition(e.getPoint());
-        } else {
+        } else if(activeMode!= Mode.LINE){
             model.setCell(calculateWrap(prevPos), painting);
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        mouseHeld = false;
         if (activeMode == Mode.LINE) {
-            mouseHeld = false;
             mousePos = calculateMousePosition(e.getPoint());
             drawLineBresenham(mousePos, painting, false);
         }
@@ -336,10 +334,7 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
         } else {
             mouseHeld = true;
             mousePos = calculateMousePosition(e.getPoint());
-            if (!testPos.equals(mousePos)) {
-                showPreview();
-                testPos = mousePos;
-            }
+            showPreview();
         }
     }
 
