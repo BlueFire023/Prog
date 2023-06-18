@@ -15,7 +15,7 @@ import java.util.*;
  * @version 1, 15/06/2023
  */
 
-public class GoLController implements ActionListener, KeyListener, MouseMotionListener, MouseListener, ChangeListener, WindowFocusListener, WindowListener {
+public class GoLController implements ActionListener, KeyListener, MouseMotionListener, MouseListener, ChangeListener, WindowFocusListener, WindowListener, MouseWheelListener {
     private final GoLModel model = new GoLModel();
     private final GoLView view;
     private Point prevPos = new Point(), lastCell = new Point(), mousePos = new Point();
@@ -28,7 +28,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     public GoLController() {
         view = new GoLView(model.getCanvas(), instances.size() + 1);
         view.initFiguresMenu(model.getPreMadeFigures());
-        view.setListeners(this, this, this, this, this, this, this);
+        view.setListeners(this, this, this, this, this, this, this, this);
         refreshCanvas();
         instances.add(this);
     }
@@ -288,8 +288,12 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             calculateNextGeneration();
         }*/
         if (e.getKeyCode() == KeyEvent.VK_R) { // Nur wenn die R-Taste losgelassen wird
-            rotate();
         }
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        rotate(e.getWheelRotation() > 0 ? 90 : -90);
     }
 
     @Override
@@ -452,8 +456,8 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     }
 
-    private void rotate() {
-        Set<Point> objectPoints = new HashSet<>(model.getCurrentFigure().cells());
+    private void rotate(int direction) {
+        Set<Point> objectPoints = model.getCurrentFigure().cells();
         int centerX = 0;
         int centerY = 0;
         for (Point point : objectPoints) {
@@ -462,32 +466,43 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         }
         centerX /= objectPoints.size();
         centerY /= objectPoints.size();
+        System.out.println("x:" + centerX + " y:" + centerY);
+
+        Set<Point> rotatedPoints = new HashSet<>();
         for (Point point : objectPoints) {
             int relativeX = point.x - centerX;
             int relativeY = point.y - centerY;
 
             // Führe die Rotationsformel durch
-            double radians = Math.toRadians(90);
+            double radians = Math.toRadians(direction);
             int rotatedX = (int) Math.round(relativeX * Math.cos(radians) - relativeY * Math.sin(radians));
             int rotatedY = (int) Math.round(relativeX * Math.sin(radians) + relativeY * Math.cos(radians));
 
-            // Aktualisiere den Punkt aufgrund der Rotation
-            point.x = rotatedX + centerX;
-            point.y = rotatedY + centerY;
+            // Erstelle ein neues Point-Objekt mit den verschobenen Koordinaten
+            Point rotatedPoint = new Point(rotatedX + centerX, rotatedY + centerY);
+            rotatedPoints.add(rotatedPoint);
         }
-        Set<Point> figureConstruct = new HashSet<>();
-        int lowestX = 0, lowestY = 0;
-        for (Point p : objectPoints) {
+
+        int lowestX = Integer.MAX_VALUE;
+        int lowestY = Integer.MAX_VALUE;
+        for (Point p : rotatedPoints) {
             if (lowestX > p.x) {
                 lowestX = p.x;
+                System.out.println("x: " + lowestX);
             }
             if (lowestY > p.y) {
                 lowestY = p.y;
+                System.out.println("y: " + lowestY);
             }
         }
-        for (Point p : objectPoints) {
-            figureConstruct.add(new Point(p.x - lowestX, p.y - lowestY));
+
+        Set<Point> figureConstruct = new HashSet<>();
+        for (Point p : rotatedPoints) {
+            // Erstelle ein neues Point-Objekt mit den verschobenen Koordinaten
+            Point adjustedPoint = new Point(p.x - lowestX, p.y - lowestY);
+            figureConstruct.add(adjustedPoint);
         }
+
         model.setCurrentFigure(new GoLPrefab("rotated", figureConstruct));
         calculateCenter();
         showPreview();
