@@ -19,7 +19,7 @@ public class GoLModel {
     private GoLPrefab currentFigure;
     private Point center;
     private int speed = 10;
-    private boolean laufen, malen, setzen;
+
 
     public void setCell(Point nextCellPosition, boolean isAlive) {
         if (isAlive) {
@@ -105,30 +105,6 @@ public class GoLModel {
 
     public int getSpeed() {
         return speed;
-    }
-
-    public void setLaufen(boolean laufen) {
-        this.laufen = laufen;
-    }
-
-    public void setMalen(boolean malen) {
-        this.malen = malen;
-    }
-
-    public void setSetzen(boolean setzen) {
-        this.setzen = setzen;
-    }
-
-    public boolean isLaufen() {
-        return laufen;
-    }
-
-    public boolean isMalen() {
-        return malen;
-    }
-
-    public boolean isSetzen() {
-        return setzen;
     }
 
     public Point getCenter() {
