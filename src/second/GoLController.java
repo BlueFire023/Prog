@@ -31,7 +31,7 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
     public GoLController(Boolean isMainWindow) {
         view = new GoLView(model.getCanvas(), isMainWindow);
         view.initFiguresMenu(model.getPreMadeFigures());
-        view.setListeners(this, this, this, this, this,this);
+        view.setListeners(this, this, this, this, this, this);
         refreshCanvas();
         instances.add(this);
     }
@@ -159,7 +159,10 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
-            case "Löschen" -> clearCanvas();
+            case "Löschen" -> {
+                clearCanvas();
+                activeMode = Mode.SET;
+            }
             case "Neues Fenster" -> new GoLController(false);
             case "Auflösung" -> {
                 lastCells.clear();
@@ -303,7 +306,7 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
             for (Point p : model.getCurrentFigure().cells()) {
                 model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), true);
             }
-        } else if(activeMode!= Mode.LINE){
+        } else if (activeMode != Mode.LINE) {
             model.setCell(calculateWrap(prevPos), painting);
         }
     }
