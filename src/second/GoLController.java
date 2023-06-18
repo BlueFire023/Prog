@@ -7,8 +7,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
@@ -23,12 +23,12 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
     private boolean painting;
     private final Set<Point> lastCells = new HashSet<>();
     private final JFileChooser fileChooser = new JFileChooser();
-    private Mode activeMode = Mode.MALEN;
+    private Mode activeMode = Mode.PAINT;
     private static List<GoLController> instances = new ArrayList<>();
 
 
-    public GoLController() {
-        view = new GoLView(model.getCanvas());
+    public GoLController(Boolean isMainWindow) {
+        view = new GoLView(model.getCanvas(), isMainWindow);
         view.initFiguresMenu(model.getPreMadeFigures());
         view.setListeners(this, this, this, this, this);
         refreshCanvas();
@@ -36,7 +36,7 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
     }
 
     public static void main(String[] args) {
-        new GoLController();
+        new GoLController(true);
     }
 
     public void calculateNextGeneration() {
@@ -130,11 +130,11 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
 
     public void calculateNextGenerationAll() {
         for (GoLController instance : instances) {
-            instance.activeMode = Mode.LAUFEN;
+            instance.activeMode = Mode.RUN;
             instance.refreshCanvas();
 
             Runnable runningTask = () -> {
-                while (instance.activeMode == Mode.LAUFEN) {
+                while (instance.activeMode == Mode.RUN) {
                     instance.calculateNextGeneration();
                     try {
                         Thread.sleep(1000 / instance.view.getSliderstat());
@@ -152,7 +152,7 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case "Löschen" -> clearCanvas();
-            case "Neues Fenster" -> new GoLController();
+            case "Neues Fenster" -> new GoLController(false);
             case "Auflösung" -> {
                 lastCells.clear();
                 view.updateCanvasSize();
@@ -188,11 +188,11 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
             case "Laden" -> loadSavedFigure();
             case "Laufen" -> calculateNextGenerationAll();
             case "Malen" -> {
-                activeMode = Mode.MALEN;
+                activeMode = Mode.PAINT;
                 refreshCanvas();
             }
             case "Setzen" -> {
-                activeMode = Mode.SETZEN;
+                activeMode = Mode.SET;
                 refreshCanvas();
             }
             default -> {
@@ -270,14 +270,13 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (activeMode != Mode.LAUFEN) {
+        if (activeMode != Mode.RUN) {
             calculateNextGeneration();
         }
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
     }
 
     @Override
@@ -307,7 +306,7 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (activeMode == Mode.MALEN) {
+        if (activeMode == Mode.PAINT) {
             Point currPos = calculateMousePosition(e.getPoint());
             drawLineBresenham(prevPos, currPos, painting);
             prevPos = currPos;
@@ -367,11 +366,9 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
 
     @Override
     public void run() {
-
-
     }
 
     private enum Mode {
-        LAUFEN, MALEN, SETZEN, PLACING, LINE
+        RUN, PAINT, SET, PLACING, LINE
     }
 }
