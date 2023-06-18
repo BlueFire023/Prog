@@ -282,33 +282,27 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
 
     @Override
     public void mousePressed(MouseEvent e) {
-        
-            prevPos = calculateMousePosition(e.getPoint());
-            painting = e.getButton() == 1;
-            if (activeMode == Mode.PLACING) {
-                for (Point p : model.getCurrentFigure().cells()) {
-                    model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), true);
-                }
-            } else {
-                model.setCell(calculateWrap(prevPos), painting);
+        prevPos = calculateMousePosition(e.getPoint());
+        painting = e.getButton() == 1;
+        if (activeMode == Mode.PLACING) {
+            for (Point p : model.getCurrentFigure().cells()) {
+                model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), true);
             }
-
-
+        } else {
+            model.setCell(calculateWrap(prevPos), painting);
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-
     }
 
     @Override
@@ -322,25 +316,22 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
 
     @Override
     public void mouseMoved(MouseEvent e) {
-
-        
-            Point pos = calculateMousePosition(e.getPoint());
-            if (activeMode == Mode.PLACING) {
-                for (Point p : lastCells) {
-                    model.setCanvasRGB(p, model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
-                }
-                lastCells.clear();
-                for (Point p : model.getCurrentFigure().cells()) {
-                    Point calculatedPoint = new Point(p.x + pos.x - model.getCenter().x, p.y + pos.y - model.getCenter().y);
-                    model.setCanvasRGB(calculateWrap(calculatedPoint), model.getInvertedColor());
-                    lastCells.add(calculateWrap(calculatedPoint));
-                }
-            } else {
-                model.setCanvasRGB(calculateWrap(lastCell), model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
-                model.setCanvasRGB(pos, model.getInvertedColor());
-                lastCell = pos;
-              }
-
+        Point pos = calculateMousePosition(e.getPoint());
+        if (activeMode == Mode.PLACING) {
+            for (Point p : lastCells) {
+                model.setCanvasRGB(p, model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
+            }
+            lastCells.clear();
+            for (Point p : model.getCurrentFigure().cells()) {
+                Point calculatedPoint = new Point(p.x + pos.x - model.getCenter().x, p.y + pos.y - model.getCenter().y);
+                model.setCanvasRGB(calculateWrap(calculatedPoint), model.getInvertedColor());
+                lastCells.add(calculateWrap(calculatedPoint));
+            }
+        } else {
+            model.setCanvasRGB(calculateWrap(lastCell), model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
+            model.setCanvasRGB(pos, model.getInvertedColor());
+            lastCell = pos;
+        }
     }
 
     private Color invertColor(Color initalColor) {
