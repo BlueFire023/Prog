@@ -284,16 +284,19 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     @Override
     public void keyReleased(KeyEvent e) {
-        /*if (activeMode != Mode.RUN) {
+        if (activeMode != Mode.RUN && e.getKeyCode() == KeyEvent.VK_SPACE) {
             calculateNextGeneration();
-        }*/
-        if (e.getKeyCode() == KeyEvent.VK_R) { // Nur wenn die R-Taste losgelassen wird
+        }
+        if (activeMode == Mode.PLACING && (e.getKeyCode() == KeyEvent.VK_H || e.getKeyCode() == KeyEvent.VK_V)) { // Nur wenn die R-Taste losgelassen wird
+            flip(e.getKeyCode() == KeyEvent.VK_H);
         }
     }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        rotate(e.getWheelRotation() > 0 ? 90 : -90);
+        if (activeMode == Mode.PLACING) {
+            rotate(e.getWheelRotation() > 0 ? 90 : -90);
+        }
     }
 
     @Override
@@ -457,55 +460,59 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     private void rotate(int direction) {
-        Set<Point> objectPoints = model.getCurrentFigure().cells();
+        Set<Point> figure = model.getCurrentFigure().cells();
         int centerX = 0;
         int centerY = 0;
-        for (Point point : objectPoints) {
+        for (Point point : figure) {
             centerX += point.x;
             centerY += point.y;
         }
-        centerX /= objectPoints.size();
-        centerY /= objectPoints.size();
+        centerX /= figure.size();
+        centerY /= figure.size();
         System.out.println("x:" + centerX + " y:" + centerY);
 
         Set<Point> rotatedPoints = new HashSet<>();
-        for (Point point : objectPoints) {
-            int relativeX = point.x - centerX;
-            int relativeY = point.y - centerY;
+        for (Point p : figure) {
+            int relativeX = p.x - centerX;
+            int relativeY = p.y - centerY;
 
-            // Führe die Rotationsformel durch
             double radians = Math.toRadians(direction);
             int rotatedX = (int) Math.round(relativeX * Math.cos(radians) - relativeY * Math.sin(radians));
             int rotatedY = (int) Math.round(relativeX * Math.sin(radians) + relativeY * Math.cos(radians));
 
-            // Erstelle ein neues Point-Objekt mit den verschobenen Koordinaten
-            Point rotatedPoint = new Point(rotatedX + centerX, rotatedY + centerY);
-            rotatedPoints.add(rotatedPoint);
+            rotatedPoints.add(new Point(rotatedX + centerX, rotatedY + centerY));
         }
+        model.setCurrentFigure(new GoLPrefab("rotated", calculateAdjustedPosition(rotatedPoints)));
+        calculateCenter();
+        showPreview();
+    }
 
-        int lowestX = Integer.MAX_VALUE;
-        int lowestY = Integer.MAX_VALUE;
-        for (Point p : rotatedPoints) {
+    private void flip(boolean horizontal) {
+        Set<Point> mirroredFigure = new HashSet<>();
+        for (Point p : model.getCurrentFigure().cells()) {
+            mirroredFigure.add(new Point(horizontal ? -p.x : p.x, horizontal ? p.y : -p.y));
+        }
+        model.setCurrentFigure(new GoLPrefab("flipped", calculateAdjustedPosition(mirroredFigure)));
+        calculateCenter();
+        showPreview();
+    }
+
+    private Set<Point> calculateAdjustedPosition(Set<Point> figure) {
+        int lowestX = model.getCanvasWidth(), lowestY = model.getCanvasHeight();
+        for (Point p : figure) {
             if (lowestX > p.x) {
                 lowestX = p.x;
-                System.out.println("x: " + lowestX);
             }
             if (lowestY > p.y) {
                 lowestY = p.y;
-                System.out.println("y: " + lowestY);
             }
         }
-
-        Set<Point> figureConstruct = new HashSet<>();
-        for (Point p : rotatedPoints) {
-            // Erstelle ein neues Point-Objekt mit den verschobenen Koordinaten
+        Set<Point> adjustedFigure = new HashSet<>();
+        for (Point p : figure) {
             Point adjustedPoint = new Point(p.x - lowestX, p.y - lowestY);
-            figureConstruct.add(adjustedPoint);
+            adjustedFigure.add(adjustedPoint);
         }
-
-        model.setCurrentFigure(new GoLPrefab("rotated", figureConstruct));
-        calculateCenter();
-        showPreview();
+        return adjustedFigure;
     }
 
     private void updateWindowCountTitle(int number) {
