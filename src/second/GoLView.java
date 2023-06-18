@@ -3,10 +3,7 @@ package second;
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -109,7 +106,7 @@ public class GoLView extends JPanel {
         frame.setVisible(true);
     }
 
-    public void setListeners(ActionListener al, KeyListener kl, MouseListener ml, MouseMotionListener mml, ChangeListener cl) {
+    public void setListeners(ActionListener al, KeyListener kl, MouseListener ml, MouseMotionListener mml, ChangeListener cl, WindowFocusListener wl) {
         frame.addKeyListener(kl);
         addMouseMotionListener(mml);
         addMouseListener(ml);
@@ -127,6 +124,7 @@ public class GoLView extends JPanel {
         save.addActionListener(al);
         load.addActionListener(al);
         test.addActionListener(al);
+        frame.addWindowFocusListener(wl);
         speedSlider.addChangeListener(cl);
         int index = 0;
         for (JMenuItem j : figures) {

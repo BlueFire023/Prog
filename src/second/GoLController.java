@@ -15,12 +15,12 @@ import java.util.*;
  * @version 1, 15/06/2023
  */
 
-public class GoLController implements Runnable, ActionListener, KeyListener, MouseMotionListener, MouseListener, ChangeListener {
+public class GoLController implements Runnable, ActionListener, KeyListener, MouseMotionListener, MouseListener, ChangeListener, WindowFocusListener {
     private final GoLModel model = new GoLModel();
     private final GoLView view;
     private Point prevPos = new Point(), testPos = new Point();
     private Point lastCell = new Point(0, 0);
-    private boolean painting;
+    private boolean painting, mouseHeld;
     private final Set<Point> lastCells = new HashSet<>();
     private final JFileChooser fileChooser = new JFileChooser();
     private Mode activeMode = Mode.PAINT;
@@ -31,7 +31,7 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
     public GoLController(Boolean isMainWindow) {
         view = new GoLView(model.getCanvas(), isMainWindow);
         view.initFiguresMenu(model.getPreMadeFigures());
-        view.setListeners(this, this, this, this, this);
+        view.setListeners(this, this, this, this, this,this);
         refreshCanvas();
         instances.add(this);
     }
@@ -97,10 +97,10 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
         int sx = prev.x < curr.x ? 1 : -1, sy = prev.y < curr.y ? 1 : -1;
         int err = dx - dy, e2;
         while (true) {
-            if(preview){
+            if (preview) {
                 model.setCanvasRGB(calculateWrap(prev), model.getInvertedColor());
                 lastCells.add(calculateWrap(prev));
-            }else{
+            } else {
                 model.setCell(calculateWrap(prev), paint);
             }
             if (prev.x == curr.x && prev.y == curr.y) {
@@ -303,6 +303,7 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
                 model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), true);
             }
         } else if (activeMode == Mode.LINE) {
+            mouseHeld = true;
             testPos = calculateMousePosition(e.getPoint());
         } else {
             model.setCell(calculateWrap(prevPos), painting);
@@ -312,8 +313,9 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
     @Override
     public void mouseReleased(MouseEvent e) {
         if (activeMode == Mode.LINE) {
+            mouseHeld = false;
             mousePos = calculateMousePosition(e.getPoint());
-            drawLineBresenham(mousePos, true, false);
+            drawLineBresenham(mousePos, painting, false);
         }
     }
 
@@ -332,9 +334,9 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
             drawLineBresenham(mousePos, painting, false);
             prevPos = mousePos;
         } else {
+            mouseHeld = true;
             mousePos = calculateMousePosition(e.getPoint());
-            if(!testPos.equals(mousePos)){
-                System.out.println("hi");
+            if (!testPos.equals(mousePos)) {
                 showPreview();
                 testPos = mousePos;
             }
@@ -344,9 +346,7 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
     @Override
     public void mouseMoved(MouseEvent e) {
         mousePos = calculateMousePosition(e.getPoint());
-        if(activeMode != Mode.LINE) {
-            showPreview();
-        }
+        showPreview();
     }
 
     private void showPreview() {
@@ -360,7 +360,7 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
                 model.setCanvasRGB(calculateWrap(calculatedPoint), model.getInvertedColor());
                 lastCells.add(calculateWrap(calculatedPoint));
             }
-        } else if (activeMode == Mode.LINE) {
+        } else if (activeMode == Mode.LINE && mouseHeld) {
             for (Point p : lastCells) {
                 model.setCanvasRGB(calculateWrap(p), model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
             }
@@ -368,7 +368,7 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
             drawLineBresenham(mousePos, painting, true);
         } else {
             model.setCanvasRGB(calculateWrap(lastCell), model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
-            model.setCanvasRGB(mousePos, model.getInvertedColor());
+            model.setCanvasRGB(calculateWrap(mousePos), model.getInvertedColor());
             lastCell = mousePos;
         }
     }
@@ -406,6 +406,19 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
 
     @Override
     public void run() {
+    }
+
+    @Override
+    public void windowGainedFocus(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowLostFocus(WindowEvent e) {
+        mouseHeld = false;
+        for (Point p : lastCells) {
+            model.setCanvasRGB(calculateWrap(p), model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
+        }
     }
 
     private enum Mode {
