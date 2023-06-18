@@ -458,6 +458,23 @@ public class GoLFigures {
         infinite_3Set.add(new Point(37, 0));
         infinite_3Set.add(new Point(38, 0));
         figures.add(new GoLPrefab("Infinite 3", infinite_3Set));
+
+        Set<Point> USet = new HashSet<>();
+        USet.add(new Point(0,0));
+        USet.add(new Point(0,1));
+        USet.add(new Point(0,2));
+        USet.add(new Point(0,4));
+        USet.add(new Point(0,5));
+        USet.add(new Point(0,6));
+        USet.add(new Point(1,6));
+        USet.add(new Point(1,0));
+        USet.add(new Point(2,0));
+        USet.add(new Point(2,6));
+        USet.add(new Point(2,5));
+        USet.add(new Point(2,4));
+        USet.add(new Point(2,2));
+        USet.add(new Point(2,1));
+        figures.add(new GoLPrefab("U", USet));
     }
 
     public GoLPrefab getFigure(int position) {
