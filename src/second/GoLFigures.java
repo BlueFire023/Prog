@@ -54,11 +54,50 @@ public class GoLFigures {
         tubSet.add(new Point(2, 1));
         figures.add(new GoLPrefab("Tub", tubSet));
 
+        Set<Point> bargeSet = new HashSet<>();
+        bargeSet.add(new Point(2, 0));
+        bargeSet.add(new Point(1, 1));
+        bargeSet.add(new Point(0, 2));
+        bargeSet.add(new Point(3, 1));
+        bargeSet.add(new Point(2, 2));
+        bargeSet.add(new Point(1, 3));
+        figures.add(new GoLPrefab("Barge", bargeSet));
+
+        Set<Point> pondSet = new HashSet<>();
+        pondSet.add(new Point(1, 0));
+        pondSet.add(new Point(2, 0));
+        pondSet.add(new Point(1, 3));
+        pondSet.add(new Point(2, 3));
+        pondSet.add(new Point(0, 1));
+        pondSet.add(new Point(0, 2));
+        pondSet.add(new Point(3, 1));
+        pondSet.add(new Point(3, 2));
+        figures.add(new GoLPrefab("Pond", pondSet));
+
+        Set<Point> eaterSet = new HashSet<>();
+        eaterSet.add(new Point(0, 0));
+        eaterSet.add(new Point(1, 0));
+        eaterSet.add(new Point(0, 1));
+        eaterSet.add(new Point(2, 1));
+        eaterSet.add(new Point(2, 2));
+        eaterSet.add(new Point(2, 3));
+        eaterSet.add(new Point(3, 3));
+        figures.add(new GoLPrefab("Eater", eaterSet));
+
         Set<Point> blinkerSet = new HashSet<>();
         blinkerSet.add(new Point(0, 0));
         blinkerSet.add(new Point(1, 0));
         blinkerSet.add(new Point(2, 0));
         figures.add(new GoLPrefab("Blinker", blinkerSet));
+
+        Set<Point> clockSet = new HashSet<>();
+        clockSet.add(new Point(0,1));
+        clockSet.add(new Point(1,1));
+        clockSet.add(new Point(2,0));
+        clockSet.add(new Point(2,2));
+        clockSet.add(new Point(3,2));
+        clockSet.add(new Point(1,3));
+        figures.add(new GoLPrefab("Clock", clockSet));
 
         Set<Point> toadSet = new HashSet<>();
         toadSet.add(new Point(1, 0));
@@ -143,6 +182,27 @@ public class GoLFigures {
         pentadecathlonSet.add(new Point(2, 2));
         pentadecathlonSet.add(new Point(2, 7));
         figures.add(new GoLPrefab("Pentadecathlon", pentadecathlonSet));
+
+        Set<Point> fontaineSet = new HashSet<>();
+        fontaineSet.add(new Point(2,0));
+        fontaineSet.add(new Point(3,0));
+        fontaineSet.add(new Point(5,0));
+        fontaineSet.add(new Point(6,0));
+        fontaineSet.add(new Point(3,2));
+        fontaineSet.add(new Point(3,3));
+        fontaineSet.add(new Point(3,4));
+        fontaineSet.add(new Point(5,2));
+        fontaineSet.add(new Point(5,3));
+        fontaineSet.add(new Point(5,4));
+        fontaineSet.add(new Point(0,4));
+        fontaineSet.add(new Point(1,4));
+        fontaineSet.add(new Point(1,5));
+        fontaineSet.add(new Point(2,5));
+        fontaineSet.add(new Point(8,4));
+        fontaineSet.add(new Point(7,4));
+        fontaineSet.add(new Point(7,5));
+        fontaineSet.add(new Point(6,5));
+        figures.add(new GoLPrefab("Fontaine", fontaineSet));
 
         Set<Point> gliderSet = new HashSet<>();
         gliderSet.add(new Point(0, 0));

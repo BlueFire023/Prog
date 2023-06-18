@@ -22,7 +22,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     private final GoLView view;
     private Point prevPos = new Point();
     private Point lastCell = new Point(0, 0);
-    private boolean placingFigure = false, painting;
+    private boolean painting;
     private final Set<Point> lastCells = new HashSet<>();
     private final JFileChooser fileChooser = new JFileChooser();
     private Mode activeMode = Mode.MALEN;
@@ -190,13 +190,11 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             }
             case "Setzen" -> {
                 activeMode = Mode.SETZEN;
-                placingFigure = false;
                 refreshCanvas();
             }
             default -> {
                 model.setCurrentFigure(model.getPreMadeFigures(Integer.parseInt(e.getActionCommand())));
-                activeMode = Mode.SETZEN;
-                placingFigure = true;
+                activeMode = Mode.PLACING;
                 calculateCenter();
                 refreshCanvas();
             }
@@ -233,8 +231,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 fileOut.close();
                 calculateCenter();
                 refreshCanvas();
-                activeMode = Mode.SETZEN;
-                placingFigure = true;
+                activeMode = Mode.PLACING;
                 JOptionPane.showMessageDialog(null, "Das Objekt wurde erfolgreich gespeichert.");
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Fehler beim Schreiben des Objekts: " + e.getMessage());
@@ -253,8 +250,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 model.setCurrentFigure(m);
                 calculateCenter();
                 refreshCanvas();
-                activeMode = Mode.SETZEN;
-                placingFigure = true;
+                activeMode = Mode.PLACING;
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Fehler beim laden des Objekts: " + e.getMessage());
             }
@@ -286,7 +282,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         if (activeMode != Mode.LAUFEN) {
             prevPos = calculateMousePosition(e.getPoint());
             painting = e.getButton() == 1;
-            if (placingFigure && activeMode != Mode.MALEN) {
+            if (activeMode == Mode.PLACING) {
                 for (Point p : model.getCurrentFigure().cells()) {
                     model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), true);
                 }
@@ -324,7 +320,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     public void mouseMoved(MouseEvent e) {
         if (activeMode != Mode.LAUFEN) {
             Point pos = calculateMousePosition(e.getPoint());
-            if (placingFigure && activeMode != Mode.MALEN) {
+            if (activeMode == Mode.PLACING) {
                 for (Point p : lastCells) {
                     model.setCanvasRGB(p, model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
                 }
@@ -374,6 +370,6 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     private enum Mode {
-        LAUFEN, MALEN, SETZEN
+        LAUFEN, MALEN, SETZEN, PLACING, LINE
     }
 }
