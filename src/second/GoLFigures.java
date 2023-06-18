@@ -117,6 +117,41 @@ public class GoLFigures {
         beaconSet.add(new Point(2, 3));
         figures.add(new GoLPrefab("Beacon", beaconSet));
 
+        Set<Point> tripoleSet = new HashSet<>();
+        tripoleSet.add(new Point(0, 0));
+        tripoleSet.add(new Point(1, 0));
+        tripoleSet.add(new Point(0, 1));
+        tripoleSet.add(new Point(1, 2));
+        tripoleSet.add(new Point(3, 2));
+        tripoleSet.add(new Point(4, 3));
+        tripoleSet.add(new Point(3, 4));
+        tripoleSet.add(new Point(4, 4));
+        figures.add(new GoLPrefab("Tripole", tripoleSet));
+
+        Set<Point> octagonSet = new HashSet<>();
+        octagonSet.add(new Point (3,0));
+        octagonSet.add(new Point (4,0));
+        octagonSet.add(new Point (2,1));
+        octagonSet.add(new Point (5,1));
+        octagonSet.add(new Point (1, 2));
+        octagonSet.add(new Point (6, 2));
+        octagonSet.add(new Point (0,3));
+        octagonSet.add(new Point (7,3));
+        octagonSet.add(new Point (0,4));
+        octagonSet.add(new Point (7,4));
+        octagonSet.add(new Point (1, 5));
+        octagonSet.add(new Point (6,5));
+        octagonSet.add(new Point (2,6));
+        octagonSet.add(new Point (5,6));
+        octagonSet.add(new Point (3,7));
+        octagonSet.add(new Point (4,7));
+        figures.add(new GoLPrefab("Octagon", octagonSet));
+
+
+
+
+
+
         Set<Point> pulsarSet = new HashSet<>();
         pulsarSet.add(new Point(2, 0));
         pulsarSet.add(new Point(10, 7));
