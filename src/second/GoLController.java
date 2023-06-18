@@ -40,7 +40,7 @@ public class GoLController implements Runnable, ActionListener, KeyListener, Mou
     }
 
     public void calculateNextGeneration() {
-        Map<Point, Boolean> cellsToUpdate = new HashMap<>();
+        Hashtable<Point, Boolean> cellsToUpdate = new Hashtable<>();
         Set<Point> deadCellsToCheck = new HashSet<>();
         for (Point p : model.getAliveCells()) {
             int aliveCellsCount = 0;
