@@ -111,12 +111,13 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     private void paintPixel(Point p, boolean preview) {
-        for (int i = 0; i < model.getBrushSize(); i++) {
-            for (int j = 0; j < model.getBrushSize(); j++) {
-                if (((int) (model.getBrushSize() / 2.5d)) + p.x - i >= 0 && ((int) (model.getBrushSize() / 2.5d)) + p.y - j >= 0 && ((int) (model.getBrushSize() / 2.5d)) + p.x - i < model.getCanvasWidth() && ((int) (model.getBrushSize() / 2.5d)) + p.y - j < model.getCanvasHeight()) {
-                    Point point = new Point(((int) (model.getBrushSize() / 2.5d) + p.x - i), ((int) (model.getBrushSize() / 2.5d) + p.y - j));
+        int brushSize = activeMode == Mode.RUN ? 1 : model.getBrushSize();
+        for (int i = 0; i < brushSize; i++) {
+            for (int j = 0; j < brushSize; j++) {
+                if (((int) (brushSize / 2.5d)) + p.x - i >= 0 && ((int) (brushSize / 2.5d)) + p.y - j >= 0 && ((int) (brushSize / 2.5d)) + p.x - i < model.getCanvasWidth() && ((int) (brushSize / 2.5d)) + p.y - j < model.getCanvasHeight()) {
+                    Point point = new Point(((int) (brushSize / 2.5d) + p.x - i), ((int) (brushSize / 2.5d) + p.y - j));
                     if (preview) {
-                        model.setCanvasRGB(point, model.getAliveCellColor());
+                        model.setCanvasRGB(point, model.getInvertedColor());
                         lastCells.add(point);
                     } else {
                         model.setCell(point, painting);
@@ -319,9 +320,15 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         painting = e.getButton() == 1;
         mouseHeld = true;
         JMenuItem testObject = e.getSource().getClass().equals(JMenuItem.class) ? ((JMenuItem) e.getSource()) : null;
+        try{
+            testObject.getName();
+        }catch(Exception ex){
+            testObject = new JMenuItem("r");
+            testObject.setName("n");
+        }
         if (activeMode == Mode.PLACING) {
             for (Point p : model.getCurrentFigure().cells()) {
-                model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), true);
+                model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), painting);
             }
         } else if (activeMode != Mode.LINE && testObject == null || !testObject.getName().equals("p")) {
             paintPixel(mousePos, false);
