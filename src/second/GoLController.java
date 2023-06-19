@@ -88,7 +88,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
 
-    private void drawLineBresenham(Point curr, Boolean paint, Boolean preview) {
+    private void drawLineBresenham(Point curr, Boolean preview) {
         Point prev = new Point(prevPos.x, prevPos.y);
         int dx = Math.abs(curr.x - prev.x), dy = Math.abs(curr.y - prev.y);
         int sx = prev.x < curr.x ? 1 : -1, sy = prev.y < curr.y ? 1 : -1;
@@ -209,27 +209,27 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             case "Kreuz" -> {
                 activeMode = Mode.PAINT;
                 prevPos = new Point(0, 0);
-                drawLineBresenham(new Point(model.getCanvasWidth() - 1, model.getCanvasHeight() - 1), true, false);
+                drawLineBresenham(new Point(model.getCanvasWidth() - 1, model.getCanvasHeight() - 1), false);
                 prevPos = new Point(model.getCanvasWidth() - 1, 0);
-                drawLineBresenham(new Point(0, model.getCanvasHeight() - 1), true, false);
+                drawLineBresenham(new Point(0, model.getCanvasHeight() - 1), false);
             }
             case "Rahmen" -> {
                 activeMode = Mode.PAINT;
                 prevPos = new Point(0, 0);
-                drawLineBresenham(new Point(model.getCanvasWidth() - 1, 0), true, false);
+                drawLineBresenham(new Point(model.getCanvasWidth() - 1, 0), false);
                 prevPos = new Point(0, 0);
-                drawLineBresenham(new Point(0, model.getCanvasHeight() - 1), true, false);
+                drawLineBresenham(new Point(0, model.getCanvasHeight() - 1), false);
                 prevPos = new Point(model.getCanvasWidth() - 1, 0);
-                drawLineBresenham(new Point(model.getCanvasWidth() - 1, model.getCanvasHeight() - 1), true, false);
+                drawLineBresenham(new Point(model.getCanvasWidth() - 1, model.getCanvasHeight() - 1), false);
                 prevPos = new Point(0, model.getCanvasHeight() - 1);
-                drawLineBresenham(new Point(model.getCanvasWidth() - 1, model.getCanvasHeight() - 1), true, false);
+                drawLineBresenham(new Point(model.getCanvasWidth() - 1, model.getCanvasHeight() - 1), false);
             }
             case "Plus" -> {
                 activeMode = Mode.PAINT;
                 prevPos = new Point(0, (model.getCanvasHeight() - 1) / 2);
-                drawLineBresenham(new Point(model.getCanvasWidth(), (model.getCanvasHeight() - 1) / 2), true, false);
+                drawLineBresenham(new Point(model.getCanvasWidth(), (model.getCanvasHeight() - 1) / 2), false);
                 prevPos = new Point((model.getCanvasWidth() - 1) / 2, 0);
-                drawLineBresenham(new Point((model.getCanvasWidth() - 1) / 2, model.getCanvasHeight()), true, false);
+                drawLineBresenham(new Point((model.getCanvasWidth() - 1) / 2, model.getCanvasHeight()), false);
             }
             default -> {
                 model.setCurrentFigure(model.getPreMadeFigures(Integer.parseInt(e.getActionCommand())));
@@ -332,7 +332,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         mouseHeld = false;
         if (activeMode == Mode.LINE) {
             mousePos = calculateMousePosition(e.getPoint());
-            drawLineBresenham(mousePos, painting, false);
+            drawLineBresenham(mousePos, false);
         }
     }
 
@@ -348,7 +348,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     public void mouseDragged(MouseEvent e) {
         mousePos = calculateMousePosition(e.getPoint());
         if (activeMode == Mode.PAINT) {
-            drawLineBresenham(mousePos, painting, false);
+            drawLineBresenham(mousePos, false);
             prevPos = mousePos;
         } else {
             mouseHeld = true;
@@ -378,7 +378,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 model.setCanvasRGB(calculateWrap(p), model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
             }
             lastCells.clear();
-            drawLineBresenham(mousePos, painting, true);
+            drawLineBresenham(mousePos, true);
         } else {
             for (Point p : lastCells) {
                 model.setCanvasRGB(calculateWrap(p), model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
@@ -407,11 +407,11 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     private void calculateCenter() {
         Point center = new Point();
         for (Point p : model.getCurrentFigure().cells()) {
-            center.x += p.x;
-            center.y += p.y;
+            center.x = Math.max(center.x, p.x);
+            center.y = Math.max(center.y, p.y);
         }
-        center.x /= model.getCurrentFigure().cells().size();
-        center.y /= model.getCurrentFigure().cells().size();
+        center.x /= 2;
+        center.y /= 2;
         model.setCenter(center);
     }
 
