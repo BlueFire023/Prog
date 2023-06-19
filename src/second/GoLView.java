@@ -101,6 +101,10 @@ public class GoLView extends JPanel {
         activeColorDisplay.setActionCommand("acc");
         deadColorDisplay.setActionCommand("dcc");
 
+        crossButton.setName("p");
+        frameButton.setName("p");
+        plusButton.setName("p");
+
         frame.setTitle("Game of Life " + openWindows);
         frame.setJMenuBar(menuBar);
         frame.setSize(new Dimension(1014, 1060));
@@ -128,8 +132,11 @@ public class GoLView extends JPanel {
         save.addActionListener(al);
         load.addActionListener(al);
         frameButton.addActionListener(al);
+        frameButton.addMouseListener(ml);
         crossButton.addActionListener(al);
+        crossButton.addMouseListener(ml);
         plusButton.addActionListener(al);
+        plusButton.addMouseListener(ml);
         frame.addWindowFocusListener(wfl);
         speedSlider.addChangeListener(cl);
         frame.addWindowListener(wl);

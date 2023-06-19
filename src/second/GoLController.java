@@ -151,8 +151,8 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
             Runnable runningTask = () -> {
                 while (instance.activeMode == Mode.RUN) {
-                    instance.calculateNextGeneration();
                     try {
+                        instance.calculateNextGeneration();
                         Thread.sleep(1000 / instance.view.getSliderstat());
                     } catch (InterruptedException ex) {
                         throw new RuntimeException(ex);
@@ -318,11 +318,12 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         prevPos = calculateMousePosition(e.getPoint());
         painting = e.getButton() == 1;
         mouseHeld = true;
+        JMenuItem testObject = e.getSource().getClass().equals(JMenuItem.class) ? ((JMenuItem) e.getSource()) : null;
         if (activeMode == Mode.PLACING) {
             for (Point p : model.getCurrentFigure().cells()) {
                 model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), true);
             }
-        } else if (activeMode != Mode.LINE) {
+        } else if (activeMode != Mode.LINE && testObject == null || !testObject.getName().equals("p")) {
             paintPixel(mousePos, false);
         }
     }
