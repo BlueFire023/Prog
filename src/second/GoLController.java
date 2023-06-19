@@ -18,7 +18,7 @@ import java.util.*;
 public class GoLController implements ActionListener, KeyListener, MouseMotionListener, MouseListener, ChangeListener, WindowFocusListener, WindowListener, MouseWheelListener {
     private final GoLModel model = new GoLModel();
     private final GoLView view;
-    private Point prevPos = new Point(), lastCell = new Point(), mousePos = new Point();
+    private Point prevPos = new Point(), mousePos = new Point();
     private boolean painting, mouseHeld;
     private final Set<Point> lastCells = new HashSet<>();
     private final JFileChooser fileChooser = new JFileChooser();
@@ -94,14 +94,8 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         int sx = prev.x < curr.x ? 1 : -1, sy = prev.y < curr.y ? 1 : -1;
         int err = dx - dy, e2;
         while (true) {
-            if (preview) {
-                model.setCanvasRGB(calculateWrap(prev), model.getInvertedColor());
-                lastCells.add(calculateWrap(prev));
-            } else {
-                model.setCell(calculateWrap(prev), paint);
-            }
+            paintPixel(prev, preview);
             if (prev.x == curr.x && prev.y == curr.y) {
-
                 break;
             }
             e2 = err * 2;
@@ -112,6 +106,23 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             if (e2 < dx) {
                 err += dx;
                 prev.y += sy;
+            }
+        }
+    }
+
+    private void paintPixel(Point p, boolean preview) {
+        for (int i = 0; i < model.getBrushSize(); i++) {
+            for (int j = 0; j < model.getBrushSize(); j++) {
+                if (((int) (model.getBrushSize() / 2.5d)) + p.x - i >= 0 && ((int) (model.getBrushSize() / 2.5d)) + p.y - j >= 0 && ((int) (model.getBrushSize() / 2.5d)) + p.x - i < model.getCanvasWidth() && ((int) (model.getBrushSize() / 2.5d)) + p.y - j < model.getCanvasHeight()) {
+                    Point pe = new Point(((int) (model.getBrushSize() / 2.5d) + p.x - i), ((int) (model.getBrushSize() / 2.5d) + p.y - j));
+                    if (preview) {
+
+                        model.setCanvasRGB(pe, model.getAliveCellColor());
+                        lastCells.add(pe);
+                    } else {
+                        model.setCell(pe, painting);
+                    }
+                }
             }
         }
     }
@@ -133,6 +144,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         }
     }
 
+    @SuppressWarnings("BusyWait")
     public void calculateNextGenerationAll() {
         for (GoLController instance : instances) {
             instance.activeMode = Mode.RUN;
@@ -283,9 +295,11 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     public void keyReleased(KeyEvent e) {
         if (activeMode != Mode.RUN && e.getKeyCode() == KeyEvent.VK_SPACE) {
             calculateNextGeneration();
-        }
-        if (activeMode == Mode.PLACING && (e.getKeyCode() == KeyEvent.VK_H || e.getKeyCode() == KeyEvent.VK_V)) { // Nur wenn die R-Taste losgelassen wird
+        } else if (activeMode == Mode.PLACING && (e.getKeyCode() == KeyEvent.VK_H || e.getKeyCode() == KeyEvent.VK_V)) { // Nur wenn die R-Taste losgelassen wird
             flip(e.getKeyCode() == KeyEvent.VK_H);
+        } else {
+            model.setBrushSize(Character.isDigit(e.getKeyChar()) ? Character.getNumericValue(e.getKeyChar()): model.getBrushSize());
+            showPreview();
         }
     }
 
@@ -310,7 +324,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), true);
             }
         } else if (activeMode != Mode.LINE) {
-            model.setCell(calculateWrap(prevPos), painting);
+            paintPixel(mousePos, false);
         }
     }
 
@@ -367,9 +381,11 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             lastCells.clear();
             drawLineBresenham(mousePos, painting, true);
         } else {
-            model.setCanvasRGB(calculateWrap(lastCell), model.isCellAlive(lastCell) ? model.getAliveCellColor() : model.getDeadCellColor());
-            model.setCanvasRGB(calculateWrap(mousePos), model.getInvertedColor());
-            lastCell = mousePos;
+            for (Point p : lastCells) {
+                model.setCanvasRGB(calculateWrap(p), model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
+            }
+            lastCells.clear();
+            paintPixel(mousePos, true);
         }
     }
 
@@ -489,14 +505,12 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             lowestX = Math.min(lowestX, p.x);
             lowestY = Math.min(lowestY, p.y);
         }
-
         Set<Point> adjustedFigure = new HashSet<>();
 
         for (Point p : figure) {
             Point adjustedPoint = new Point(p.x - lowestX, p.y - lowestY);
             adjustedFigure.add(adjustedPoint);
         }
-
         return adjustedFigure;
     }
 
@@ -507,6 +521,4 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     private enum Mode {
         RUN, PAINT, SET, PLACING, LINE
     }
-
-
 }

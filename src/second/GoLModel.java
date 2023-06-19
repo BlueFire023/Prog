@@ -19,6 +19,7 @@ public class GoLModel {
     private GoLPrefab currentFigure;
     private Point center;
     private int speed = 10;
+    private int brushSize = 5;
 
 
     public void setCell(Point nextCellPosition, boolean isAlive) {
@@ -117,5 +118,13 @@ public class GoLModel {
 
     public GoLFigures getPreMadeFigures() {
         return preMadeFigures;
+    }
+
+    public int getBrushSize() {
+        return brushSize;
+    }
+
+    public void setBrushSize(int brushSize) {
+        this.brushSize = brushSize;
     }
 }
