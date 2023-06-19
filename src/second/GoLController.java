@@ -114,13 +114,12 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         for (int i = 0; i < model.getBrushSize(); i++) {
             for (int j = 0; j < model.getBrushSize(); j++) {
                 if (((int) (model.getBrushSize() / 2.5d)) + p.x - i >= 0 && ((int) (model.getBrushSize() / 2.5d)) + p.y - j >= 0 && ((int) (model.getBrushSize() / 2.5d)) + p.x - i < model.getCanvasWidth() && ((int) (model.getBrushSize() / 2.5d)) + p.y - j < model.getCanvasHeight()) {
-                    Point pe = new Point(((int) (model.getBrushSize() / 2.5d) + p.x - i), ((int) (model.getBrushSize() / 2.5d) + p.y - j));
+                    Point point = new Point(((int) (model.getBrushSize() / 2.5d) + p.x - i), ((int) (model.getBrushSize() / 2.5d) + p.y - j));
                     if (preview) {
-
-                        model.setCanvasRGB(pe, model.getAliveCellColor());
-                        lastCells.add(pe);
+                        model.setCanvasRGB(point, model.getAliveCellColor());
+                        lastCells.add(point);
                     } else {
-                        model.setCell(pe, painting);
+                        model.setCell(point, painting);
                     }
                 }
             }
