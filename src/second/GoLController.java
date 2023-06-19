@@ -24,6 +24,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     private final JFileChooser fileChooser = new JFileChooser();
     private Mode activeMode = Mode.PAINT;
     private static final List<GoLController> instances = new ArrayList<>();
+    private final Object lock = new Object();
 
     public GoLController() {
         view = new GoLView(model.getCanvas(), instances.size() + 1);
@@ -38,52 +39,54 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     public void calculateNextGeneration() {
-        Hashtable<Point, Boolean> cellsToUpdate = new Hashtable<>();
-        Set<Point> deadCellsToCheck = new HashSet<>();
-        for (Point p : model.getAliveCells()) {
-            int aliveCellsCount = 0;
-            for (int i = -1; i <= 1; i++) {
-                for (int j = -1; j <= 1; j++) {
-                    if (i == 0 && j == 0) {
-                        continue;
-                    }
-                    Point newPos = new Point(p.x + i, p.y + j);
-                    if (model.isCellAlive(calculateWrap(newPos))) {
-                        aliveCellsCount++;
-                    } else {
-                        deadCellsToCheck.add(newPos);
+        synchronized (lock) {
+            Map<Point, Boolean> cellsToUpdate = new HashMap<>();
+            Set<Point> deadCellsToCheck = new HashSet<>();
+            for (Point p : new HashSet<>(model.getAliveCells())) {
+                int aliveCellsCount = 0;
+                for (int i = -1; i <= 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
+                        if (i == 0 && j == 0) {
+                            continue;
+                        }
+                        Point newPos = new Point(p.x + i, p.y + j);
+                        if (model.isCellAlive(calculateWrap(newPos))) {
+                            aliveCellsCount++;
+                        } else {
+                            deadCellsToCheck.add(newPos);
+                        }
                     }
                 }
+                if (aliveCellsCount < 2 || aliveCellsCount > 3) {
+                    cellsToUpdate.put(p, false);
+                }
             }
-            if (aliveCellsCount < 2 || aliveCellsCount > 3) {
-                cellsToUpdate.put(p, false);
-            }
-        }
-        for (Point p : deadCellsToCheck) {
-            int aliveCellsCount = 0;
-            for (int i = -1; i <= 1; i++) {
-                for (int j = -1; j <= 1; j++) {
-                    if (i == 0 && j == 0) {
-                        continue;
-                    }
-                    Point newPos = new Point(p.x + i, p.y + j);
-                    if (model.isCellAlive(calculateWrap(newPos))) {
-                        aliveCellsCount++;
+            for (Point p : deadCellsToCheck) {
+                int aliveCellsCount = 0;
+                for (int i = -1; i <= 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
+                        if (i == 0 && j == 0) {
+                            continue;
+                        }
+                        Point newPos = new Point(p.x + i, p.y + j);
+                        if (model.isCellAlive(calculateWrap(newPos))) {
+                            aliveCellsCount++;
+                        }
+                        if (aliveCellsCount > 3) {
+                            break;
+                        }
                     }
                     if (aliveCellsCount > 3) {
                         break;
                     }
                 }
-                if (aliveCellsCount > 3) {
-                    break;
+                if (aliveCellsCount == 3) {
+                    cellsToUpdate.put(p, true);
                 }
             }
-            if (aliveCellsCount == 3) {
-                cellsToUpdate.put(p, true);
+            for (Map.Entry<Point, Boolean> entry : cellsToUpdate.entrySet()) {
+                model.setCell(calculateWrap(entry.getKey()), entry.getValue());
             }
-        }
-        for (Map.Entry<Point, Boolean> entry : cellsToUpdate.entrySet()) {
-            model.setCell(calculateWrap(entry.getKey()), entry.getValue());
         }
     }
 
@@ -111,7 +114,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     private void paintPixel(Point p, boolean preview) {
-        int brushSize = activeMode == Mode.RUN ? 1 : model.getBrushSize();
+        int brushSize = model.getBrushSize();
         for (int i = 0; i < brushSize; i++) {
             for (int j = 0; j < brushSize; j++) {
                 if (((int) (brushSize / 2.5d)) + p.x - i >= 0 && ((int) (brushSize / 2.5d)) + p.y - j >= 0 && ((int) (brushSize / 2.5d)) + p.x - i < model.getCanvasWidth() && ((int) (brushSize / 2.5d)) + p.y - j < model.getCanvasHeight()) {
@@ -147,11 +150,11 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     @SuppressWarnings("BusyWait")
     public void calculateNextGenerationAll() {
         for (GoLController instance : instances) {
-            instance.activeMode = Mode.RUN;
+            instance.activeMode = Mode.RUNNING;
             instance.refreshCanvas();
 
             Runnable runningTask = () -> {
-                while (instance.activeMode == Mode.RUN) {
+                while (instance.activeMode == Mode.RUNNING) {
                     try {
                         instance.calculateNextGeneration();
                         Thread.sleep(1000 / instance.view.getSliderstat());
@@ -234,7 +237,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             }
             default -> {
                 model.setCurrentFigure(model.getPreMadeFigures(Integer.parseInt(e.getActionCommand())));
-                activeMode = Mode.PLACING;
+                activeMode = activeMode == Mode.RUNNING ? Mode.RUNNING : Mode.PLACING;
                 calculateCenter();
             }
         }
@@ -293,7 +296,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (activeMode != Mode.RUN && e.getKeyCode() == KeyEvent.VK_SPACE) {
+        if (activeMode != Mode.RUNNING && e.getKeyCode() == KeyEvent.VK_SPACE) {
             calculateNextGeneration();
         } else if (activeMode == Mode.PLACING && (e.getKeyCode() == KeyEvent.VK_H || e.getKeyCode() == KeyEvent.VK_V)) { // Nur wenn die R-Taste losgelassen wird
             flip(e.getKeyCode() == KeyEvent.VK_H);
@@ -316,22 +319,24 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     @Override
     public void mousePressed(MouseEvent e) {
-        prevPos = calculateMousePosition(e.getPoint());
-        painting = e.getButton() == 1;
-        mouseHeld = true;
-        JMenuItem testObject = e.getSource().getClass().equals(JMenuItem.class) ? ((JMenuItem) e.getSource()) : null;
-        try{
-            testObject.getName();
-        }catch(Exception ex){
-            testObject = new JMenuItem("r");
-            testObject.setName("n");
-        }
-        if (activeMode == Mode.PLACING) {
-            for (Point p : model.getCurrentFigure().cells()) {
-                model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), painting);
+        synchronized (lock) {
+            prevPos = calculateMousePosition(e.getPoint());
+            painting = e.getButton() == 1;
+            mouseHeld = true;
+            JMenuItem testObject = e.getSource().getClass().equals(JMenuItem.class) ? ((JMenuItem) e.getSource()) : null;
+            try {
+                testObject.getName();
+            } catch (Exception ex) {
+                testObject = new JMenuItem("r");
+                testObject.setName("n");
             }
-        } else if (activeMode != Mode.LINE && testObject == null || !testObject.getName().equals("p")) {
-            paintPixel(mousePos, false);
+            if (activeMode == Mode.PLACING) {
+                for (Point p : model.getCurrentFigure().cells()) {
+                    model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), painting);
+                }
+            } else if (activeMode != Mode.LINE && testObject == null || !testObject.getName().equals("p")) {
+                paintPixel(mousePos, false);
+            }
         }
     }
 
@@ -526,6 +531,6 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     private enum Mode {
-        RUN, PAINT, SET, PLACING, LINE
+        RUNNING, PAINT, SET, PLACING, LINE
     }
 }
