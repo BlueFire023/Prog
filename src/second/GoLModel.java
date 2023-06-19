@@ -19,7 +19,7 @@ public class GoLModel {
     private GoLPrefab currentFigure;
     private Point center;
     private int speed = 10;
-    private int brushSize = 5;
+    private int brushSize = 1;
 
 
     public void setCell(Point nextCellPosition, boolean isAlive) {
