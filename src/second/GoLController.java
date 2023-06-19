@@ -160,10 +160,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 clearCanvas();
                 activeMode = Mode.SET;
             }
-            case "Neues Fenster" -> {
-                new GoLController();
-                refreshCanvas();
-            }
+            case "Neues Fenster" -> new GoLController();
             case "Auflösung" -> {
                 activeMode = Mode.PAINT;
                 view.updateCanvasSize();
@@ -174,7 +171,6 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 view.disposeSetSizeFrame();
                 view.updateCanvasObject(model.getCanvas());
                 clearCanvas();
-                refreshCanvas();
             }
             case "acc" -> {
                 Color newColor = JColorChooser.showDialog(view, "Wähle eine Farbe", model.getAliveCellColor());
@@ -183,7 +179,6 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 }
                 model.setAliveCellColor(newColor);
                 ((JButton) e.getSource()).setBackground(newColor);
-                refreshCanvas();
             }
             case "dcc" -> {
                 Color newColor = JColorChooser.showDialog(view, "Wähle eine Farbe", model.getDeadCellColor());
@@ -193,23 +188,13 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 model.setDeadCellColor(newColor);
                 model.setInvertedColor(invertColor(newColor));
                 ((JButton) e.getSource()).setBackground(newColor);
-                refreshCanvas();
             }
             case "Speichern" -> saveFigure();
             case "Laden" -> loadSavedFigure();
             case "Laufen" -> calculateNextGenerationAll();
-            case "Malen" -> {
-                activeMode = Mode.PAINT;
-                refreshCanvas();
-            }
-            case "Setzen" -> {
-                activeMode = Mode.SET;
-                refreshCanvas();
-            }
-            case "Linien" -> {
-                activeMode = Mode.LINE;
-                refreshCanvas();
-            }
+            case "Malen" -> activeMode = Mode.PAINT;
+            case "Setzen" -> activeMode = Mode.SET;
+            case "Linien" -> activeMode = Mode.LINE;
             case "Kreuz" -> {
                 activeMode = Mode.PAINT;
                 prevPos = new Point(0, 0);
@@ -239,9 +224,9 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 model.setCurrentFigure(model.getPreMadeFigures(Integer.parseInt(e.getActionCommand())));
                 activeMode = Mode.PLACING;
                 calculateCenter();
-                refreshCanvas();
             }
         }
+        refreshCanvas();
     }
 
     private void saveFigure() {
