@@ -298,7 +298,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         } else if (activeMode == Mode.PLACING && (e.getKeyCode() == KeyEvent.VK_H || e.getKeyCode() == KeyEvent.VK_V)) { // Nur wenn die R-Taste losgelassen wird
             flip(e.getKeyCode() == KeyEvent.VK_H);
         } else {
-            model.setBrushSize(Character.isDigit(e.getKeyChar()) ? Character.getNumericValue(e.getKeyChar()): model.getBrushSize());
+            model.setBrushSize(Character.isDigit(e.getKeyChar()) ? Character.getNumericValue(e.getKeyChar()) : model.getBrushSize());
             showPreview();
         }
     }
