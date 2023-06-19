@@ -3,7 +3,6 @@ package second;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
-import java.util.PriorityQueue;
 import java.util.Set;
 
 /**
