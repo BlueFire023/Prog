@@ -35,8 +35,10 @@ public class GoLView extends JPanel {
     private final JMenuItem paintButton = new JMenuItem("Malen");
     private final JMenuItem setButton = new JMenuItem("Setzen");
     private final JMenuItem lineButton = new JMenuItem("Linien");
+    private final JMenuItem frameButton = new JMenuItem("Rahmen");
+    private final JMenuItem crossButton = new JMenuItem("Kreuz");
+    private final JMenuItem plusButton = new JMenuItem("Plus");
     private final JFrame setSizeFrame = new JFrame();
-    private final JTextField test = new JTextField("");
     private final JTextField widthTextArea;
     private final JTextField heightTextArea;
     private final JButton applySizeButton = new JButton("Apply");
@@ -86,6 +88,9 @@ public class GoLView extends JPanel {
         figuresMenu.add(methMenu);
         figuresMenu.add(gunsMenu);
         figuresMenu.add(otherMenu);
+        figuresMenu.add(frameButton);
+        figuresMenu.add(crossButton);
+        figuresMenu.add(plusButton);
 
         menuBar.add(figuresMenu);
         sliderMenu.add(speedSlider);
@@ -95,8 +100,6 @@ public class GoLView extends JPanel {
         applySizeButton.setActionCommand("size");
         activeColorDisplay.setActionCommand("acc");
         deadColorDisplay.setActionCommand("dcc");
-        test.setActionCommand("h");
-        test.setColumns(7);
 
         frame.setTitle("Game of Life " + openWindows);
         frame.setJMenuBar(menuBar);
@@ -124,7 +127,9 @@ public class GoLView extends JPanel {
         deadColorDisplay.addActionListener(al);
         save.addActionListener(al);
         load.addActionListener(al);
-        test.addActionListener(al);
+        frameButton.addActionListener(al);
+        crossButton.addActionListener(al);
+        plusButton.addActionListener(al);
         frame.addWindowFocusListener(wfl);
         speedSlider.addChangeListener(cl);
         frame.addWindowListener(wl);
@@ -181,10 +186,6 @@ public class GoLView extends JPanel {
 
     public int getNewHeight() {
         return Integer.parseInt(heightTextArea.getText());
-    }
-
-    public int getChosenFigure() {
-        return Integer.parseInt(test.getText());
     }
 
     public int getSliderstat() {

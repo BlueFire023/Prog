@@ -165,15 +165,15 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 refreshCanvas();
             }
             case "Auflösung" -> {
-                lastCells.clear();
+                activeMode = Mode.PAINT;
                 view.updateCanvasSize();
             }
             case "Farben" -> view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
             case "size" -> {
-                clearCanvas();
                 model.setCanvas(new BufferedImage(view.getNewWidth(), view.getNewHeight(), BufferedImage.TYPE_INT_RGB));
                 view.disposeSetSizeFrame();
                 view.updateCanvasObject(model.getCanvas());
+                clearCanvas();
                 refreshCanvas();
             }
             case "acc" -> {
@@ -210,6 +210,31 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 activeMode = Mode.LINE;
                 refreshCanvas();
             }
+            case "Kreuz" -> {
+                activeMode = Mode.PAINT;
+                prevPos = new Point(0, 0);
+                drawLineBresenham(new Point(model.getCanvasWidth() - 1, model.getCanvasHeight() - 1), true, false);
+                prevPos = new Point(model.getCanvasWidth() - 1, 0);
+                drawLineBresenham(new Point(0, model.getCanvasHeight() - 1), true, false);
+            }
+            case "Rahmen" -> {
+                activeMode = Mode.PAINT;
+                prevPos = new Point(0, 0);
+                drawLineBresenham(new Point(model.getCanvasWidth() - 1, 0), true, false);
+                prevPos = new Point(0, 0);
+                drawLineBresenham(new Point(0, model.getCanvasHeight() - 1), true, false);
+                prevPos = new Point(model.getCanvasWidth() - 1, 0);
+                drawLineBresenham(new Point(model.getCanvasWidth() - 1, model.getCanvasHeight() - 1), true, false);
+                prevPos = new Point(0, model.getCanvasHeight() - 1);
+                drawLineBresenham(new Point(model.getCanvasWidth() - 1, model.getCanvasHeight() - 1), true, false);
+            }
+            case "Plus" -> {
+                activeMode = Mode.PAINT;
+                prevPos = new Point(0, (model.getCanvasHeight() - 1) / 2);
+                drawLineBresenham(new Point(model.getCanvasWidth(), (model.getCanvasHeight() - 1) / 2), true, false);
+                prevPos = new Point((model.getCanvasWidth() - 1) / 2, 0);
+                drawLineBresenham(new Point((model.getCanvasWidth() - 1) / 2, model.getCanvasHeight()), true, false);
+            }
             default -> {
                 model.setCurrentFigure(model.getPreMadeFigures(Integer.parseInt(e.getActionCommand())));
                 activeMode = Mode.PLACING;
@@ -220,20 +245,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     private void saveFigure() {
-        Set<Point> figureConstruct = new HashSet<>();
-        int lowestX = model.getCanvasWidth(), lowestY = model.getCanvasHeight();
-        for (Point p : model.getAliveCells()) {
-            if (lowestX > p.x) {
-                lowestX = p.x;
-            }
-            if (lowestY > p.y) {
-                lowestY = p.y;
-            }
-        }
-        for (Point p : model.getAliveCells()) {
-            figureConstruct.add(new Point(p.x - lowestX, p.y - lowestY));
-        }
-        GoLPrefab figureToSave = new GoLPrefab("Test", figureConstruct);
+        GoLPrefab figureToSave = new GoLPrefab("", normalizePosition(model.getAliveCells()));
         if (!figureToSave.cells().isEmpty() && fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             String filePath = selectedFile.getAbsolutePath();
@@ -482,7 +494,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
             rotatedPoints.add(new Point(rotatedX + centerX, rotatedY + centerY));
         }
-        model.setCurrentFigure(new GoLPrefab("rotated", calculateAdjustedPosition(rotatedPoints)));
+        model.setCurrentFigure(new GoLPrefab("rotated", normalizePosition(rotatedPoints)));
         calculateCenter();
         showPreview();
     }
@@ -492,12 +504,12 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         for (Point p : model.getCurrentFigure().cells()) {
             mirroredFigure.add(new Point(horizontal ? -p.x : p.x, horizontal ? p.y : -p.y));
         }
-        model.setCurrentFigure(new GoLPrefab("flipped", calculateAdjustedPosition(mirroredFigure)));
+        model.setCurrentFigure(new GoLPrefab("flipped", normalizePosition(mirroredFigure)));
         calculateCenter();
         showPreview();
     }
 
-    private Set<Point> calculateAdjustedPosition(Set<Point> figure) {
+    private Set<Point> normalizePosition(Set<Point> figure) {
         int lowestX = model.getCanvasWidth(), lowestY = model.getCanvasHeight();
         for (Point p : figure) {
             if (lowestX > p.x) {
