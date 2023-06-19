@@ -348,13 +348,12 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     @Override
     public void mouseDragged(MouseEvent e) {
+        mousePos = calculateMousePosition(e.getPoint());
         if (activeMode == Mode.PAINT) {
-            mousePos = calculateMousePosition(e.getPoint());
             drawLineBresenham(mousePos, painting, false);
             prevPos = mousePos;
         } else {
             mouseHeld = true;
-            mousePos = calculateMousePosition(e.getPoint());
             showPreview();
         }
     }
@@ -406,17 +405,13 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     private void calculateCenter() {
-        Point center = new Point(0, 0);
+        Point center = new Point();
         for (Point p : model.getCurrentFigure().cells()) {
-            if (center.x < p.x) {
-                center.x = p.x;
-            }
-            if (center.y < p.y) {
-                center.y = p.y;
-            }
+            center.x += p.x;
+            center.y += p.y;
         }
-        center.x /= 2;
-        center.y /= 2;
+        center.x /= model.getCurrentFigure().cells().size();
+        center.y /= model.getCurrentFigure().cells().size();
         model.setCenter(center);
     }
 
@@ -502,20 +497,21 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     private Set<Point> normalizePosition(Set<Point> figure) {
-        int lowestX = model.getCanvasWidth(), lowestY = model.getCanvasHeight();
+        int lowestX = model.getCanvasWidth();
+        int lowestY = model.getCanvasHeight();
+
         for (Point p : figure) {
-            if (lowestX > p.x) {
-                lowestX = p.x;
-            }
-            if (lowestY > p.y) {
-                lowestY = p.y;
-            }
+            lowestX = Math.min(lowestX, p.x);
+            lowestY = Math.min(lowestY, p.y);
         }
+
         Set<Point> adjustedFigure = new HashSet<>();
+
         for (Point p : figure) {
             Point adjustedPoint = new Point(p.x - lowestX, p.y - lowestY);
             adjustedFigure.add(adjustedPoint);
         }
+
         return adjustedFigure;
     }
 
