@@ -473,28 +473,20 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     private void rotate(int direction) {
         Set<Point> figure = model.getCurrentFigure().cells();
-        int centerX = 0;
-        int centerY = 0;
-        for (Point point : figure) {
-            centerX += point.x;
-            centerY += point.y;
-        }
-        centerX /= figure.size();
-        centerY /= figure.size();
-        System.out.println("x:" + centerX + " y:" + centerY);
+        calculateCenter();
+        Point center = model.getCenter();
 
-        Set<Point> rotatedPoints = new HashSet<>();
+        Set<Point> rotatedFigure = new HashSet<>();
         for (Point p : figure) {
-            int relativeX = p.x - centerX;
-            int relativeY = p.y - centerY;
+            Point relative = new Point(p.x - center.x, p.y - center.y);
 
             double radians = Math.toRadians(direction);
-            int rotatedX = (int) Math.round(relativeX * Math.cos(radians) - relativeY * Math.sin(radians));
-            int rotatedY = (int) Math.round(relativeX * Math.sin(radians) + relativeY * Math.cos(radians));
+            int rotatedX = (int) Math.round(relative.x * Math.cos(radians) - relative.y * Math.sin(radians));
+            int rotatedY = (int) Math.round(relative.x * Math.sin(radians) + relative.y * Math.cos(radians));
 
-            rotatedPoints.add(new Point(rotatedX + centerX, rotatedY + centerY));
+            rotatedFigure.add(new Point(rotatedX + center.x, rotatedY + center.y));
         }
-        model.setCurrentFigure(new GoLPrefab(model.getCurrentFigure().name(), normalizePosition(rotatedPoints)));
+        model.setCurrentFigure(new GoLPrefab(model.getCurrentFigure().name(), normalizePosition(rotatedFigure)));
         calculateCenter();
         showPreview();
     }
