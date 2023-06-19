@@ -245,10 +245,10 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     private void saveFigure() {
-        GoLPrefab figureToSave = new GoLPrefab("", normalizePosition(model.getAliveCells()));
-        if (!figureToSave.cells().isEmpty() && fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+        if (!model.getAliveCells().isEmpty() && fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             String filePath = selectedFile.getAbsolutePath();
+            GoLPrefab figureToSave = new GoLPrefab(selectedFile.getName(), normalizePosition(model.getAliveCells()));
             try {
                 FileOutputStream fileOut = new FileOutputStream(filePath);
                 ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
@@ -494,7 +494,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
             rotatedPoints.add(new Point(rotatedX + centerX, rotatedY + centerY));
         }
-        model.setCurrentFigure(new GoLPrefab("rotated", normalizePosition(rotatedPoints)));
+        model.setCurrentFigure(new GoLPrefab(model.getCurrentFigure().name(), normalizePosition(rotatedPoints)));
         calculateCenter();
         showPreview();
     }
@@ -504,7 +504,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         for (Point p : model.getCurrentFigure().cells()) {
             mirroredFigure.add(new Point(horizontal ? -p.x : p.x, horizontal ? p.y : -p.y));
         }
-        model.setCurrentFigure(new GoLPrefab("flipped", normalizePosition(mirroredFigure)));
+        model.setCurrentFigure(new GoLPrefab(model.getCurrentFigure().name(), normalizePosition(mirroredFigure)));
         calculateCenter();
         showPreview();
     }
