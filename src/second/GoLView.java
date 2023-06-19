@@ -3,10 +3,7 @@ package second;
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -34,11 +31,14 @@ public class GoLView extends JPanel {
     private final JMenuItem clearButton = new JMenuItem("Löschen");
     private final JMenuItem setSizeButton = new JMenuItem("Auflösung");
     private final JMenuItem setColorButton = new JMenuItem("Farben");
-    private final JMenuItem startButton = new JMenuItem("Laufen");
-    private final JMenuItem malenButton = new JMenuItem("Malen");
-    private final JMenuItem setzenButton = new JMenuItem("Setzen");
+    private final JMenuItem runButton = new JMenuItem("Laufen");
+    private final JMenuItem paintButton = new JMenuItem("Malen");
+    private final JMenuItem setButton = new JMenuItem("Setzen");
+    private final JMenuItem lineButton = new JMenuItem("Linien");
+    private final JMenuItem frameButton = new JMenuItem("Rahmen");
+    private final JMenuItem crossButton = new JMenuItem("Kreuz");
+    private final JMenuItem plusButton = new JMenuItem("Plus");
     private final JFrame setSizeFrame = new JFrame();
-    private final JTextField test = new JTextField("");
     private final JTextField widthTextArea;
     private final JTextField heightTextArea;
     private final JButton applySizeButton = new JButton("Apply");
@@ -49,7 +49,7 @@ public class GoLView extends JPanel {
     private BufferedImage canvas;
     private final int stillLifesCount = 8, oscillatorsCount = 9, spaceshipsCount = 4, methuselahsCount = 3, ggCount = 2, otherCount = 4;
 
-    public GoLView(BufferedImage canvas, boolean isMainWindow) {
+    public GoLView(BufferedImage canvas, int openWindows) {
         this.canvas = canvas;
         widthTextArea = new JTextField(String.valueOf(canvas.getTileWidth()));
         widthTextArea.setColumns(7);
@@ -73,9 +73,10 @@ public class GoLView extends JPanel {
         optionsMenu.add(clearButton);
         optionsMenu.add(setSizeButton);
         optionsMenu.add(setColorButton);
-        optionsMenu.add(startButton);
-        optionsMenu.add(malenButton);
-        optionsMenu.add(setzenButton);
+        optionsMenu.add(runButton);
+        optionsMenu.add(paintButton);
+        optionsMenu.add(setButton);
+        optionsMenu.add(lineButton);
         optionsMenu.add(newWindow);
         menuBar.add(optionsMenu);
 
@@ -87,6 +88,9 @@ public class GoLView extends JPanel {
         figuresMenu.add(methMenu);
         figuresMenu.add(gunsMenu);
         figuresMenu.add(otherMenu);
+        figuresMenu.add(frameButton);
+        figuresMenu.add(crossButton);
+        figuresMenu.add(plusButton);
 
         menuBar.add(figuresMenu);
         sliderMenu.add(speedSlider);
@@ -96,35 +100,39 @@ public class GoLView extends JPanel {
         applySizeButton.setActionCommand("size");
         activeColorDisplay.setActionCommand("acc");
         deadColorDisplay.setActionCommand("dcc");
-        test.setActionCommand("h");
-        test.setColumns(7);
 
-        frame.setTitle("Game of Life");
+        frame.setTitle("Game of Life " + openWindows);
         frame.setJMenuBar(menuBar);
         frame.setSize(new Dimension(1014, 1060));
-        frame.setDefaultCloseOperation(isMainWindow ? WindowConstants.EXIT_ON_CLOSE : WindowConstants.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(openWindows == 1 ? WindowConstants.EXIT_ON_CLOSE : WindowConstants.DISPOSE_ON_CLOSE);
         frame.setContentPane(this);
         frame.setVisible(true);
     }
 
-    public void setListeners(ActionListener al, KeyListener kl, MouseListener ml, MouseMotionListener mml, ChangeListener cl) {
+    public void setListeners(ActionListener al, KeyListener kl, MouseListener ml, MouseMotionListener mml, ChangeListener cl, WindowFocusListener wfl, WindowListener wl, MouseWheelListener mwl) {
         frame.addKeyListener(kl);
+        addMouseWheelListener(mwl);
         addMouseMotionListener(mml);
         addMouseListener(ml);
         clearButton.addActionListener(al);
         setSizeButton.addActionListener(al);
         applySizeButton.addActionListener(al);
         setColorButton.addActionListener(al);
-        startButton.addActionListener(al);
-        malenButton.addActionListener(al);
-        setzenButton.addActionListener(al);
+        runButton.addActionListener(al);
+        paintButton.addActionListener(al);
+        setButton.addActionListener(al);
+        lineButton.addActionListener(al);
         newWindow.addActionListener(al);
         activeColorDisplay.addActionListener(al);
         deadColorDisplay.addActionListener(al);
         save.addActionListener(al);
         load.addActionListener(al);
-        test.addActionListener(al);
+        frameButton.addActionListener(al);
+        crossButton.addActionListener(al);
+        plusButton.addActionListener(al);
+        frame.addWindowFocusListener(wfl);
         speedSlider.addChangeListener(cl);
+        frame.addWindowListener(wl);
         int index = 0;
         for (JMenuItem j : figures) {
             j.addActionListener(al);
@@ -180,10 +188,6 @@ public class GoLView extends JPanel {
         return Integer.parseInt(heightTextArea.getText());
     }
 
-    public int getChosenFigure() {
-        return Integer.parseInt(test.getText());
-    }
-
     public int getSliderstat() {
         return speedSlider.getValue();
     }
@@ -219,5 +223,12 @@ public class GoLView extends JPanel {
             figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
             otherMenu.add(figures.get(i));
         }
+    }
+
+    public JFrame getFrame(){
+        return frame;
+    }
+    public void setNewTitle(int number){
+        frame.setTitle("Game of Life " + number);
     }
 }
