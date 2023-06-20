@@ -286,6 +286,14 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 FileInputStream fs = new FileInputStream(filePath);
                 ObjectInputStream os = new ObjectInputStream(fs);
                 GoLPrefab m = (GoLPrefab) os.readObject();
+                int maxX = 0, maxY = 0;
+                for (Point p : m.cells()) {
+                    maxX = Math.max(p.x, maxX);
+                    maxY = Math.max(p.y, maxY);
+                }
+                if(maxX > model.getCanvasWidth() || maxY > model.getCanvasHeight()){
+                    throw new Exception("Figur(Breite: "+ maxX + ", Höhe: " + maxY + ") ist größer als Auflösung(Breite: " + model.getCanvasWidth() + ", Höhe: " + model.getCanvasHeight() + ")");
+                }
                 model.updateRecentFigures(m);
                 calculateCenter();
                 refreshCanvas();
@@ -500,7 +508,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         }
         GoLPrefab rotatedPrefab = new GoLPrefab(model.getCurrentFigure().name(), normalizePosition(rotatedFigure));
         model.updateRecentFigures(rotatedPrefab);
-        view.updateRecentFiguresMenu(model.getRecentFigures(),this);
+        view.updateRecentFiguresMenu(model.getRecentFigures(), this);
         calculateCenter();
         showPreview();
     }
@@ -512,7 +520,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         }
         GoLPrefab mirroredPrefab = new GoLPrefab(model.getCurrentFigure().name(), normalizePosition(mirroredFigure));
         model.updateRecentFigures(mirroredPrefab);
-        view.updateRecentFiguresMenu(model.getRecentFigures(),this);
+        view.updateRecentFiguresMenu(model.getRecentFigures(), this);
         calculateCenter();
         showPreview();
     }
