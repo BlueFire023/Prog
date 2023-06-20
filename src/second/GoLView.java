@@ -7,7 +7,6 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Stack;
 
 /**
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
@@ -191,10 +190,12 @@ public class GoLView extends JPanel {
         setSizeFrame.dispose();
     }
 
-    public void updateRecentFiguresMenu(Stack<GoLPrefab> recent, ActionListener al) {
-        for (int i = 0; i < Math.min(recent.size(), 10); i++) {
-            JMenuItem item = new JMenuItem(recent.get( i).name());
+    public void updateRecentFiguresMenu(ArrayList<GoLPrefab> recent, ActionListener al) {
+        recentFiguresMenu.removeAll();
+        for (int i = recent.size() - 1; i >= Math.max(recent.size() - 1 - 4, 0); i--) {
+            JMenuItem item = new JMenuItem(recent.get(i).name());
             item.addActionListener(al);
+            item.setActionCommand("recent");
             recentFiguresMenu.add(item);
         }
     }

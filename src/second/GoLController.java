@@ -235,10 +235,18 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 prevPos = new Point((model.getCanvasWidth() - 1) / 2, 0);
                 drawLineBresenham(new Point((model.getCanvasWidth() - 1) / 2, model.getCanvasHeight()), false);
             }
+            case "recent" -> {
+                activeMode = Mode.PLACING;
+                String name = ((JMenuItem) e.getSource()).getText();
+                model.updateRecentFigures(name);
+                view.updateRecentFiguresMenu(model.getRecentFigures(), this);
+                calculateCenter();
+            }
             default -> {
-                model.setCurrentFigure(model.getPreMadeFigures(Integer.parseInt(e.getActionCommand())));
-                activeMode = activeMode == Mode.RUNNING ? Mode.RUNNING : Mode.PLACING;
-                view.updateRecentFiguresMenu(model.getRecentFigures(),this);
+                int number = Integer.parseInt(e.getActionCommand());
+                activeMode = Mode.PLACING;
+                model.updateRecentFigures(model.getPreMadeFigures(number));
+                view.updateRecentFiguresMenu(model.getRecentFigures(), this);
                 calculateCenter();
             }
         }
@@ -260,6 +268,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 calculateCenter();
                 refreshCanvas();
                 activeMode = Mode.PLACING;
+                view.updateRecentFiguresMenu(model.getRecentFigures(), this);
                 JOptionPane.showMessageDialog(null, "Das Objekt wurde erfolgreich gespeichert.");
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Fehler beim Schreiben des Objekts: " + e.getMessage());
@@ -277,10 +286,11 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 FileInputStream fs = new FileInputStream(filePath);
                 ObjectInputStream os = new ObjectInputStream(fs);
                 GoLPrefab m = (GoLPrefab) os.readObject();
-                model.setCurrentFigure(m);
+                model.updateRecentFigures(m);
                 calculateCenter();
                 refreshCanvas();
                 activeMode = Mode.PLACING;
+                view.updateRecentFiguresMenu(model.getRecentFigures(), this);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Fehler beim laden des Objekts: " + e.getMessage());
             }
@@ -324,18 +334,11 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             prevPos = calculateMousePosition(e.getPoint());
             painting = e.getButton() == 1;
             mouseHeld = true;
-            JMenuItem testObject = e.getSource().getClass().equals(JMenuItem.class) ? ((JMenuItem) e.getSource()) : null;
-            try {
-                testObject.getName();
-            } catch (Exception ex) {
-                testObject = new JMenuItem("r");
-                testObject.setName("n");
-            }
             if (activeMode == Mode.PLACING) {
                 for (Point p : model.getCurrentFigure().cells()) {
                     model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), painting);
                 }
-            } else if (activeMode != Mode.LINE && testObject == null || !testObject.getName().equals("p")) {
+            } else if (activeMode != Mode.LINE) {
                 paintPixel(mousePos, false);
             }
         }
@@ -495,7 +498,9 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
             rotatedFigure.add(new Point(rotatedX + center.x, rotatedY + center.y));
         }
-        model.setCurrentFigure(new GoLPrefab(model.getCurrentFigure().name(), normalizePosition(rotatedFigure)));
+        GoLPrefab rotatedPrefab = new GoLPrefab(model.getCurrentFigure().name(), normalizePosition(rotatedFigure));
+        model.updateRecentFigures(rotatedPrefab);
+        view.updateRecentFiguresMenu(model.getRecentFigures(),this);
         calculateCenter();
         showPreview();
     }
@@ -505,7 +510,9 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         for (Point p : model.getCurrentFigure().cells()) {
             mirroredFigure.add(new Point(horizontal ? -p.x : p.x, horizontal ? p.y : -p.y));
         }
-        model.setCurrentFigure(new GoLPrefab(model.getCurrentFigure().name(), normalizePosition(mirroredFigure)));
+        GoLPrefab mirroredPrefab = new GoLPrefab(model.getCurrentFigure().name(), normalizePosition(mirroredFigure));
+        model.updateRecentFigures(mirroredPrefab);
+        view.updateRecentFiguresMenu(model.getRecentFigures(),this);
         calculateCenter();
         showPreview();
     }
