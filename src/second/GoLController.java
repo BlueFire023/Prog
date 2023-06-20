@@ -348,14 +348,12 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 placingFigure = false;
                 activeMode = Mode.SET;
             }
-            case KeyEvent.VK_H -> {
-                view.showHotKeys();
-            }
+            case KeyEvent.VK_H -> view.showHotKeys();
         }
         view.updateCurrentMode(activeMode.toString());
         if (activeMode != Mode.RUNNING && e.getKeyCode() == KeyEvent.VK_SPACE) {
             calculateNextGeneration();
-        } else if (placingFigure && (e.getKeyCode() == KeyEvent.VK_H || e.getKeyCode() == KeyEvent.VK_V)) { // Nur wenn die R-Taste losgelassen wird
+        } else if (placingFigure && (e.getKeyCode() == KeyEvent.VK_H || e.getKeyCode() == KeyEvent.VK_V)) {
             flip(e.getKeyCode() == KeyEvent.VK_V);
         } else {
             model.setBrushSize(Character.isDigit(e.getKeyChar()) ? Character.getNumericValue(e.getKeyChar()) : model.getBrushSize());
