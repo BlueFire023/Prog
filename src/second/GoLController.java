@@ -173,7 +173,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         switch (e.getActionCommand()) {
             case "Löschen" -> {
                 clearCanvas();
-                activeMode = Mode.SET;
+                activeMode = activeMode != Mode.RUNNING ? activeMode : Mode.PAINT;
             }
             case "Neues Fenster" -> new GoLController();
             case "Auflösung" -> {
