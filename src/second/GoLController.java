@@ -30,6 +30,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         view = new GoLView(model.getCanvas(), instances.size() + 1);
         view.initFiguresMenu(model.getPreMadeFigures());
         view.setListeners(this, this, this, this, this, this, this, this);
+        view.updateCurrentMode(2);
         refreshCanvas();
         instances.add(this);
     }

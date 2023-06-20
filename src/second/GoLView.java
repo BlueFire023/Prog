@@ -14,7 +14,8 @@ import java.util.Hashtable;
  */
 public class GoLView extends JPanel {
     private final JMenuBar menuBar = new JMenuBar();
-    private final JMenu optionsMenu = new JMenu("Menü");
+    private final JMenu modeMenu = new JMenu("Modus");
+    private final JMenu extraMenu = new JMenu("Extras");
     private final JMenu figuresMenu = new JMenu("Figuren");
     private final JMenu sliderMenu = new JMenu("Geschwindigkeit");
     private final JMenu staticMenu = new JMenu("Statische");
@@ -71,15 +72,11 @@ public class GoLView extends JPanel {
         }
         speedSlider.setLabelTable(labelTable);
 
-        optionsMenu.add(clearButton);
-        optionsMenu.add(setSizeButton);
-        optionsMenu.add(setColorButton);
-        optionsMenu.add(runButton);
-        optionsMenu.add(paintButton);
-        optionsMenu.add(setButton);
-        optionsMenu.add(lineButton);
-        optionsMenu.add(newWindow);
-        menuBar.add(optionsMenu);
+        modeMenu.add(runButton);
+        modeMenu.add(paintButton);
+        modeMenu.add(setButton);
+        modeMenu.add(lineButton);
+        menuBar.add(modeMenu);
 
         figuresMenu.add(recentFiguresMenu);
         figuresMenu.add(save);
@@ -97,6 +94,13 @@ public class GoLView extends JPanel {
         menuBar.add(figuresMenu);
         sliderMenu.add(speedSlider);
         menuBar.add(sliderMenu);
+
+        extraMenu.add(clearButton);
+        extraMenu.add(setSizeButton);
+        extraMenu.add(setColorButton);
+        extraMenu.add(newWindow);
+        menuBar.add(extraMenu);
+
         menuBar.setBackground(Color.LIGHT_GRAY);
 
         applySizeButton.setActionCommand("size");
@@ -285,5 +289,12 @@ public class GoLView extends JPanel {
 
     public void setNewTitle(int number) {
         frame.setTitle("Game of Life " + number);
+    }
+
+    public void updateCurrentMode(int mode) {
+        runButton.setBackground(mode == 1 ? Color.LIGHT_GRAY : Color.WHITE);
+        paintButton.setBackground(mode == 2 ? Color.LIGHT_GRAY : Color.WHITE);
+        setButton.setBackground(mode == 3 ? Color.LIGHT_GRAY : Color.WHITE);
+        lineButton.setBackground(mode == 4 ? Color.LIGHT_GRAY : Color.WHITE);
     }
 }
