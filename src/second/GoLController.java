@@ -22,7 +22,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     private boolean painting, mouseHeld;
     private final Set<Point> lastCells = new HashSet<>();
     private final JFileChooser fileChooser = new JFileChooser();
-    private Mode activeMode = Mode.PAINT;
+    private Mode activeMode = Mode.PAINTING;
     private static final List<GoLController> instances = new ArrayList<>();
     private final Object lock = new Object();
 
@@ -173,11 +173,11 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         switch (e.getActionCommand()) {
             case "Löschen" -> {
                 clearCanvas();
-                activeMode = activeMode != Mode.RUNNING ? activeMode : Mode.PAINT;
+                activeMode = activeMode != Mode.RUNNING ? activeMode : Mode.PAINTING;
             }
             case "Neues Fenster" -> new GoLController();
             case "Auflösung" -> {
-                activeMode = Mode.PAINT;
+                activeMode = Mode.PAINTING;
                 view.updateCanvasSize();
             }
             case "Farben" -> view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
@@ -207,18 +207,18 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             case "Speichern" -> saveFigure();
             case "Laden" -> loadSavedFigure();
             case "Laufen" -> calculateNextGenerationAll();
-            case "Malen" -> activeMode = Mode.PAINT;
+            case "Malen" -> activeMode = Mode.PAINTING;
             case "Setzen" -> activeMode = Mode.SET;
             case "Linien" -> activeMode = Mode.LINE;
             case "Kreuz" -> {
-                activeMode = Mode.PAINT;
+                activeMode = Mode.PAINTING;
                 prevPos = new Point(0, 0);
                 drawLineBresenham(new Point(model.getCanvasWidth() - 1, model.getCanvasHeight() - 1), false);
                 prevPos = new Point(model.getCanvasWidth() - 1, 0);
                 drawLineBresenham(new Point(0, model.getCanvasHeight() - 1), false);
             }
             case "Rahmen" -> {
-                activeMode = Mode.PAINT;
+                activeMode = Mode.PAINTING;
                 prevPos = new Point(0, 0);
                 drawLineBresenham(new Point(model.getCanvasWidth() - 1, 0), false);
                 prevPos = new Point(0, 0);
@@ -229,7 +229,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 drawLineBresenham(new Point(model.getCanvasWidth() - 1, model.getCanvasHeight() - 1), false);
             }
             case "Plus" -> {
-                activeMode = Mode.PAINT;
+                activeMode = Mode.PAINTING;
                 prevPos = new Point(0, (model.getCanvasHeight() - 1) / 2);
                 drawLineBresenham(new Point(model.getCanvasWidth(), (model.getCanvasHeight() - 1) / 2), false);
                 prevPos = new Point((model.getCanvasWidth() - 1) / 2, 0);
@@ -251,6 +251,13 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             }
         }
         refreshCanvas();
+        switch (activeMode) {
+            case RUNNING -> view.updateCurrentMode(1);
+            case PAINTING -> view.updateCurrentMode(2);
+            case SET -> view.updateCurrentMode(3);
+            case LINE -> view.updateCurrentMode(4);
+            default -> view.updateCurrentMode(0);
+        }
     }
 
     private void saveFigure() {
@@ -291,8 +298,8 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                     maxX = Math.max(p.x, maxX);
                     maxY = Math.max(p.y, maxY);
                 }
-                if(maxX > model.getCanvasWidth() || maxY > model.getCanvasHeight()){
-                    throw new Exception("Figur(Breite: "+ maxX + ", Höhe: " + maxY + ") ist größer als Auflösung(Breite: " + model.getCanvasWidth() + ", Höhe: " + model.getCanvasHeight() + ")");
+                if (maxX > model.getCanvasWidth() || maxY > model.getCanvasHeight()) {
+                    throw new Exception("Figur(Breite: " + maxX + ", Höhe: " + maxY + ") ist größer als Auflösung(Breite: " + model.getCanvasWidth() + ", Höhe: " + model.getCanvasHeight() + ")");
                 }
                 model.updateRecentFigures(m);
                 calculateCenter();
@@ -372,7 +379,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     @Override
     public void mouseDragged(MouseEvent e) {
         mousePos = calculateMousePosition(e.getPoint());
-        if (activeMode == Mode.PAINT) {
+        if (activeMode == Mode.PAINTING) {
             drawLineBresenham(mousePos, false);
             prevPos = mousePos;
         } else {
@@ -547,6 +554,6 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     private enum Mode {
-        RUNNING, PAINT, SET, PLACING, LINE
+        RUNNING, PAINTING, SET, PLACING, LINE
     }
 }
