@@ -98,15 +98,45 @@ public class GoLView extends JPanel {
         menuBar.setBackground(Color.LIGHT_GRAY);
 
         applySizeButton.setActionCommand("size");
+        applySizeButton.setBackground(Color.WHITE);
 
         aliveCellColorDisplay.setPreferredSize(new Dimension(50,50));
         aliveCellColorDisplay.setActionCommand("acc");
+        aliveCellColorDisplay.setFocusable(false);
         deadCellColorDisplay.setPreferredSize(new Dimension(50,50));
         deadCellColorDisplay.setActionCommand("dcc");
+        deadCellColorDisplay.setFocusable(false);
 
         crossButton.setName("p");
         frameButton.setName("p");
         plusButton.setName("p");
+
+        setSizeFrame.setResizable(false);
+        setSizeFrame.setTitle("Auflösung");
+        setSizeFrame.setSize(new Dimension(250,200));
+        setSizeFrame.setLayout(new GridLayout(3,1));
+        JPanel widthPanel = new JPanel(new GridLayout(1,2));
+        JLabel widthLabel = new JLabel("Breite:");
+        JPanel widthLabelLayout = new JPanel(new GridBagLayout());
+        widthLabelLayout.add(widthLabel);
+        JPanel widthPanelLayout = new JPanel(new GridBagLayout());
+        widthPanelLayout.add(widthTextArea);
+        widthPanel.add(widthLabelLayout);
+        widthPanel.add(widthPanelLayout);
+        setSizeFrame.add(widthPanel);
+        JPanel heightPanel = new JPanel(new GridLayout(1,2));
+        JLabel heightLabel = new JLabel("Höhe:");
+        JPanel heightLabelLayout = new JPanel(new GridBagLayout());
+        heightLabelLayout.add(heightLabel);
+        heightPanel.add(heightLabelLayout);
+        JPanel heightPanelLayout = new JPanel(new GridBagLayout());
+        heightPanelLayout.add(heightTextArea);
+        heightPanel.add(heightPanelLayout);
+        setSizeFrame.add(heightPanel);
+        JPanel applyPanel = new JPanel(new GridBagLayout());
+        applyPanel.add(applySizeButton);
+        setSizeFrame.add(applyPanel);
+        setSizeFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         frame.setTitle("Game of Life " + openWindows);
         frame.setJMenuBar(menuBar);
@@ -151,13 +181,7 @@ public class GoLView extends JPanel {
     }
 
     public void updateCanvasSize() {
-        setSizeFrame.setLayout(new FlowLayout());
-        setSizeFrame.add(widthTextArea);
-        setSizeFrame.add(heightTextArea);
-        setSizeFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setSizeFrame.setSize(100, 200);
         setSizeFrame.setVisible(true);
-        setSizeFrame.add(applySizeButton);
     }
 
     public void disposeSetSizeFrame() {
