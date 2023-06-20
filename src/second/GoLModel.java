@@ -21,7 +21,6 @@ public class GoLModel {
     private Point center;
     private int brushSize = 1;
 
-
     public void setCell(Point nextCellPosition, boolean isAlive) {
         if (isAlive) {
             canvas.setRGB(nextCellPosition.x, nextCellPosition.y, aliveCellColor.getRGB());

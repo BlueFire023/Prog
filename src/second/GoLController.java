@@ -30,7 +30,6 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         view = new GoLView(model.getCanvas(), instances.size() + 1);
         view.initFiguresMenu(model.getPreMadeFigures());
         view.setListeners(this, this, this, this, this, this, this, this);
-        view.updateCurrentMode(2);
         refreshCanvas();
         instances.add(this);
     }
@@ -252,13 +251,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             }
         }
         refreshCanvas();
-        switch (activeMode) {
-            case RUNNING -> view.updateCurrentMode(1);
-            case PAINTING -> view.updateCurrentMode(2);
-            case SET, PLACING -> view.updateCurrentMode(3);
-            case LINE -> view.updateCurrentMode(4);
-            default -> view.updateCurrentMode(0);
-        }
+        view.updateCurrentMode(activeMode.toString());
     }
 
     private void saveFigure() {

@@ -291,10 +291,25 @@ public class GoLView extends JPanel {
         frame.setTitle("Game of Life " + number);
     }
 
-    public void updateCurrentMode(int mode) {
-        runButton.setBackground(mode == 1 ? Color.LIGHT_GRAY : Color.WHITE);
-        paintButton.setBackground(mode == 2 ? Color.LIGHT_GRAY : Color.WHITE);
-        setButton.setBackground(mode == 3 ? Color.LIGHT_GRAY : Color.WHITE);
-        lineButton.setBackground(mode == 4 ? Color.LIGHT_GRAY : Color.WHITE);
+    public void updateCurrentMode(String mode) {
+        modeMenu.removeAll();
+        modeMenu.add(runButton);
+        modeMenu.add(paintButton);
+        modeMenu.add(setButton);
+        modeMenu.add(lineButton);
+        switch (mode){
+            case "RUNNING" -> { modeMenu.remove(runButton);
+                modeMenu.setText("Laufen");
+            }
+            case "SET" -> { modeMenu.remove(setButton);
+                modeMenu.setText("Setzen");
+            }
+            case "PAINTING" -> { modeMenu.remove(paintButton);
+                modeMenu.setText("Malen");
+            }
+            case "LINE" -> { modeMenu.remove(lineButton);
+                modeMenu.setText("Linien");
+            }
+        }
     }
 }
