@@ -2,6 +2,7 @@ package second;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,11 +17,9 @@ public class GoLModel {
     private Color aliveCellColor = Color.BLACK;
     private Color deadCellColor = Color.WHITE;
     private Color invertedColor = Color.BLACK;
-    private GoLPrefab currentFigure;
+    private final ArrayList<GoLPrefab> recentFigures = new ArrayList<>();
     private Point center;
-    private int speed = 10;
     private int brushSize = 1;
-
 
     public void setCell(Point nextCellPosition, boolean isAlive) {
         if (isAlive) {
@@ -89,23 +88,15 @@ public class GoLModel {
     }
 
     public GoLPrefab getCurrentFigure() {
-        return currentFigure;
+        return recentFigures.get(recentFigures.size() - 1);
     }
 
     public void setCurrentFigure(GoLPrefab figure) {
-        this.currentFigure = figure;
+        recentFigures.add(figure);
     }
 
     public GoLPrefab getPreMadeFigures(int position) {
         return preMadeFigures.getFigure(position);
-    }
-
-    public void setSpeed(int speed) {
-        this.speed = speed;
-    }
-
-    public int getSpeed() {
-        return speed;
     }
 
     public Point getCenter() {
@@ -126,5 +117,24 @@ public class GoLModel {
 
     public void setBrushSize(int brushSize) {
         this.brushSize = brushSize;
+    }
+
+    public ArrayList<GoLPrefab> getRecentFigures() {
+        return recentFigures;
+    }
+
+    public void updateRecentFigures(String name) {
+        for (GoLPrefab prefab : recentFigures) {
+            if (prefab.name().equals(name)) {
+                recentFigures.remove(prefab);
+                recentFigures.add(prefab);
+                break;
+            }
+        }
+    }
+
+    public void updateRecentFigures(GoLPrefab figure) {
+        recentFigures.removeIf(prefab -> prefab.name().equals(figure.name()));
+        recentFigures.add(figure);
     }
 }

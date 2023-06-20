@@ -19,16 +19,18 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     private final GoLModel model = new GoLModel();
     private final GoLView view;
     private Point prevPos = new Point(), mousePos = new Point();
-    private boolean painting, mouseHeld;
+    private boolean painting, mouseHeld, placingFigure;
     private final Set<Point> lastCells = new HashSet<>();
     private final JFileChooser fileChooser = new JFileChooser();
-    private Mode activeMode = Mode.PAINT;
+    private Mode activeMode = Mode.PAINTING;
     private static final List<GoLController> instances = new ArrayList<>();
+    private final Object lock = new Object();
 
     public GoLController() {
         view = new GoLView(model.getCanvas(), instances.size() + 1);
         view.initFiguresMenu(model.getPreMadeFigures());
         view.setListeners(this, this, this, this, this, this, this, this);
+        view.updateCurrentMode(activeMode.toString());
         refreshCanvas();
         instances.add(this);
     }
@@ -38,57 +40,59 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     public void calculateNextGeneration() {
-        Hashtable<Point, Boolean> cellsToUpdate = new Hashtable<>();
-        Set<Point> deadCellsToCheck = new HashSet<>();
-        for (Point p : model.getAliveCells()) {
-            int aliveCellsCount = 0;
-            for (int i = -1; i <= 1; i++) {
-                for (int j = -1; j <= 1; j++) {
-                    if (i == 0 && j == 0) {
-                        continue;
-                    }
-                    Point newPos = new Point(p.x + i, p.y + j);
-                    if (model.isCellAlive(calculateWrap(newPos))) {
-                        aliveCellsCount++;
-                    } else {
-                        deadCellsToCheck.add(newPos);
+        synchronized (lock) {
+            Map<Point, Boolean> cellsToUpdate = new HashMap<>();
+            Set<Point> deadCellsToCheck = new HashSet<>();
+            for (Point p : new HashSet<>(model.getAliveCells())) {
+                int aliveCellsCount = 0;
+                for (int i = -1; i <= 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
+                        if (i == 0 && j == 0) {
+                            continue;
+                        }
+                        Point newPos = new Point(p.x + i, p.y + j);
+                        if (model.isCellAlive(calculateWrap(newPos))) {
+                            aliveCellsCount++;
+                        } else {
+                            deadCellsToCheck.add(newPos);
+                        }
                     }
                 }
+                if (aliveCellsCount < 2 || aliveCellsCount > 3) {
+                    cellsToUpdate.put(p, false);
+                }
             }
-            if (aliveCellsCount < 2 || aliveCellsCount > 3) {
-                cellsToUpdate.put(p, false);
-            }
-        }
-        for (Point p : deadCellsToCheck) {
-            int aliveCellsCount = 0;
-            for (int i = -1; i <= 1; i++) {
-                for (int j = -1; j <= 1; j++) {
-                    if (i == 0 && j == 0) {
-                        continue;
-                    }
-                    Point newPos = new Point(p.x + i, p.y + j);
-                    if (model.isCellAlive(calculateWrap(newPos))) {
-                        aliveCellsCount++;
+            for (Point p : deadCellsToCheck) {
+                int aliveCellsCount = 0;
+                for (int i = -1; i <= 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
+                        if (i == 0 && j == 0) {
+                            continue;
+                        }
+                        Point newPos = new Point(p.x + i, p.y + j);
+                        if (model.isCellAlive(calculateWrap(newPos))) {
+                            aliveCellsCount++;
+                        }
+                        if (aliveCellsCount > 3) {
+                            break;
+                        }
                     }
                     if (aliveCellsCount > 3) {
                         break;
                     }
                 }
-                if (aliveCellsCount > 3) {
-                    break;
+                if (aliveCellsCount == 3) {
+                    cellsToUpdate.put(p, true);
                 }
             }
-            if (aliveCellsCount == 3) {
-                cellsToUpdate.put(p, true);
+            for (Map.Entry<Point, Boolean> entry : cellsToUpdate.entrySet()) {
+                model.setCell(calculateWrap(entry.getKey()), entry.getValue());
             }
-        }
-        for (Map.Entry<Point, Boolean> entry : cellsToUpdate.entrySet()) {
-            model.setCell(calculateWrap(entry.getKey()), entry.getValue());
         }
     }
 
 
-    private void drawLineBresenham(Point curr, Boolean paint, Boolean preview) {
+    private void drawLineBresenham(Point curr, Boolean preview) {
         Point prev = new Point(prevPos.x, prevPos.y);
         int dx = Math.abs(curr.x - prev.x), dy = Math.abs(curr.y - prev.y);
         int sx = prev.x < curr.x ? 1 : -1, sy = prev.y < curr.y ? 1 : -1;
@@ -111,12 +115,13 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     private void paintPixel(Point p, boolean preview) {
-        for (int i = 0; i < model.getBrushSize(); i++) {
-            for (int j = 0; j < model.getBrushSize(); j++) {
-                if (((int) (model.getBrushSize() / 2.5d)) + p.x - i >= 0 && ((int) (model.getBrushSize() / 2.5d)) + p.y - j >= 0 && ((int) (model.getBrushSize() / 2.5d)) + p.x - i < model.getCanvasWidth() && ((int) (model.getBrushSize() / 2.5d)) + p.y - j < model.getCanvasHeight()) {
-                    Point point = new Point(((int) (model.getBrushSize() / 2.5d) + p.x - i), ((int) (model.getBrushSize() / 2.5d) + p.y - j));
+        int brushSize = model.getBrushSize();
+        for (int i = 0; i < brushSize; i++) {
+            for (int j = 0; j < brushSize; j++) {
+                if (((int) (brushSize / 2.5d)) + p.x - i >= 0 && ((int) (brushSize / 2.5d)) + p.y - j >= 0 && ((int) (brushSize / 2.5d)) + p.x - i < model.getCanvasWidth() && ((int) (brushSize / 2.5d)) + p.y - j < model.getCanvasHeight()) {
+                    Point point = new Point(((int) (brushSize / 2.5d) + p.x - i), ((int) (brushSize / 2.5d) + p.y - j));
                     if (preview) {
-                        model.setCanvasRGB(point, model.getAliveCellColor());
+                        model.setCanvasRGB(point, model.getInvertedColor());
                         lastCells.add(point);
                     } else {
                         model.setCell(point, painting);
@@ -133,6 +138,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     public void clearCanvas() {
         model.clearAliveCells();
         refreshCanvas();
+        activeMode = activeMode != Mode.RUNNING ? activeMode : Mode.PAINTING;
     }
 
     private void refreshCanvas() {
@@ -146,13 +152,13 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     @SuppressWarnings("BusyWait")
     public void calculateNextGenerationAll() {
         for (GoLController instance : instances) {
-            instance.activeMode = Mode.RUN;
+            instance.activeMode = Mode.RUNNING;
             instance.refreshCanvas();
 
             Runnable runningTask = () -> {
-                while (instance.activeMode == Mode.RUN) {
-                    instance.calculateNextGeneration();
+                while (instance.activeMode == Mode.RUNNING) {
                     try {
+                        instance.calculateNextGeneration();
                         Thread.sleep(1000 / instance.view.getSliderstat());
                     } catch (InterruptedException ex) {
                         throw new RuntimeException(ex);
@@ -167,13 +173,10 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
-            case "Löschen" -> {
-                clearCanvas();
-                activeMode = Mode.SET;
-            }
+            case "Löschen" -> clearCanvas();
             case "Neues Fenster" -> new GoLController();
             case "Auflösung" -> {
-                activeMode = Mode.PAINT;
+                activeMode = Mode.PAINTING;
                 view.updateCanvasSize();
             }
             case "Farben" -> view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
@@ -203,41 +206,60 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             case "Speichern" -> saveFigure();
             case "Laden" -> loadSavedFigure();
             case "Laufen" -> calculateNextGenerationAll();
-            case "Malen" -> activeMode = Mode.PAINT;
-            case "Setzen" -> activeMode = Mode.SET;
-            case "Linien" -> activeMode = Mode.LINE;
+            case "Malen" -> {
+                placingFigure = false;
+                activeMode = Mode.PAINTING;
+            }
+            case "Setzen" -> {
+                placingFigure = false;
+                activeMode = Mode.SET;
+            }
+            case "Linien" -> {
+                placingFigure = false;
+                activeMode = Mode.LINE;
+            }
             case "Kreuz" -> {
-                activeMode = Mode.PAINT;
                 prevPos = new Point(0, 0);
-                drawLineBresenham(new Point(model.getCanvasWidth() - 1, model.getCanvasHeight() - 1), true, false);
+                drawLineBresenham(new Point(model.getCanvasWidth() - 1, model.getCanvasHeight() - 1), false);
                 prevPos = new Point(model.getCanvasWidth() - 1, 0);
-                drawLineBresenham(new Point(0, model.getCanvasHeight() - 1), true, false);
+                drawLineBresenham(new Point(0, model.getCanvasHeight() - 1), false);
             }
             case "Rahmen" -> {
-                activeMode = Mode.PAINT;
                 prevPos = new Point(0, 0);
-                drawLineBresenham(new Point(model.getCanvasWidth() - 1, 0), true, false);
+                drawLineBresenham(new Point(model.getCanvasWidth() - 1, 0), false);
                 prevPos = new Point(0, 0);
-                drawLineBresenham(new Point(0, model.getCanvasHeight() - 1), true, false);
+                drawLineBresenham(new Point(0, model.getCanvasHeight() - 1), false);
                 prevPos = new Point(model.getCanvasWidth() - 1, 0);
-                drawLineBresenham(new Point(model.getCanvasWidth() - 1, model.getCanvasHeight() - 1), true, false);
+                drawLineBresenham(new Point(model.getCanvasWidth() - 1, model.getCanvasHeight() - 1), false);
                 prevPos = new Point(0, model.getCanvasHeight() - 1);
-                drawLineBresenham(new Point(model.getCanvasWidth() - 1, model.getCanvasHeight() - 1), true, false);
+                drawLineBresenham(new Point(model.getCanvasWidth() - 1, model.getCanvasHeight() - 1), false);
             }
             case "Plus" -> {
-                activeMode = Mode.PAINT;
                 prevPos = new Point(0, (model.getCanvasHeight() - 1) / 2);
-                drawLineBresenham(new Point(model.getCanvasWidth(), (model.getCanvasHeight() - 1) / 2), true, false);
+                drawLineBresenham(new Point(model.getCanvasWidth(), (model.getCanvasHeight() - 1) / 2), false);
                 prevPos = new Point((model.getCanvasWidth() - 1) / 2, 0);
-                drawLineBresenham(new Point((model.getCanvasWidth() - 1) / 2, model.getCanvasHeight()), true, false);
+                drawLineBresenham(new Point((model.getCanvasWidth() - 1) / 2, model.getCanvasHeight()), false);
             }
+            case "recent" -> {
+                placingFigure = true;
+                activeMode = Mode.SET;
+                String name = ((JMenuItem) e.getSource()).getText();
+                model.updateRecentFigures(name);
+                view.updateRecentFiguresMenu(model.getRecentFigures(), this);
+                calculateCenter();
+            }
+            case "Hotkeys" -> view.showHotKeys();
             default -> {
-                model.setCurrentFigure(model.getPreMadeFigures(Integer.parseInt(e.getActionCommand())));
-                activeMode = Mode.PLACING;
+                int number = Integer.parseInt(e.getActionCommand());
+                placingFigure = true;
+                activeMode = Mode.SET;
+                model.updateRecentFigures(model.getPreMadeFigures(number));
+                view.updateRecentFiguresMenu(model.getRecentFigures(), this);
                 calculateCenter();
             }
         }
         refreshCanvas();
+        view.updateCurrentMode(activeMode.toString());
     }
 
     private void saveFigure() {
@@ -254,7 +276,9 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 fileOut.close();
                 calculateCenter();
                 refreshCanvas();
-                activeMode = Mode.PLACING;
+                placingFigure = true;
+                activeMode = Mode.SET;
+                view.updateRecentFiguresMenu(model.getRecentFigures(), this);
                 JOptionPane.showMessageDialog(null, "Das Objekt wurde erfolgreich gespeichert.");
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Fehler beim Schreiben des Objekts: " + e.getMessage());
@@ -272,10 +296,20 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 FileInputStream fs = new FileInputStream(filePath);
                 ObjectInputStream os = new ObjectInputStream(fs);
                 GoLPrefab m = (GoLPrefab) os.readObject();
-                model.setCurrentFigure(m);
+                int maxX = 0, maxY = 0;
+                for (Point p : m.cells()) {
+                    maxX = Math.max(p.x, maxX);
+                    maxY = Math.max(p.y, maxY);
+                }
+                if (maxX > model.getCanvasWidth() || maxY > model.getCanvasHeight()) {
+                    throw new Exception("Figur(Breite: " + maxX + ", Höhe: " + maxY + ") ist größer als Auflösung(Breite: " + model.getCanvasWidth() + ", Höhe: " + model.getCanvasHeight() + ")");
+                }
+                model.updateRecentFigures(m);
                 calculateCenter();
                 refreshCanvas();
-                activeMode = Mode.PLACING;
+                placingFigure = true;
+                activeMode = Mode.SET;
+                view.updateRecentFiguresMenu(model.getRecentFigures(), this);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Fehler beim laden des Objekts: " + e.getMessage());
             }
@@ -292,10 +326,35 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (activeMode != Mode.RUN && e.getKeyCode() == KeyEvent.VK_SPACE) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_R -> clearCanvas();
+            case KeyEvent.VK_A -> {
+                placingFigure = false;
+                activeMode = Mode.PAINTING;
+                view.updateCanvasSize();
+            }
+            case KeyEvent.VK_F -> new GoLController();
+            case KeyEvent.VK_C -> view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
+            case KeyEvent.VK_S -> calculateNextGenerationAll();
+            case KeyEvent.VK_L -> {
+                placingFigure = false;
+                activeMode = Mode.LINE;
+            }
+            case KeyEvent.VK_D -> {
+                placingFigure = false;
+                activeMode = Mode.PAINTING;
+            }
+            case KeyEvent.VK_P -> {
+                placingFigure = false;
+                activeMode = Mode.SET;
+            }
+            case KeyEvent.VK_H -> view.showHotKeys();
+        }
+        view.updateCurrentMode(activeMode.toString());
+        if (activeMode != Mode.RUNNING && e.getKeyCode() == KeyEvent.VK_SPACE) {
             calculateNextGeneration();
-        } else if (activeMode == Mode.PLACING && (e.getKeyCode() == KeyEvent.VK_H || e.getKeyCode() == KeyEvent.VK_V)) { // Nur wenn die R-Taste losgelassen wird
-            flip(e.getKeyCode() == KeyEvent.VK_H);
+        } else if (placingFigure && (e.getKeyCode() == KeyEvent.VK_H || e.getKeyCode() == KeyEvent.VK_V)) {
+            flip(e.getKeyCode() == KeyEvent.VK_V);
         } else {
             model.setBrushSize(Character.isDigit(e.getKeyChar()) ? Character.getNumericValue(e.getKeyChar()) : model.getBrushSize());
             showPreview();
@@ -304,7 +363,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        if (activeMode == Mode.PLACING) {
+        if (placingFigure) {
             rotate(e.getWheelRotation() > 0 ? 90 : -90);
         }
     }
@@ -315,24 +374,26 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     @Override
     public void mousePressed(MouseEvent e) {
-        prevPos = calculateMousePosition(e.getPoint());
-        painting = e.getButton() == 1;
-        mouseHeld = true;
-        if (activeMode == Mode.PLACING) {
-            for (Point p : model.getCurrentFigure().cells()) {
-                model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), true);
+        synchronized (lock) {
+            prevPos = calculateMousePosition(e.getPoint());
+            painting = e.getButton() == 1;
+            mouseHeld = true;
+            if (placingFigure) {
+                for (Point p : model.getCurrentFigure().cells()) {
+                    model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), painting);
+                }
+            } else if (activeMode != Mode.LINE) {
+                paintPixel(mousePos, false);
             }
-        } else if (activeMode != Mode.LINE) {
-            paintPixel(mousePos, false);
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         mouseHeld = false;
-        if (activeMode == Mode.LINE) {
+        if (activeMode == Mode.LINE && !placingFigure) {
             mousePos = calculateMousePosition(e.getPoint());
-            drawLineBresenham(mousePos, painting, false);
+            drawLineBresenham(mousePos, false);
         }
     }
 
@@ -347,8 +408,8 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     @Override
     public void mouseDragged(MouseEvent e) {
         mousePos = calculateMousePosition(e.getPoint());
-        if (activeMode == Mode.PAINT) {
-            drawLineBresenham(mousePos, painting, false);
+        if (activeMode == Mode.PAINTING && !placingFigure) {
+            drawLineBresenham(mousePos, false);
             prevPos = mousePos;
         } else {
             mouseHeld = true;
@@ -363,7 +424,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     private void showPreview() {
-        if (activeMode == Mode.PLACING) {
+        if (placingFigure) {
             for (Point p : lastCells) {
                 model.setCanvasRGB(p, model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
             }
@@ -378,7 +439,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 model.setCanvasRGB(calculateWrap(p), model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
             }
             lastCells.clear();
-            drawLineBresenham(mousePos, painting, true);
+            drawLineBresenham(mousePos, true);
         } else {
             for (Point p : lastCells) {
                 model.setCanvasRGB(calculateWrap(p), model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
@@ -407,11 +468,11 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     private void calculateCenter() {
         Point center = new Point();
         for (Point p : model.getCurrentFigure().cells()) {
-            center.x += p.x;
-            center.y += p.y;
+            center.x = Math.max(center.x, p.x);
+            center.y = Math.max(center.y, p.y);
         }
-        center.x /= model.getCurrentFigure().cells().size();
-        center.y /= model.getCurrentFigure().cells().size();
+        center.x /= 2;
+        center.y /= 2;
         model.setCenter(center);
     }
 
@@ -481,7 +542,9 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
             rotatedFigure.add(new Point(rotatedX + center.x, rotatedY + center.y));
         }
-        model.setCurrentFigure(new GoLPrefab(model.getCurrentFigure().name(), normalizePosition(rotatedFigure)));
+        GoLPrefab rotatedPrefab = new GoLPrefab(model.getCurrentFigure().name(), normalizePosition(rotatedFigure));
+        model.updateRecentFigures(rotatedPrefab);
+        view.updateRecentFiguresMenu(model.getRecentFigures(), this);
         calculateCenter();
         showPreview();
     }
@@ -491,7 +554,9 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         for (Point p : model.getCurrentFigure().cells()) {
             mirroredFigure.add(new Point(horizontal ? -p.x : p.x, horizontal ? p.y : -p.y));
         }
-        model.setCurrentFigure(new GoLPrefab(model.getCurrentFigure().name(), normalizePosition(mirroredFigure)));
+        GoLPrefab mirroredPrefab = new GoLPrefab(model.getCurrentFigure().name(), normalizePosition(mirroredFigure));
+        model.updateRecentFigures(mirroredPrefab);
+        view.updateRecentFiguresMenu(model.getRecentFigures(), this);
         calculateCenter();
         showPreview();
     }
@@ -518,6 +583,6 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     private enum Mode {
-        RUN, PAINT, SET, PLACING, LINE
+        RUNNING, PAINTING, SET, LINE
     }
 }
