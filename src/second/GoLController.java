@@ -19,7 +19,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     private final GoLModel model = new GoLModel();
     private final GoLView view;
     private Point prevPos = new Point(), mousePos = new Point();
-    private boolean painting, mouseHeld;
+    private boolean painting, mouseHeld, placingFigure;
     private final Set<Point> lastCells = new HashSet<>();
     private final JFileChooser fileChooser = new JFileChooser();
     private Mode activeMode = Mode.PAINTING;
@@ -30,6 +30,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         view = new GoLView(model.getCanvas(), instances.size() + 1);
         view.initFiguresMenu(model.getPreMadeFigures());
         view.setListeners(this, this, this, this, this, this, this, this);
+        view.updateCurrentMode(activeMode.toString());
         refreshCanvas();
         instances.add(this);
     }
@@ -178,9 +179,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 activeMode = Mode.PAINTING;
                 view.updateCanvasSize();
             }
-            case "Farben" -> {
-                view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
-            }
+            case "Farben" -> view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
             case "size" -> {
                 model.setCanvas(new BufferedImage(view.getNewWidth(), view.getNewHeight(), BufferedImage.TYPE_INT_RGB));
                 view.disposeSetSizeFrame();
@@ -207,18 +206,25 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             case "Speichern" -> saveFigure();
             case "Laden" -> loadSavedFigure();
             case "Laufen" -> calculateNextGenerationAll();
-            case "Malen" -> activeMode = Mode.PAINTING;
-            case "Setzen" -> activeMode = Mode.SET;
-            case "Linien" -> activeMode = Mode.LINE;
-            case "Kreuz" -> {
+            case "Malen" -> {
+                placingFigure = false;
                 activeMode = Mode.PAINTING;
+            }
+            case "Setzen" -> {
+                placingFigure = false;
+                activeMode = Mode.SET;
+            }
+            case "Linien" -> {
+                placingFigure = false;
+                activeMode = Mode.LINE;
+            }
+            case "Kreuz" -> {
                 prevPos = new Point(0, 0);
                 drawLineBresenham(new Point(model.getCanvasWidth() - 1, model.getCanvasHeight() - 1), false);
                 prevPos = new Point(model.getCanvasWidth() - 1, 0);
                 drawLineBresenham(new Point(0, model.getCanvasHeight() - 1), false);
             }
             case "Rahmen" -> {
-                activeMode = Mode.PAINTING;
                 prevPos = new Point(0, 0);
                 drawLineBresenham(new Point(model.getCanvasWidth() - 1, 0), false);
                 prevPos = new Point(0, 0);
@@ -229,14 +235,14 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 drawLineBresenham(new Point(model.getCanvasWidth() - 1, model.getCanvasHeight() - 1), false);
             }
             case "Plus" -> {
-                activeMode = Mode.PAINTING;
                 prevPos = new Point(0, (model.getCanvasHeight() - 1) / 2);
                 drawLineBresenham(new Point(model.getCanvasWidth(), (model.getCanvasHeight() - 1) / 2), false);
                 prevPos = new Point((model.getCanvasWidth() - 1) / 2, 0);
                 drawLineBresenham(new Point((model.getCanvasWidth() - 1) / 2, model.getCanvasHeight()), false);
             }
             case "recent" -> {
-                activeMode = Mode.PLACING;
+                placingFigure = true;
+                activeMode = Mode.SET;
                 String name = ((JMenuItem) e.getSource()).getText();
                 model.updateRecentFigures(name);
                 view.updateRecentFiguresMenu(model.getRecentFigures(), this);
@@ -244,7 +250,8 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             }
             default -> {
                 int number = Integer.parseInt(e.getActionCommand());
-                activeMode = Mode.PLACING;
+                placingFigure = true;
+                activeMode = Mode.SET;
                 model.updateRecentFigures(model.getPreMadeFigures(number));
                 view.updateRecentFiguresMenu(model.getRecentFigures(), this);
                 calculateCenter();
@@ -268,7 +275,8 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 fileOut.close();
                 calculateCenter();
                 refreshCanvas();
-                activeMode = Mode.PLACING;
+                placingFigure = true;
+                activeMode = Mode.SET;
                 view.updateRecentFiguresMenu(model.getRecentFigures(), this);
                 JOptionPane.showMessageDialog(null, "Das Objekt wurde erfolgreich gespeichert.");
             } catch (Exception e) {
@@ -298,7 +306,8 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 model.updateRecentFigures(m);
                 calculateCenter();
                 refreshCanvas();
-                activeMode = Mode.PLACING;
+                placingFigure = true;
+                activeMode = Mode.SET;
                 view.updateRecentFiguresMenu(model.getRecentFigures(), this);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Fehler beim laden des Objekts: " + e.getMessage());
@@ -316,22 +325,33 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_E){
-            clearCanvas();
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_R -> clearCanvas();
+            case KeyEvent.VK_A -> {
+                placingFigure = false;
+                activeMode = Mode.PAINTING;
+                view.updateCanvasSize();
+            }
+            case KeyEvent.VK_F -> new GoLController();
+            case KeyEvent.VK_C -> view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
+            case KeyEvent.VK_S -> calculateNextGenerationAll();
+            case KeyEvent.VK_L -> {
+                placingFigure = false;
+                activeMode = Mode.LINE;
+            }
+            case KeyEvent.VK_D -> {
+                placingFigure = false;
+                activeMode = Mode.PAINTING;
+            }
+            case KeyEvent.VK_P -> {
+                placingFigure = false;
+                activeMode = Mode.SET;
+            }
         }
-        if(e.getKeyCode() == KeyEvent.VK_A){
-            activeMode = Mode.PAINTING;
-            view.updateCanvasSize();
-        }
-        if(e.getKeyCode() == KeyEvent.VK_F){
-            new GoLController();
-        }
-        if(e.getKeyCode() == KeyEvent.VK_C){
-            view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
-        }
+        view.updateCurrentMode(activeMode.toString());
         if (activeMode != Mode.RUNNING && e.getKeyCode() == KeyEvent.VK_SPACE) {
             calculateNextGeneration();
-        } else if (activeMode == Mode.PLACING && (e.getKeyCode() == KeyEvent.VK_H || e.getKeyCode() == KeyEvent.VK_V)) { // Nur wenn die R-Taste losgelassen wird
+        } else if (placingFigure && (e.getKeyCode() == KeyEvent.VK_H || e.getKeyCode() == KeyEvent.VK_V)) { // Nur wenn die R-Taste losgelassen wird
             flip(e.getKeyCode() == KeyEvent.VK_V);
         } else {
             model.setBrushSize(Character.isDigit(e.getKeyChar()) ? Character.getNumericValue(e.getKeyChar()) : model.getBrushSize());
@@ -341,7 +361,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        if (activeMode == Mode.PLACING) {
+        if (placingFigure) {
             rotate(e.getWheelRotation() > 0 ? 90 : -90);
         }
     }
@@ -356,7 +376,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             prevPos = calculateMousePosition(e.getPoint());
             painting = e.getButton() == 1;
             mouseHeld = true;
-            if (activeMode == Mode.PLACING) {
+            if (placingFigure) {
                 for (Point p : model.getCurrentFigure().cells()) {
                     model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), painting);
                 }
@@ -369,7 +389,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     @Override
     public void mouseReleased(MouseEvent e) {
         mouseHeld = false;
-        if (activeMode == Mode.LINE) {
+        if (activeMode == Mode.LINE && !placingFigure) {
             mousePos = calculateMousePosition(e.getPoint());
             drawLineBresenham(mousePos, false);
         }
@@ -386,7 +406,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     @Override
     public void mouseDragged(MouseEvent e) {
         mousePos = calculateMousePosition(e.getPoint());
-        if (activeMode == Mode.PAINTING) {
+        if (activeMode == Mode.PAINTING && !placingFigure) {
             drawLineBresenham(mousePos, false);
             prevPos = mousePos;
         } else {
@@ -402,7 +422,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     private void showPreview() {
-        if (activeMode == Mode.PLACING) {
+        if (placingFigure) {
             for (Point p : lastCells) {
                 model.setCanvasRGB(p, model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
             }
@@ -561,6 +581,6 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     private enum Mode {
-        RUNNING, PAINTING, SET, PLACING, LINE
+        RUNNING, PAINTING, SET, LINE
     }
 }
