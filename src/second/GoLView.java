@@ -80,7 +80,7 @@ public class GoLView extends JPanel {
         modeMenu.add(lineButton);
         menuBar.add(modeMenu);
 
-        figuresMenu.add(recentFiguresMenu);
+
         figuresMenu.add(save);
         figuresMenu.add(load);
         figuresMenu.add(staticMenu);
@@ -92,8 +92,9 @@ public class GoLView extends JPanel {
         figuresMenu.add(frameButton);
         figuresMenu.add(crossButton);
         figuresMenu.add(plusButton);
-
         menuBar.add(figuresMenu);
+        menuBar.add(recentFiguresMenu);
+
         sliderMenu.add(speedSlider);
         menuBar.add(sliderMenu);
 
