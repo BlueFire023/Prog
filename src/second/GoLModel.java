@@ -19,7 +19,6 @@ public class GoLModel {
     private Color invertedColor = Color.BLACK;
     private final ArrayList<GoLPrefab> recentFigures = new ArrayList<>();
     private Point center;
-    private int speed = 10;
     private int brushSize = 1;
 
 
@@ -99,14 +98,6 @@ public class GoLModel {
 
     public GoLPrefab getPreMadeFigures(int position) {
         return preMadeFigures.getFigure(position);
-    }
-
-    public void setSpeed(int speed) {
-        this.speed = speed;
-    }
-
-    public int getSpeed() {
-        return speed;
     }
 
     public Point getCenter() {

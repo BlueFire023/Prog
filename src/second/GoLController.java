@@ -255,7 +255,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         switch (activeMode) {
             case RUNNING -> view.updateCurrentMode(1);
             case PAINTING -> view.updateCurrentMode(2);
-            case SET -> view.updateCurrentMode(3);
+            case SET, PLACING -> view.updateCurrentMode(3);
             case LINE -> view.updateCurrentMode(4);
             default -> view.updateCurrentMode(0);
         }
