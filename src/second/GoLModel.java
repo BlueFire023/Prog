@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Stack;
 
 /**
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
@@ -16,7 +17,7 @@ public class GoLModel {
     private Color aliveCellColor = Color.BLACK;
     private Color deadCellColor = Color.WHITE;
     private Color invertedColor = Color.BLACK;
-    private GoLPrefab currentFigure;
+    private final Stack<GoLPrefab> recentFigures = new Stack<>();
     private Point center;
     private int speed = 10;
     private int brushSize = 1;
@@ -89,11 +90,11 @@ public class GoLModel {
     }
 
     public GoLPrefab getCurrentFigure() {
-        return currentFigure;
+        return recentFigures.peek();
     }
 
     public void setCurrentFigure(GoLPrefab figure) {
-        this.currentFigure = figure;
+        recentFigures.push(figure);
     }
 
     public GoLPrefab getPreMadeFigures(int position) {
@@ -126,5 +127,9 @@ public class GoLModel {
 
     public void setBrushSize(int brushSize) {
         this.brushSize = brushSize;
+    }
+
+    public Stack<GoLPrefab> getRecentFigures() {
+        return recentFigures;
     }
 }

@@ -7,6 +7,7 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Stack;
 
 /**
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
@@ -26,6 +27,7 @@ public class GoLView extends JPanel {
     private final ArrayList<JMenuItem> figures = new ArrayList<>();
 
     private final JSlider speedSlider = new JSlider();
+    private final JMenu recentFiguresMenu = new JMenu("Zuletzt benutzt");
     private final JMenuItem save = new JMenuItem("Speichern");
     private final JMenuItem load = new JMenuItem("Laden");
     private final JMenuItem clearButton = new JMenuItem("Löschen");
@@ -80,6 +82,7 @@ public class GoLView extends JPanel {
         optionsMenu.add(newWindow);
         menuBar.add(optionsMenu);
 
+        figuresMenu.add(recentFiguresMenu);
         figuresMenu.add(save);
         figuresMenu.add(load);
         figuresMenu.add(staticMenu);
@@ -100,10 +103,10 @@ public class GoLView extends JPanel {
         applySizeButton.setActionCommand("size");
         applySizeButton.setBackground(Color.WHITE);
 
-        aliveCellColorDisplay.setPreferredSize(new Dimension(50,50));
+        aliveCellColorDisplay.setPreferredSize(new Dimension(50, 50));
         aliveCellColorDisplay.setActionCommand("acc");
         aliveCellColorDisplay.setFocusable(false);
-        deadCellColorDisplay.setPreferredSize(new Dimension(50,50));
+        deadCellColorDisplay.setPreferredSize(new Dimension(50, 50));
         deadCellColorDisplay.setActionCommand("dcc");
         deadCellColorDisplay.setFocusable(false);
 
@@ -113,9 +116,9 @@ public class GoLView extends JPanel {
 
         setSizeFrame.setResizable(false);
         setSizeFrame.setTitle("Auflösung");
-        setSizeFrame.setSize(new Dimension(250,200));
-        setSizeFrame.setLayout(new GridLayout(3,1));
-        JPanel widthPanel = new JPanel(new GridLayout(1,2));
+        setSizeFrame.setSize(new Dimension(250, 200));
+        setSizeFrame.setLayout(new GridLayout(3, 1));
+        JPanel widthPanel = new JPanel(new GridLayout(1, 2));
         JLabel widthLabel = new JLabel("Breite:");
         JPanel widthLabelLayout = new JPanel(new GridBagLayout());
         widthLabelLayout.add(widthLabel);
@@ -124,7 +127,7 @@ public class GoLView extends JPanel {
         widthPanel.add(widthLabelLayout);
         widthPanel.add(widthPanelLayout);
         setSizeFrame.add(widthPanel);
-        JPanel heightPanel = new JPanel(new GridLayout(1,2));
+        JPanel heightPanel = new JPanel(new GridLayout(1, 2));
         JLabel heightLabel = new JLabel("Höhe:");
         JPanel heightLabelLayout = new JPanel(new GridBagLayout());
         heightLabelLayout.add(heightLabel);
@@ -188,9 +191,17 @@ public class GoLView extends JPanel {
         setSizeFrame.dispose();
     }
 
+    public void updateRecentFiguresMenu(Stack<GoLPrefab> recent, ActionListener al) {
+        for (int i = 0; i < Math.min(recent.size(), 10); i++) {
+            JMenuItem item = new JMenuItem(recent.get( i).name());
+            item.addActionListener(al);
+            recentFiguresMenu.add(item);
+        }
+    }
+
     public void updateCellColor(Color aColor, Color dColor) {
         JFrame setColorFrame = new JFrame();
-        setColorFrame.setLayout(new GridLayout(2,2));
+        setColorFrame.setLayout(new GridLayout(2, 2));
         JLabel aliveCellColorTag = new JLabel(" Lebende Zellen:");
         JLabel deadCellColorTag = new JLabel(" Tote Zellen:");
 

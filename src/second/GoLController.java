@@ -238,6 +238,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             default -> {
                 model.setCurrentFigure(model.getPreMadeFigures(Integer.parseInt(e.getActionCommand())));
                 activeMode = activeMode == Mode.RUNNING ? Mode.RUNNING : Mode.PLACING;
+                view.updateRecentFiguresMenu(model.getRecentFigures(),this);
                 calculateCenter();
             }
         }
