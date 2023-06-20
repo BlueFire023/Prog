@@ -138,6 +138,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     public void clearCanvas() {
         model.clearAliveCells();
         refreshCanvas();
+        activeMode = activeMode != Mode.RUNNING ? activeMode : Mode.PAINTING;
     }
 
     private void refreshCanvas() {
@@ -172,16 +173,15 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
-            case "Löschen" -> {
-                clearCanvas();
-                activeMode = activeMode != Mode.RUNNING ? activeMode : Mode.PAINTING;
-            }
+            case "Löschen" -> clearCanvas();
             case "Neues Fenster" -> new GoLController();
             case "Auflösung" -> {
                 activeMode = Mode.PAINTING;
                 view.updateCanvasSize();
             }
-            case "Farben" -> view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
+            case "Farben" -> {
+                view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
+            }
             case "size" -> {
                 model.setCanvas(new BufferedImage(view.getNewWidth(), view.getNewHeight(), BufferedImage.TYPE_INT_RGB));
                 view.disposeSetSizeFrame();
@@ -323,6 +323,19 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
 
     @Override
     public void keyReleased(KeyEvent e) {
+        if(e.getKeyCode() == KeyEvent.VK_E){
+            clearCanvas();
+        }
+        if(e.getKeyCode() == KeyEvent.VK_A){
+            activeMode = Mode.PAINTING;
+            view.updateCanvasSize();
+        }
+        if(e.getKeyCode() == KeyEvent.VK_F){
+            new GoLController();
+        }
+        if(e.getKeyCode() == KeyEvent.VK_C){
+            view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
+        }
         if (activeMode != Mode.RUNNING && e.getKeyCode() == KeyEvent.VK_SPACE) {
             calculateNextGeneration();
         } else if (activeMode == Mode.PLACING && (e.getKeyCode() == KeyEvent.VK_H || e.getKeyCode() == KeyEvent.VK_V)) { // Nur wenn die R-Taste losgelassen wird

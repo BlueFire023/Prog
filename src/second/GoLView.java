@@ -25,7 +25,6 @@ public class GoLView extends JPanel {
     private final JMenu gunsMenu = new JMenu("Gleiter Kanonen");
     private final JMenu otherMenu = new JMenu("Andere");
     private final ArrayList<JMenuItem> figures = new ArrayList<>();
-
     private final JSlider speedSlider = new JSlider();
     private final JMenu recentFiguresMenu = new JMenu("Zuletzt benutzt");
     private final JMenuItem save = new JMenuItem("Speichern");
@@ -46,6 +45,9 @@ public class GoLView extends JPanel {
     private final JButton applySizeButton = new JButton("Apply");
     private final JButton aliveCellColorDisplay = new JButton();
     private final JButton deadCellColorDisplay = new JButton();
+    private final JFrame setColorFrame = new JFrame();
+    private final JLabel aliveCellColorTag = new JLabel(" Lebende Zellen:");
+    private final JLabel deadCellColorTag = new JLabel(" Tote Zellen:");
     private final JFrame frame = new JFrame();
     private final JMenuItem newWindow = new JMenuItem("Neues Fenster");
     private BufferedImage canvas;
@@ -105,6 +107,21 @@ public class GoLView extends JPanel {
 
         applySizeButton.setActionCommand("size");
         applySizeButton.setBackground(Color.WHITE);
+
+        setColorFrame.setLayout(new GridLayout(2, 2));
+        setColorFrame.setTitle("Farben");
+        JPanel aliveLayoutPanel = new JPanel();
+        aliveLayoutPanel.setLayout(new GridBagLayout());
+        setColorFrame.add(aliveCellColorTag);
+        aliveLayoutPanel.add(aliveCellColorDisplay);
+        setColorFrame.add(aliveLayoutPanel);
+        setColorFrame.add(deadCellColorTag);
+        JPanel deadLayoutPanel = new JPanel();
+        deadLayoutPanel.setLayout(new GridBagLayout());
+        deadLayoutPanel.add(deadCellColorDisplay);
+        setColorFrame.add(deadLayoutPanel);
+        setColorFrame.setSize(250, 200);
+        setColorFrame.setResizable(false);
 
         aliveCellColorDisplay.setPreferredSize(new Dimension(50, 50));
         aliveCellColorDisplay.setActionCommand("acc");
@@ -205,27 +222,9 @@ public class GoLView extends JPanel {
     }
 
     public void updateCellColor(Color aColor, Color dColor) {
-        JFrame setColorFrame = new JFrame();
-        setColorFrame.setLayout(new GridLayout(2, 2));
-        JLabel aliveCellColorTag = new JLabel(" Lebende Zellen:");
-        JLabel deadCellColorTag = new JLabel(" Tote Zellen:");
-
         aliveCellColorDisplay.setBackground(aColor);
         deadCellColorDisplay.setBackground(dColor);
-        setColorFrame.setTitle("Farben");
-        JPanel aliveLayoutPanel = new JPanel();
-        aliveLayoutPanel.setLayout(new GridBagLayout());
-        setColorFrame.add(aliveCellColorTag);
-        aliveLayoutPanel.add(aliveCellColorDisplay);
-        setColorFrame.add(aliveLayoutPanel);
-        setColorFrame.add(deadCellColorTag);
-        JPanel deadLayoutPanel = new JPanel();
-        deadLayoutPanel.setLayout(new GridBagLayout());
-        deadLayoutPanel.add(deadCellColorDisplay);
-        setColorFrame.add(deadLayoutPanel);
-        setColorFrame.setSize(250, 200);
         setColorFrame.setVisible(true);
-        setColorFrame.setResizable(false);
     }
 
     public void updateCanvasObject(BufferedImage canvas) {
