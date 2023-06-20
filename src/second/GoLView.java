@@ -32,6 +32,7 @@ public class GoLView extends JPanel {
     private final JMenuItem clearButton = new JMenuItem("Löschen");
     private final JMenuItem setSizeButton = new JMenuItem("Auflösung");
     private final JMenuItem setColorButton = new JMenuItem("Farben");
+    private final JMenuItem showHotKeysButton = new JMenuItem("Hotkeys");
     private final JMenuItem runButton = new JMenuItem("Laufen");
     private final JMenuItem paintButton = new JMenuItem("Malen");
     private final JMenuItem setButton = new JMenuItem("Setzen");
@@ -40,6 +41,7 @@ public class GoLView extends JPanel {
     private final JMenuItem crossButton = new JMenuItem("Kreuz");
     private final JMenuItem plusButton = new JMenuItem("Plus");
     private final JFrame setSizeFrame = new JFrame();
+    private final JFrame hotKeyFrame = new JFrame("Hotkeys");
     private final JTextField widthTextArea;
     private final JTextField heightTextArea;
     private final JButton applySizeButton = new JButton("Apply");
@@ -102,6 +104,7 @@ public class GoLView extends JPanel {
         extraMenu.add(setSizeButton);
         extraMenu.add(setColorButton);
         extraMenu.add(newWindow);
+        extraMenu.add(showHotKeysButton);
         menuBar.add(extraMenu);
 
         menuBar.setBackground(Color.LIGHT_GRAY);
@@ -162,6 +165,74 @@ public class GoLView extends JPanel {
         setSizeFrame.add(applyPanel);
         setSizeFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
+        hotKeyFrame.setSize(new Dimension(250, 200));
+        hotKeyFrame.setResizable(false);
+        hotKeyFrame.setLayout(new GridLayout(9, 2));
+
+        JPanel runLabelPanel = new JPanel(new GridBagLayout());
+        runLabelPanel.add(new JLabel("S"));
+        JPanel runPanel = new JPanel(new GridBagLayout());
+        runPanel.add(new JLabel("Laufen:"));
+        hotKeyFrame.add(runPanel);
+        hotKeyFrame.add(runLabelPanel);
+
+        JPanel drawLabelPanel = new JPanel(new GridBagLayout());
+        drawLabelPanel.add(new JLabel("D"));
+        JPanel drawPanel = new JPanel(new GridBagLayout());
+        drawPanel.add(new JLabel("Malen:"));
+        ;
+        hotKeyFrame.add(drawPanel);
+        hotKeyFrame.add(drawLabelPanel);
+
+        JPanel setLabelPanel = new JPanel(new GridBagLayout());
+        setLabelPanel.add(new JLabel("P"));
+        JPanel setPanel = new JPanel(new GridBagLayout());
+        setPanel.add(new JLabel("Setzen:"));
+        hotKeyFrame.add(setPanel);
+        hotKeyFrame.add(setLabelPanel);
+
+        JPanel lineLabelPanel = new JPanel(new GridBagLayout());
+        lineLabelPanel.add(new JLabel("L"));
+        JPanel linePanel = new JPanel(new GridBagLayout());
+        linePanel.add(new JLabel("Linien:"));
+        hotKeyFrame.add(linePanel);
+        hotKeyFrame.add(lineLabelPanel);
+
+        JPanel sizeLabelPanel = new JPanel(new GridBagLayout());
+        sizeLabelPanel.add(new JLabel("A"));
+        JPanel sizePanel = new JPanel(new GridBagLayout());
+        sizePanel.add(new JLabel("Auflösung:"));
+        hotKeyFrame.add(sizePanel);
+        hotKeyFrame.add(sizeLabelPanel);
+
+        JPanel clearLabelPanel = new JPanel(new GridBagLayout());
+        clearLabelPanel.add(new JLabel("R"));
+        JPanel clearPanel = new JPanel(new GridBagLayout());
+        clearPanel.add(new JLabel("Löschen:"));
+        hotKeyFrame.add(clearPanel);
+        hotKeyFrame.add(clearLabelPanel);
+
+        JPanel colorLabelPanel = new JPanel(new GridBagLayout());
+        colorLabelPanel.add(new JLabel("C"));
+        JPanel colorPanel = new JPanel(new GridBagLayout());
+        colorPanel.add(new JLabel("Farben:"));
+        hotKeyFrame.add(colorPanel);
+        hotKeyFrame.add(colorLabelPanel);
+
+        JPanel windowLabelPanel = new JPanel(new GridBagLayout());
+        windowLabelPanel.add(new JLabel("F"));
+        JPanel windowPanel = new JPanel(new GridBagLayout());
+        windowPanel.add(new JLabel("Neues Fenster:"));
+        hotKeyFrame.add(windowPanel);
+        hotKeyFrame.add(windowLabelPanel);
+
+        JPanel hotkeyLabelPanel = new JPanel(new GridBagLayout());
+        hotkeyLabelPanel.add(new JLabel("H"));
+        JPanel hotkeyPanel = new JPanel(new GridBagLayout());
+        hotkeyPanel.add(new JLabel("Hotkeys:"));
+        hotKeyFrame.add(hotkeyPanel);
+        hotKeyFrame.add(hotkeyLabelPanel);
+
         frame.setTitle("Game of Life " + openWindows);
         frame.setJMenuBar(menuBar);
         frame.setSize(new Dimension(1014, 1060));
@@ -179,6 +250,7 @@ public class GoLView extends JPanel {
         setSizeButton.addActionListener(al);
         applySizeButton.addActionListener(al);
         setColorButton.addActionListener(al);
+        showHotKeysButton.addActionListener(al);
         runButton.addActionListener(al);
         paintButton.addActionListener(al);
         setButton.addActionListener(al);
@@ -297,19 +369,27 @@ public class GoLView extends JPanel {
         modeMenu.add(paintButton);
         modeMenu.add(setButton);
         modeMenu.add(lineButton);
-        switch (mode){
-            case "RUNNING" -> { modeMenu.remove(runButton);
+        switch (mode) {
+            case "RUNNING" -> {
+                modeMenu.remove(runButton);
                 modeMenu.setText("Laufen");
             }
-            case "SET" -> { modeMenu.remove(setButton);
+            case "SET" -> {
+                modeMenu.remove(setButton);
                 modeMenu.setText("Setzen");
             }
-            case "PAINTING" -> { modeMenu.remove(paintButton);
+            case "PAINTING" -> {
+                modeMenu.remove(paintButton);
                 modeMenu.setText("Malen");
             }
-            case "LINE" -> { modeMenu.remove(lineButton);
+            case "LINE" -> {
+                modeMenu.remove(lineButton);
                 modeMenu.setText("Linien");
             }
         }
+    }
+
+    public void showHotKeys() {
+        hotKeyFrame.setVisible(true);
     }
 }

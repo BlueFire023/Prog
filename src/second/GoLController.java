@@ -248,6 +248,7 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
                 view.updateRecentFiguresMenu(model.getRecentFigures(), this);
                 calculateCenter();
             }
+            case "Hotkeys" -> view.showHotKeys();
             default -> {
                 int number = Integer.parseInt(e.getActionCommand());
                 placingFigure = true;
@@ -346,6 +347,9 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             case KeyEvent.VK_P -> {
                 placingFigure = false;
                 activeMode = Mode.SET;
+            }
+            case KeyEvent.VK_H -> {
+                view.showHotKeys();
             }
         }
         view.updateCurrentMode(activeMode.toString());
