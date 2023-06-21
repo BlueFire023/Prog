@@ -164,7 +164,6 @@ public class GoLController extends GoLAdapter {
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case "Löschen" -> clearCanvas();
-            case "Neues Fenster" -> new GoLController();
             case "Auflösung" -> {
                 activeMode = Mode.PAINTING;
                 view.updateCanvasSize();
