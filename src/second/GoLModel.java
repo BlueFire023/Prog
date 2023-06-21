@@ -21,7 +21,13 @@ public class GoLModel {
     private Point center;
     private int brushSize = 1;
 
-    public void setCell(Point nextCellPosition, boolean isAlive) { // Setzt die Farbe der Zelle im Bild "canvas" abhängig davon, ob sie lebendig sind oder nicht
+    /**
+     * Setzt die Farbe der Zelle im Bild "canvas" abhängig davon, ob sie lebendig sind oder nicht
+     *
+     * @param nextCellPosition
+     * @param isAlive
+     */
+    public void setCell(Point nextCellPosition, boolean isAlive) {
         if (isAlive) {
             canvas.setRGB(nextCellPosition.x, nextCellPosition.y, aliveCellColor.getRGB());
             aliveCells.add(nextCellPosition);
@@ -31,99 +37,219 @@ public class GoLModel {
         }
     }
 
-    public void setCanvasRGB(Point pos, Color c) { // Setzt die Farbe eines bestimmten Punktes im Bild "canvas"
+    /**
+     * Setzt die Farbe eines bestimmten Punktes im Bild "canvas"
+     *
+     * @param pos
+     * @param c
+     */
+    public void setCanvasRGB(Point pos, Color c) {
         canvas.setRGB(pos.x, pos.y, c.getRGB());
     }
 
-    public BufferedImage getCanvas() { // Gibt das Bild "canvas" zurück
+    /**
+     * Gibt das Bild "canvas" zurück
+     *
+     * @return BufferedImage - canvas
+     */
+    public BufferedImage getCanvas() {
         return canvas;
     }
 
-    public void setCanvas(BufferedImage canvas) { // Setzt das Bild "canvas"
+    /**
+     * Setzt das Bild "canvas"
+     *
+     * @param canvas
+     */
+    public void setCanvas(BufferedImage canvas) {
         this.canvas = canvas;
     }
 
-    public Set<Point> getAliveCells() { // Gibt die Menge der lebendigen Zellen zurück
+    /**
+     * Gibt die Menge der lebendigen Zellen zurück
+     *
+     * @return Set an lebendigen Zellen
+     */
+    public Set<Point> getAliveCells() {
         return aliveCells;
     }
 
-    public void clearAliveCells() { // Leert die Menge der lebendigen Zellen
+    /**
+     * Leert die Menge der lebendigen Zellen
+     */
+    public void clearAliveCells() {
         aliveCells.clear();
     }
 
-    public Color getAliveCellColor() { // Gibt die Farbe der lebendigen Zellen zurück
+    /**
+     * Gibt die Farbe der lebendigen Zellen zurück
+     *
+     * @return Farbe für lebende Zellen
+     */
+    public Color getAliveCellColor() {
         return aliveCellColor;
     }
 
-    public void setAliveCellColor(Color aliveCellColor) { // Setzt die Farbe der lebendigen Zellen
+    /**
+     * Setzt die Farbe der lebendigen Zellen
+     *
+     * @param aliveCellColor
+     */
+    public void setAliveCellColor(Color aliveCellColor) {
         this.aliveCellColor = aliveCellColor;
     }
 
-    public Color getDeadCellColor() { // Gibt die Farbe der toten Zellen zurück
+    /**
+     * Gibt die Farbe der toten Zellen zurück
+     *
+     * @return Farbe für tote Zellen
+     */
+    public Color getDeadCellColor() {
         return deadCellColor;
     }
 
-    public void setDeadCellColor(Color deadCellColor) { // Setzt die Farbe der toten Zellen
+    /**
+     * Setzt die Farbe der toten Zellen
+     *
+     * @param deadCellColor
+     */
+    public void setDeadCellColor(Color deadCellColor) {
         this.deadCellColor = deadCellColor;
     }
 
-    public int getCanvasWidth() { // Gibt die Breite des Bildes "canvas" zurück
+    /**
+     * Gibt die Breite des Bildes "canvas" zurück
+     *
+     * @return width
+     */
+    public int getCanvasWidth() {
         return canvas.getWidth();
     }
 
-    public int getCanvasHeight() { // Gibt die Höhe des Bildes "canvas" zurück
+    /**
+     * Gibt die Höhe des Bildes "canvas" zurück
+     *
+     * @return height
+     */
+    public int getCanvasHeight() {
         return canvas.getHeight();
     }
 
-    public boolean isCellAlive(Point p) { // Überprüft, ob eine Zelle lebendig ist
+    /**
+     * Überprüft, ob eine Zelle lebendig ist
+     *
+     * @param p Point
+     * @return true wenn Zelle lebendig
+     */
+    public boolean isCellAlive(Point p) {
         return aliveCells.contains(p);
     }
 
-    public Color getInvertedColor() { // Gibt die invertierte Farbe zurück
+    /**
+     * Gibt die invertierte Farbe zurück
+     *
+     * @return invertedColor
+     */
+    public Color getInvertedColor() {
         return invertedColor;
     }
 
-    public void setInvertedColor(Color invertedColor) { // Setzt die invertierte Farbe
+    /**
+     * Setzt die invertierte Farbe
+     *
+     * @param invertedColor
+     */
+    public void setInvertedColor(Color invertedColor) {
         this.invertedColor = invertedColor;
     }
 
-    public GoLPrefab getCurrentFigure() {  // Gibt die aktuelle Figur zurück
+    /**
+     * Gibt die aktuelle Figur zurück
+     *
+     * @return currentFigure
+     */
+    public GoLPrefab getCurrentFigure() {
         return recentFigures.get(recentFigures.size() - 1);
     }
 
-    public void setCurrentFigure(GoLPrefab figure) { // Setzt die aktuelle Figur
+    /**
+     * Setzt die aktuelle Figur
+     * @param figure GoLPrefab
+     */
+    public void setCurrentFigure(GoLPrefab figure) {
         recentFigures.add(figure);
     }
 
-    public GoLPrefab getPreMadeFigures(int position) {  // Gibt eine vordefinierte Figur an einer bestimmten Position zurück
+    /**
+     * Gibt eine vordefinierte Figur an einer bestimmten Position zurück
+     *
+     * @param position
+     * @return
+     */
+    public GoLPrefab getPreMadeFigures(int position) {
         return preMadeFigures.getFigure(position);
     }
 
-    public Point getCenter() { // Gibt den Mittelpunkt zurück
+    /**
+     * Gibt den Mittelpunkt zurück
+     *
+     * @return
+     */
+    public Point getCenter() {
         return center;
     }
 
-    public void setCenter(Point center) { // Setzt den Mittelpunkt
+    /**
+     * Setzt den Mittelpunkt
+     *
+     * @param center
+     */
+    public void setCenter(Point center) {
         this.center = center;
     }
 
-    public GoLFigures getPreMadeFigures() { // Gibt die vordefinierten Figuren zurück
+    /**
+     * Gibt die vordefinierten Figuren zurück
+     *
+     * @return
+     */
+    public GoLFigures getPreMadeFigures() {
         return preMadeFigures;
     }
 
-    public int getBrushSize() { // Gibt die Größe des Pinsels zurück
+    /**
+     * Gibt die Größe des Pinsels zurück
+     *
+     * @return
+     */
+    public int getBrushSize() {
         return brushSize;
     }
 
-    public void setBrushSize(int brushSize) { // Setzt die Größe des Pinsels
+    /**
+     * Setzt die Größe des Pinsels
+     *
+     * @param brushSize
+     */
+    public void setBrushSize(int brushSize) {
         this.brushSize = brushSize;
     }
 
-    public ArrayList<GoLPrefab> getRecentFigures() {  // Gibt die Liste der aktuellen Figuren zurück
+    /**
+     * Gibt die Liste der aktuellen Figuren zurück
+     *
+     * @return
+     */
+    public ArrayList<GoLPrefab> getRecentFigures() {
         return recentFigures;
     }
 
-    public void updateRecentFigures(String name) { // Aktualisiert die Liste der aktuellen Figuren mit einer bestimmten Figur basierend auf dem Namen
+    /**
+     * Aktualisiert die Liste der aktuellen Figuren mit einer bestimmten Figur basierend auf dem Namen
+     *
+     * @param name
+     */
+    public void updateRecentFigures(String name) {
         for (GoLPrefab prefab : recentFigures) {
             if (prefab.name().equals(name)) {
                 recentFigures.remove(prefab);
@@ -133,7 +259,12 @@ public class GoLModel {
         }
     }
 
-    public void updateRecentFigures(GoLPrefab figure) { // Aktualisiert die Liste der aktuellen Figuren mit einer bestimmten Figur
+    /**
+     * Aktualisiert die Liste der aktuellen Figuren mit einer bestimmten Figur
+     *
+     * @param figure
+     */
+    public void updateRecentFigures(GoLPrefab figure) {
         recentFigures.removeIf(prefab -> prefab.name().equals(figure.name()));
         recentFigures.add(figure);
     }
