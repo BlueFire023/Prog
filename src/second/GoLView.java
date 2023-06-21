@@ -50,7 +50,7 @@ public class GoLView extends JPanel {
     private final JFrame setColorFrame = new JFrame();
     private final JLabel aliveCellColorTag = new JLabel(" Lebende Zellen:");
     private final JLabel deadCellColorTag = new JLabel(" Tote Zellen:");
-    private final JFrame frame = new JFrame();
+    private final JInternalFrame frame = new JInternalFrame();
     private final JMenuItem newWindow = new JMenuItem("Neues Fenster");
     private BufferedImage canvas;
     private final int stillLifesCount = 8, oscillatorsCount = 9, spaceshipsCount = 4, methuselahsCount = 3, ggCount = 2, otherCount = 4;
@@ -274,8 +274,10 @@ public class GoLView extends JPanel {
 
         frame.setTitle("Game of Life " + openWindows);
         frame.setJMenuBar(menuBar);
-        frame.setSize(new Dimension(1014, 1060));
-        frame.setDefaultCloseOperation(openWindows == 1 ? WindowConstants.EXIT_ON_CLOSE : WindowConstants.DISPOSE_ON_CLOSE);
+        frame.setSize(new Dimension(300, 300));
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        frame.setClosable(true);
+        frame.setIconifiable(true);
         frame.setContentPane(this);
         frame.setVisible(true);
     }
@@ -305,9 +307,9 @@ public class GoLView extends JPanel {
         crossButton.addMouseListener(ml);
         plusButton.addActionListener(al);
         plusButton.addMouseListener(ml);
-        frame.addWindowFocusListener(wfl);
+        //frame.addWindowFocusListener(wfl);
         speedSlider.addChangeListener(cl);
-        frame.addWindowListener(wl);
+        //frame.addWindowListener(wl);
         int index = 0;
         for (JMenuItem j : figures) {
             j.addActionListener(al);
@@ -394,7 +396,7 @@ public class GoLView extends JPanel {
         }
     }
 
-    public JFrame getFrame() {
+    public JInternalFrame getFrame() {
         return frame;
     }
 

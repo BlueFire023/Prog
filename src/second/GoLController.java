@@ -17,14 +17,13 @@ import java.util.*;
 
 public class GoLController implements ActionListener, KeyListener, MouseMotionListener, MouseListener, ChangeListener, WindowFocusListener, WindowListener, MouseWheelListener {
     private final GoLModel model = new GoLModel();
-    private final GoLView view;
+    public final GoLView view;
     private Point prevPos = new Point(), mousePos = new Point();
     private boolean painting, mouseHeld, placingFigure;
     private final Set<Point> lastCells = new HashSet<>();
     private final JFileChooser fileChooser = new JFileChooser();
     private Mode activeMode = Mode.PAINTING;
     private static final List<GoLController> instances = new ArrayList<>();
-    private final Object lock = new Object();
 
     public GoLController() {
         view = new GoLView(model.getCanvas(), instances.size() + 1);
@@ -35,59 +34,53 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         instances.add(this);
     }
 
-    public static void main(String[] args) {
-        new GoLController();
-    }
-
-    public void calculateNextGeneration() {
-        synchronized (lock) {
-            Map<Point, Boolean> cellsToUpdate = new HashMap<>();
-            Set<Point> deadCellsToCheck = new HashSet<>();
-            for (Point p : new HashSet<>(model.getAliveCells())) {
-                int aliveCellsCount = 0;
-                for (int i = -1; i <= 1; i++) {
-                    for (int j = -1; j <= 1; j++) {
-                        if (i == 0 && j == 0) {
-                            continue;
-                        }
-                        Point newPos = new Point(p.x + i, p.y + j);
-                        if (model.isCellAlive(calculateWrap(newPos))) {
-                            aliveCellsCount++;
-                        } else {
-                            deadCellsToCheck.add(newPos);
-                        }
+    public synchronized void calculateNextGeneration() {
+        Map<Point, Boolean> cellsToUpdate = new HashMap<>();
+        Set<Point> deadCellsToCheck = new HashSet<>();
+        for (Point p : new HashSet<>(model.getAliveCells())) {
+            int aliveCellsCount = 0;
+            for (int i = -1; i <= 1; i++) {
+                for (int j = -1; j <= 1; j++) {
+                    if (i == 0 && j == 0) {
+                        continue;
+                    }
+                    Point newPos = new Point(p.x + i, p.y + j);
+                    if (model.isCellAlive(calculateWrap(newPos))) {
+                        aliveCellsCount++;
+                    } else {
+                        deadCellsToCheck.add(newPos);
                     }
                 }
-                if (aliveCellsCount < 2 || aliveCellsCount > 3) {
-                    cellsToUpdate.put(p, false);
-                }
             }
-            for (Point p : deadCellsToCheck) {
-                int aliveCellsCount = 0;
-                for (int i = -1; i <= 1; i++) {
-                    for (int j = -1; j <= 1; j++) {
-                        if (i == 0 && j == 0) {
-                            continue;
-                        }
-                        Point newPos = new Point(p.x + i, p.y + j);
-                        if (model.isCellAlive(calculateWrap(newPos))) {
-                            aliveCellsCount++;
-                        }
-                        if (aliveCellsCount > 3) {
-                            break;
-                        }
+            if (aliveCellsCount < 2 || aliveCellsCount > 3) {
+                cellsToUpdate.put(p, false);
+            }
+        }
+        for (Point p : deadCellsToCheck) {
+            int aliveCellsCount = 0;
+            for (int i = -1; i <= 1; i++) {
+                for (int j = -1; j <= 1; j++) {
+                    if (i == 0 && j == 0) {
+                        continue;
+                    }
+                    Point newPos = new Point(p.x + i, p.y + j);
+                    if (model.isCellAlive(calculateWrap(newPos))) {
+                        aliveCellsCount++;
                     }
                     if (aliveCellsCount > 3) {
                         break;
                     }
                 }
-                if (aliveCellsCount == 3) {
-                    cellsToUpdate.put(p, true);
+                if (aliveCellsCount > 3) {
+                    break;
                 }
             }
-            for (Map.Entry<Point, Boolean> entry : cellsToUpdate.entrySet()) {
-                model.setCell(calculateWrap(entry.getKey()), entry.getValue());
+            if (aliveCellsCount == 3) {
+                cellsToUpdate.put(p, true);
             }
+        }
+        for (Map.Entry<Point, Boolean> entry : cellsToUpdate.entrySet()) {
+            model.setCell(calculateWrap(entry.getKey()), entry.getValue());
         }
     }
 
@@ -373,18 +366,16 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
-        synchronized (lock) {
-            prevPos = calculateMousePosition(e.getPoint());
-            painting = e.getButton() == 1;
-            mouseHeld = true;
-            if (placingFigure) {
-                for (Point p : model.getCurrentFigure().cells()) {
-                    model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), painting);
-                }
-            } else if (activeMode != Mode.LINE) {
-                paintPixel(mousePos, false);
+    public synchronized void mousePressed(MouseEvent e) {
+        prevPos = calculateMousePosition(e.getPoint());
+        painting = e.getButton() == 1;
+        mouseHeld = true;
+        if (placingFigure) {
+            for (Point p : model.getCurrentFigure().cells()) {
+                model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), painting);
             }
+        } else if (activeMode != Mode.LINE) {
+            paintPixel(mousePos, false);
         }
     }
 
