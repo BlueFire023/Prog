@@ -283,7 +283,7 @@ public class GoLView extends JPanel {
     }
 
     public void setListeners(ActionListener al, KeyListener kl, MouseListener ml, MouseMotionListener mml, ChangeListener cl, WindowFocusListener wfl, WindowListener wl, MouseWheelListener mwl) {
-        frame.addKeyListener(kl);
+        addKeyListener(kl);
         addMouseWheelListener(mwl);
         addMouseMotionListener(mml);
         addMouseListener(ml);
