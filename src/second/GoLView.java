@@ -56,33 +56,41 @@ public class GoLView extends JPanel {
     private final int stillLifesCount = 8, oscillatorsCount = 9, spaceshipsCount = 4, methuselahsCount = 3, ggCount = 2, otherCount = 4;
 
     public GoLView(BufferedImage canvas, int openWindows) {
-        this.canvas = canvas;
+        this.canvas = canvas; // Setze das übergebene BufferedImage-Objekt als das Canvas der Ansicht
+
+        // Initialisiere das Textfeld für die Breite mit dem Canvas
         widthTextArea = new JTextField(String.valueOf(canvas.getTileWidth()));
         widthTextArea.setColumns(7);
+
+        // Initialisiere das Textfeld für die Höhe mit dem Canvas
         heightTextArea = new JTextField(String.valueOf(canvas.getTileHeight()));
         heightTextArea.setColumns(7);
 
-        speedSlider.setMinimum(1);
-        speedSlider.setMaximum(100);
-        speedSlider.setMajorTickSpacing(10);
-        speedSlider.setMinorTickSpacing(5);
-        speedSlider.createStandardLabels(5);
-        speedSlider.setPaintTicks(true);
-        speedSlider.setPaintLabels(true);
-        speedSlider.setValue(10);
+        // Konfiguriere den Schieberegler für die Geschwindigkeit
+        speedSlider.setMinimum(1); // Minimaler Wert des Schiebereglers: 1
+        speedSlider.setMaximum(100); // Maximaler Wert des Schiebereglers: 100
+        speedSlider.setMajorTickSpacing(10); // Hauptintervall zwischen den Markierungen: 10
+        speedSlider.setMinorTickSpacing(5); // Nebenintervall zwischen den Markierungen: 5
+        speedSlider.createStandardLabels(5); // Erzeuge Standardbeschriftungen für den Schieberegler
+        speedSlider.setPaintTicks(true); // Zeige die Markierungen auf dem Schieberegler an
+        speedSlider.setPaintLabels(true); // Zeige die Beschriftungen auf dem Schieberegler an
+        speedSlider.setValue(10); // Setze den Standardwert des Schiebereglers auf 10
+
+        // Erzeuge ein Hashtable-Objekt, um benutzerdefinierte Beschriftungen für bestimmte Werte des Schiebereglers festzulegen
         Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
         for (int i = 10; i <= 100; i += 10) {
             labelTable.put(i, new JLabel(Integer.toString(i)));
         }
         speedSlider.setLabelTable(labelTable);
 
+        //Füge dem "modeMenu" die Buttons hinzu und Füge das "modeMenu" der "menuBar" hinzu
         modeMenu.add(runButton);
         modeMenu.add(paintButton);
         modeMenu.add(setButton);
         modeMenu.add(lineButton);
         menuBar.add(modeMenu);
 
-
+        //Füge dem "figuresMenu" die verschiedenen Optionen, Menus, etc. hinzu und Füge es der "menuBar" hinzu
         figuresMenu.add(save);
         figuresMenu.add(load);
         figuresMenu.add(staticMenu);
@@ -97,9 +105,11 @@ public class GoLView extends JPanel {
         menuBar.add(figuresMenu);
         menuBar.add(recentFiguresMenu);
 
+        //Füge der "menuBar" das "sliderMenu" hinzu und füge dem den "speedSlider" hinzu
         sliderMenu.add(speedSlider);
         menuBar.add(sliderMenu);
 
+        //Füge dem "extraMenu" die verschiedenen Optionen und Buttons hinzu und Füge es der "menuBar" hinzu
         extraMenu.add(clearButton);
         extraMenu.add(setSizeButton);
         extraMenu.add(setColorButton);
@@ -107,6 +117,7 @@ public class GoLView extends JPanel {
         extraMenu.add(showHotKeysButton);
         menuBar.add(extraMenu);
 
+        //Setze den Hintergrund der "menuBar" auf "Light_GRAY"
         menuBar.setBackground(Color.LIGHT_GRAY);
 
         applySizeButton.setActionCommand("size");
