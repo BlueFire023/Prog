@@ -91,12 +91,12 @@ public class GoLFigures {
         figures.add(new GoLPrefab("Blinker", blinkerSet));
 
         Set<Point> clockSet = new HashSet<>();
-        clockSet.add(new Point(0,1));
-        clockSet.add(new Point(1,1));
-        clockSet.add(new Point(2,0));
-        clockSet.add(new Point(2,2));
-        clockSet.add(new Point(3,2));
-        clockSet.add(new Point(1,3));
+        clockSet.add(new Point(0, 1));
+        clockSet.add(new Point(1, 1));
+        clockSet.add(new Point(2, 0));
+        clockSet.add(new Point(2, 2));
+        clockSet.add(new Point(3, 2));
+        clockSet.add(new Point(1, 3));
         figures.add(new GoLPrefab("Clock", clockSet));
 
         Set<Point> toadSet = new HashSet<>();
@@ -129,28 +129,23 @@ public class GoLFigures {
         figures.add(new GoLPrefab("Tripole", tripoleSet));
 
         Set<Point> octagonSet = new HashSet<>();
-        octagonSet.add(new Point (3,0));
-        octagonSet.add(new Point (4,0));
-        octagonSet.add(new Point (2,1));
-        octagonSet.add(new Point (5,1));
-        octagonSet.add(new Point (1, 2));
-        octagonSet.add(new Point (6, 2));
-        octagonSet.add(new Point (0,3));
-        octagonSet.add(new Point (7,3));
-        octagonSet.add(new Point (0,4));
-        octagonSet.add(new Point (7,4));
-        octagonSet.add(new Point (1, 5));
-        octagonSet.add(new Point (6,5));
-        octagonSet.add(new Point (2,6));
-        octagonSet.add(new Point (5,6));
-        octagonSet.add(new Point (3,7));
-        octagonSet.add(new Point (4,7));
+        octagonSet.add(new Point(3, 0));
+        octagonSet.add(new Point(4, 0));
+        octagonSet.add(new Point(2, 1));
+        octagonSet.add(new Point(5, 1));
+        octagonSet.add(new Point(1, 2));
+        octagonSet.add(new Point(6, 2));
+        octagonSet.add(new Point(0, 3));
+        octagonSet.add(new Point(7, 3));
+        octagonSet.add(new Point(0, 4));
+        octagonSet.add(new Point(7, 4));
+        octagonSet.add(new Point(1, 5));
+        octagonSet.add(new Point(6, 5));
+        octagonSet.add(new Point(2, 6));
+        octagonSet.add(new Point(5, 6));
+        octagonSet.add(new Point(3, 7));
+        octagonSet.add(new Point(4, 7));
         figures.add(new GoLPrefab("Octagon", octagonSet));
-
-
-
-
-
 
         Set<Point> pulsarSet = new HashSet<>();
         pulsarSet.add(new Point(2, 0));
@@ -219,24 +214,24 @@ public class GoLFigures {
         figures.add(new GoLPrefab("Pentadecathlon", pentadecathlonSet));
 
         Set<Point> fontaineSet = new HashSet<>();
-        fontaineSet.add(new Point(2,0));
-        fontaineSet.add(new Point(3,0));
-        fontaineSet.add(new Point(5,0));
-        fontaineSet.add(new Point(6,0));
-        fontaineSet.add(new Point(3,2));
-        fontaineSet.add(new Point(3,3));
-        fontaineSet.add(new Point(3,4));
-        fontaineSet.add(new Point(5,2));
-        fontaineSet.add(new Point(5,3));
-        fontaineSet.add(new Point(5,4));
-        fontaineSet.add(new Point(0,4));
-        fontaineSet.add(new Point(1,4));
-        fontaineSet.add(new Point(1,5));
-        fontaineSet.add(new Point(2,5));
-        fontaineSet.add(new Point(8,4));
-        fontaineSet.add(new Point(7,4));
-        fontaineSet.add(new Point(7,5));
-        fontaineSet.add(new Point(6,5));
+        fontaineSet.add(new Point(2, 0));
+        fontaineSet.add(new Point(3, 0));
+        fontaineSet.add(new Point(5, 0));
+        fontaineSet.add(new Point(6, 0));
+        fontaineSet.add(new Point(3, 2));
+        fontaineSet.add(new Point(3, 3));
+        fontaineSet.add(new Point(3, 4));
+        fontaineSet.add(new Point(5, 2));
+        fontaineSet.add(new Point(5, 3));
+        fontaineSet.add(new Point(5, 4));
+        fontaineSet.add(new Point(0, 4));
+        fontaineSet.add(new Point(1, 4));
+        fontaineSet.add(new Point(1, 5));
+        fontaineSet.add(new Point(2, 5));
+        fontaineSet.add(new Point(8, 4));
+        fontaineSet.add(new Point(7, 4));
+        fontaineSet.add(new Point(7, 5));
+        fontaineSet.add(new Point(6, 5));
         figures.add(new GoLPrefab("Fontaine", fontaineSet));
 
         Set<Point> gliderSet = new HashSet<>();
@@ -460,20 +455,20 @@ public class GoLFigures {
         figures.add(new GoLPrefab("Infinite 3", infinite_3Set));
 
         Set<Point> USet = new HashSet<>();
-        USet.add(new Point(0,0));
-        USet.add(new Point(0,1));
-        USet.add(new Point(0,2));
-        USet.add(new Point(0,4));
-        USet.add(new Point(0,5));
-        USet.add(new Point(0,6));
-        USet.add(new Point(1,6));
-        USet.add(new Point(1,0));
-        USet.add(new Point(2,0));
-        USet.add(new Point(2,6));
-        USet.add(new Point(2,5));
-        USet.add(new Point(2,4));
-        USet.add(new Point(2,2));
-        USet.add(new Point(2,1));
+        USet.add(new Point(0, 0));
+        USet.add(new Point(0, 1));
+        USet.add(new Point(0, 2));
+        USet.add(new Point(0, 4));
+        USet.add(new Point(0, 5));
+        USet.add(new Point(0, 6));
+        USet.add(new Point(1, 6));
+        USet.add(new Point(1, 0));
+        USet.add(new Point(2, 0));
+        USet.add(new Point(2, 6));
+        USet.add(new Point(2, 5));
+        USet.add(new Point(2, 4));
+        USet.add(new Point(2, 2));
+        USet.add(new Point(2, 1));
         figures.add(new GoLPrefab("U", USet));
     }
 
