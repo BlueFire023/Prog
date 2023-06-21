@@ -167,19 +167,19 @@ public class GoLView extends JPanel {
 
         hotKeyFrame.setSize(new Dimension(250, 200));
         hotKeyFrame.setResizable(false);
-        hotKeyFrame.setLayout(new GridLayout(9, 2));
+        hotKeyFrame.setLayout(new GridLayout(10, 2));
 
         JPanel runLabelPanel = new JPanel(new GridBagLayout());
         runLabelPanel.add(new JLabel("S"));
         JPanel runPanel = new JPanel(new GridBagLayout());
-        runPanel.add(new JLabel("Laufen:"));
+        runPanel.add(new JLabel("Laufen"));
         hotKeyFrame.add(runPanel);
         hotKeyFrame.add(runLabelPanel);
 
         JPanel drawLabelPanel = new JPanel(new GridBagLayout());
         drawLabelPanel.add(new JLabel("D"));
         JPanel drawPanel = new JPanel(new GridBagLayout());
-        drawPanel.add(new JLabel("Malen:"));
+        drawPanel.add(new JLabel("Malen"));
         ;
         hotKeyFrame.add(drawPanel);
         hotKeyFrame.add(drawLabelPanel);
@@ -187,51 +187,58 @@ public class GoLView extends JPanel {
         JPanel setLabelPanel = new JPanel(new GridBagLayout());
         setLabelPanel.add(new JLabel("P"));
         JPanel setPanel = new JPanel(new GridBagLayout());
-        setPanel.add(new JLabel("Setzen:"));
+        setPanel.add(new JLabel("Setzen"));
         hotKeyFrame.add(setPanel);
         hotKeyFrame.add(setLabelPanel);
 
         JPanel lineLabelPanel = new JPanel(new GridBagLayout());
         lineLabelPanel.add(new JLabel("L"));
         JPanel linePanel = new JPanel(new GridBagLayout());
-        linePanel.add(new JLabel("Linien:"));
+        linePanel.add(new JLabel("Linien"));
         hotKeyFrame.add(linePanel);
         hotKeyFrame.add(lineLabelPanel);
 
         JPanel sizeLabelPanel = new JPanel(new GridBagLayout());
         sizeLabelPanel.add(new JLabel("A"));
         JPanel sizePanel = new JPanel(new GridBagLayout());
-        sizePanel.add(new JLabel("Auflösung:"));
+        sizePanel.add(new JLabel("Auflösung"));
         hotKeyFrame.add(sizePanel);
         hotKeyFrame.add(sizeLabelPanel);
 
         JPanel clearLabelPanel = new JPanel(new GridBagLayout());
         clearLabelPanel.add(new JLabel("R"));
         JPanel clearPanel = new JPanel(new GridBagLayout());
-        clearPanel.add(new JLabel("Löschen:"));
+        clearPanel.add(new JLabel("Löschen"));
         hotKeyFrame.add(clearPanel);
         hotKeyFrame.add(clearLabelPanel);
 
         JPanel colorLabelPanel = new JPanel(new GridBagLayout());
         colorLabelPanel.add(new JLabel("C"));
         JPanel colorPanel = new JPanel(new GridBagLayout());
-        colorPanel.add(new JLabel("Farben:"));
+        colorPanel.add(new JLabel("Farben"));
         hotKeyFrame.add(colorPanel);
         hotKeyFrame.add(colorLabelPanel);
 
         JPanel windowLabelPanel = new JPanel(new GridBagLayout());
         windowLabelPanel.add(new JLabel("F"));
         JPanel windowPanel = new JPanel(new GridBagLayout());
-        windowPanel.add(new JLabel("Neues Fenster:"));
+        windowPanel.add(new JLabel("Neues Fenster"));
         hotKeyFrame.add(windowPanel);
         hotKeyFrame.add(windowLabelPanel);
 
         JPanel hotkeyLabelPanel = new JPanel(new GridBagLayout());
         hotkeyLabelPanel.add(new JLabel("H"));
         JPanel hotkeyPanel = new JPanel(new GridBagLayout());
-        hotkeyPanel.add(new JLabel("Hotkeys:"));
+        hotkeyPanel.add(new JLabel("Hotkeys"));
         hotKeyFrame.add(hotkeyPanel);
         hotKeyFrame.add(hotkeyLabelPanel);
+
+        JPanel nextLabelPanel = new JPanel(new GridBagLayout());
+        nextLabelPanel.add(new JLabel("Space"));
+        JPanel nextPanel = new JPanel(new GridBagLayout());
+        nextPanel.add(new JLabel("Nächste Generation"));
+        hotKeyFrame.add(nextPanel);
+        hotKeyFrame.add(nextLabelPanel);
 
         frame.setTitle("Game of Life " + openWindows);
         frame.setJMenuBar(menuBar);
