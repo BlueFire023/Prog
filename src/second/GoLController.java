@@ -1,8 +1,6 @@
 package second;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -15,7 +13,7 @@ import java.util.*;
  * @version 1, 15/06/2023
  */
 
-public class GoLController implements ActionListener, KeyListener, MouseMotionListener, MouseListener, ChangeListener, WindowFocusListener, WindowListener, MouseWheelListener {
+public class GoLController extends GoLAdapter {
     private final GoLModel model = new GoLModel();
     public final GoLView view;
     private Point prevPos = new Point(), mousePos = new Point();
@@ -83,7 +81,6 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             model.setCell(calculateWrap(entry.getKey()), entry.getValue());
         }
     }
-
 
     private void drawLineBresenham(Point curr, Boolean preview) {
         Point prev = new Point(prevPos.x, prevPos.y);
@@ -310,14 +307,6 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-    }
-
-    @Override
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_R -> clearCanvas();
@@ -362,10 +351,6 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
-    }
-
-    @Override
     public synchronized void mousePressed(MouseEvent e) {
         prevPos = calculateMousePosition(e.getPoint());
         painting = e.getButton() == 1;
@@ -386,14 +371,6 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
             mousePos = calculateMousePosition(e.getPoint());
             drawLineBresenham(mousePos, false);
         }
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
     }
 
     @Override
@@ -452,10 +429,6 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         return new Point(posOnCanvasX, posOnCanvasY);
     }
 
-    @Override
-    public void stateChanged(ChangeEvent e) {
-    }
-
     private void calculateCenter() {
         Point center = new Point();
         for (Point p : model.getCurrentFigure().cells()) {
@@ -468,21 +441,11 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
     }
 
     @Override
-    public void windowGainedFocus(WindowEvent e) {
-
-    }
-
-    @Override
     public void windowLostFocus(WindowEvent e) {
         mouseHeld = false;
         for (Point p : lastCells) {
             model.setCanvasRGB(calculateWrap(p), model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
         }
-    }
-
-    @Override
-    public void windowOpened(WindowEvent e) {
-
     }
 
     @Override
@@ -496,26 +459,6 @@ public class GoLController implements ActionListener, KeyListener, MouseMotionLi
         for (GoLController g : instances) {
             g.updateWindowCountTitle(number++);
         }
-    }
-
-    @Override
-    public void windowIconified(WindowEvent e) {
-
-    }
-
-    @Override
-    public void windowDeiconified(WindowEvent e) {
-
-    }
-
-    @Override
-    public void windowActivated(WindowEvent e) {
-
-    }
-
-    @Override
-    public void windowDeactivated(WindowEvent e) {
-
     }
 
     private void rotate(int direction) {
