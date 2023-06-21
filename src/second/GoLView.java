@@ -165,9 +165,9 @@ public class GoLView extends JPanel {
         setSizeFrame.add(applyPanel);
         setSizeFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-        hotKeyFrame.setSize(new Dimension(250, 200));
+        hotKeyFrame.setSize(new Dimension(250, 250));
         hotKeyFrame.setResizable(false);
-        hotKeyFrame.setLayout(new GridLayout(10, 2));
+        hotKeyFrame.setLayout(new GridLayout(13, 2));
 
         JPanel runLabelPanel = new JPanel(new GridBagLayout());
         runLabelPanel.add(new JLabel("S"));
@@ -239,6 +239,27 @@ public class GoLView extends JPanel {
         nextPanel.add(new JLabel("Nächste Generation"));
         hotKeyFrame.add(nextPanel);
         hotKeyFrame.add(nextLabelPanel);
+
+        JPanel flipHLabelPanel = new JPanel(new GridBagLayout());
+        flipHLabelPanel.add(new JLabel("Rechts Links"));
+        JPanel flipHPanel = new JPanel(new GridBagLayout());
+        flipHPanel.add(new JLabel("Horizontal Spiegeln"));
+        hotKeyFrame.add(flipHPanel);
+        hotKeyFrame.add(flipHLabelPanel);
+
+        JPanel flipVLabelPanel = new JPanel(new GridBagLayout());
+        flipVLabelPanel.add(new JLabel("Hoch Runter"));
+        JPanel flipVPanel = new JPanel(new GridBagLayout());
+        flipVPanel.add(new JLabel("Vertikal Spiegeln"));
+        hotKeyFrame.add(flipVPanel);
+        hotKeyFrame.add(flipVLabelPanel);
+
+        JPanel rotateLabelPanel = new JPanel(new GridBagLayout());
+        rotateLabelPanel.add(new JLabel("Mittlere Maus"));
+        JPanel rotatePanel = new JPanel(new GridBagLayout());
+        rotatePanel.add(new JLabel("Rotieren"));
+        hotKeyFrame.add(rotatePanel);
+        hotKeyFrame.add(rotateLabelPanel);
 
         frame.setTitle("Game of Life " + openWindows);
         frame.setJMenuBar(menuBar);
