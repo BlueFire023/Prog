@@ -1,4 +1,4 @@
-package second;
+package second.GoL;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,13 +20,13 @@ import java.util.Set;
  * @version 1, 21/06/2023
  */
 
-public class GoLController extends GoLAdapter {
-    private final GoLModel model = new GoLModel();
-    private final GoLMainModel mainModel;
-    private final GoLMainController mainController;
+public class Controller extends Adapter {
+    private final Model model = new Model();
+    private final MainModel mainModel;
+    private final MainController mainController;
     private final Set<Point> lastCells = new HashSet<>();
     private final JFileChooser fileChooser = new JFileChooser();
-    private final GoLView view;
+    private final View view;
     private boolean painting, mouseHeld, placingFigure;
     private Point prevPos = new Point(), mousePos = new Point();
 
@@ -36,10 +36,10 @@ public class GoLController extends GoLAdapter {
      * @param mainController
      * @param mainModel
      */
-    public GoLController(GoLMainController mainController, GoLMainModel mainModel) {
+    public Controller(MainController mainController, MainModel mainModel) {
         this.mainModel = mainModel;
         this.mainController = mainController;
-        view = new GoLView(model);
+        view = new View(model);
         view.setListeners(this, this, this, this, this, this);
         view.updateCurrentMode();
         refreshCanvas();
@@ -165,7 +165,7 @@ public class GoLController extends GoLAdapter {
     public void clearCanvas() {
         model.clearAliveCells();
         refreshCanvas();
-        model.setActiveMode(model.isActiveMode(GoLModel.Mode.RUNNING) ? model.getLastMode() : model.getActiveMode());
+        model.setActiveMode(model.isActiveMode(Model.Mode.RUNNING) ? model.getLastMode() : model.getActiveMode());
         mainController.updateAllRunButton();
     }
 
@@ -187,7 +187,7 @@ public class GoLController extends GoLAdapter {
         if (!model.getAliveCells().isEmpty() && fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             String filePath = selectedFile.getAbsolutePath();
-            GoLPrefab figureToSave = new GoLPrefab(selectedFile.getName(), normalizePosition(model.getAliveCells()));
+            Prefab figureToSave = new Prefab(selectedFile.getName(), normalizePosition(model.getAliveCells()));
             try {
                 FileOutputStream fileOut = new FileOutputStream(filePath);
                 ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
@@ -223,7 +223,7 @@ public class GoLController extends GoLAdapter {
                 model.setCanvasRGB(calculateWrap(calculatedPoint), model.getInvertedColor());
                 lastCells.add(calculateWrap(calculatedPoint));
             }
-        } else if (model.isActiveMode(GoLModel.Mode.LINE) && mouseHeld) {
+        } else if (model.isActiveMode(Model.Mode.LINE) && mouseHeld) {
             for (Point p : lastCells) {
                 model.setCanvasRGB(calculateWrap(p), model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
             }
@@ -282,7 +282,7 @@ public class GoLController extends GoLAdapter {
 
             rotatedFigure.add(new Point(rotatedX + center.x, rotatedY + center.y));
         }
-        GoLPrefab rotatedPrefab = new GoLPrefab(mainModel.getCurrentFigure().name(), normalizePosition(rotatedFigure));
+        Prefab rotatedPrefab = new Prefab(mainModel.getCurrentFigure().name(), normalizePosition(rotatedFigure));
         mainModel.updateRecentFigures(rotatedPrefab);
         mainController.updateRecentFiguresMenu(mainModel.getRecentFigures());
         mainController.calculateCenter();
@@ -299,7 +299,7 @@ public class GoLController extends GoLAdapter {
         for (Point p : mainModel.getCurrentFigure().cells()) {
             mirroredFigure.add(new Point(horizontal ? -p.x : p.x, horizontal ? p.y : -p.y));
         }
-        GoLPrefab mirroredPrefab = new GoLPrefab(mainModel.getCurrentFigure().name(), normalizePosition(mirroredFigure));
+        Prefab mirroredPrefab = new Prefab(mainModel.getCurrentFigure().name(), normalizePosition(mirroredFigure));
         mainModel.updateRecentFigures(mirroredPrefab);
         mainController.updateRecentFiguresMenu(mainModel.getRecentFigures());
         mainController.calculateCenter();
@@ -343,9 +343,9 @@ public class GoLController extends GoLAdapter {
      * Ein neuer Thread wird gestartet und das Game of Life fängt an zu laufen
      */
     public void startRunning() {
-        model.setActiveMode(GoLModel.Mode.RUNNING);
+        model.setActiveMode(Model.Mode.RUNNING);
         Runnable runningTask = () -> {
-            while (model.isActiveMode(GoLModel.Mode.RUNNING)) {
+            while (model.isActiveMode(Model.Mode.RUNNING)) {
                 try {
                     calculateNextGeneration();
                     Thread.sleep(1000 / view.getSliderstat());
@@ -374,7 +374,7 @@ public class GoLController extends GoLAdapter {
                 clearCanvas();
                 model.setCanvas(new BufferedImage(view.getNewWidth(), view.getNewHeight(), BufferedImage.TYPE_INT_RGB));
                 view.disposeSetSizeFrame();
-                model.setActiveMode(model.isActiveMode(GoLModel.Mode.RUNNING) ? model.getLastMode() : model.getActiveMode());
+                model.setActiveMode(model.isActiveMode(Model.Mode.RUNNING) ? model.getLastMode() : model.getActiveMode());
                 mainController.updateAllRunButton();
             }
             case "acc" -> {
@@ -402,17 +402,17 @@ public class GoLController extends GoLAdapter {
             }
             case "Malen" -> {
                 placingFigure = false;
-                model.setActiveMode(GoLModel.Mode.PAINTING);
+                model.setActiveMode(Model.Mode.PAINTING);
                 mainController.updateAllRunButton();
             }
             case "Setzen" -> {
                 placingFigure = false;
-                model.setActiveMode(GoLModel.Mode.SET);
+                model.setActiveMode(Model.Mode.SET);
                 mainController.updateAllRunButton();
             }
             case "Linien" -> {
                 placingFigure = false;
-                model.setActiveMode(GoLModel.Mode.LINE);
+                model.setActiveMode(Model.Mode.LINE);
                 mainController.updateAllRunButton();
             }
             case "Kreuz" -> {
@@ -458,29 +458,29 @@ public class GoLController extends GoLAdapter {
             }
             case KeyEvent.VK_L -> {
                 placingFigure = false;
-                model.setActiveMode(GoLModel.Mode.LINE);
+                model.setActiveMode(Model.Mode.LINE);
                 mainController.updateAllRunButton();
             }
             case KeyEvent.VK_R -> clearCanvas();
             case KeyEvent.VK_A -> {
                 placingFigure = false;
-                model.setActiveMode(GoLModel.Mode.PAINTING);
+                model.setActiveMode(Model.Mode.PAINTING);
                 view.updateCanvasSize();
                 mainController.updateAllRunButton();
             }
             case KeyEvent.VK_D -> {
                 placingFigure = false;
-                model.setActiveMode(GoLModel.Mode.PAINTING);
+                model.setActiveMode(Model.Mode.PAINTING);
                 mainController.updateAllRunButton();
             }
             case KeyEvent.VK_P -> {
                 placingFigure = false;
-                model.setActiveMode(GoLModel.Mode.SET);
+                model.setActiveMode(Model.Mode.SET);
                 mainController.updateAllRunButton();
             }
         }
         view.updateCurrentMode();
-        if (!model.isActiveMode(GoLModel.Mode.RUNNING) && e.getKeyCode() == KeyEvent.VK_SPACE) {
+        if (!model.isActiveMode(Model.Mode.RUNNING) && e.getKeyCode() == KeyEvent.VK_SPACE) {
             calculateNextGeneration();
         } else if (placingFigure && (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN)) {
             flip(e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT);
@@ -514,7 +514,7 @@ public class GoLController extends GoLAdapter {
         mouseHeld = true;
         if (placingFigure) {
             mainModel.getCurrentFigure().cells().forEach(p -> model.setCell(calculateWrap(new Point(p.x + prevPos.x - mainModel.getCenter().x, p.y + prevPos.y - mainModel.getCenter().y)), painting));
-        } else if (!model.isActiveMode(GoLModel.Mode.LINE)) {
+        } else if (!model.isActiveMode(Model.Mode.LINE)) {
             paintPixel(mousePos, false);
         }
     }
@@ -542,7 +542,7 @@ public class GoLController extends GoLAdapter {
         for (Point p : mainModel.getCurrentFigure().cells()) {
             if (p.x > model.getCanvasWidth() || p.y > model.getCanvasHeight()) {
                 placingFigure = false;
-                model.setActiveMode(model.isActiveMode(GoLModel.Mode.RUNNING) ? model.getLastMode() : model.getActiveMode());
+                model.setActiveMode(model.isActiveMode(Model.Mode.RUNNING) ? model.getLastMode() : model.getActiveMode());
                 mainController.updateAllRunButton();
             }
         }
@@ -556,7 +556,7 @@ public class GoLController extends GoLAdapter {
     @Override
     public void mouseReleased(MouseEvent e) {
         mouseHeld = false;
-        if (model.isActiveMode(GoLModel.Mode.LINE) && !placingFigure) {
+        if (model.isActiveMode(Model.Mode.LINE) && !placingFigure) {
             mousePos = calculateMousePosition(e.getPoint());
             drawLineBresenham(mousePos, false);
         }
@@ -570,7 +570,7 @@ public class GoLController extends GoLAdapter {
     @Override
     public void mouseDragged(MouseEvent e) {
         mousePos = calculateMousePosition(e.getPoint());
-        if (model.isActiveMode(GoLModel.Mode.PAINTING) && !placingFigure) {
+        if (model.isActiveMode(Model.Mode.PAINTING) && !placingFigure) {
             drawLineBresenham(mousePos, false);
             prevPos = mousePos;
         } else {
@@ -614,7 +614,7 @@ public class GoLController extends GoLAdapter {
      *
      * @return view
      */
-    public GoLView getView() {
+    public View getView() {
         return view;
     }
 

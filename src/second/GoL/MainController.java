@@ -1,4 +1,4 @@
-package second;
+package second.GoL;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -16,18 +16,18 @@ import java.util.Random;
  * @version 1, 22/06/2023
  */
 
-public class GoLMainController extends GoLAdapter {
+public class MainController extends Adapter {
     private final Random random = new Random();
-    private final GoLMainView mainView = new GoLMainView();
-    private final GoLMainModel mainModel = new GoLMainModel();
+    private final MainView mainView = new MainView();
+    private final MainModel mainModel = new MainModel();
     private final JFileChooser mainFileChooser = new JFileChooser();
-    private final List<GoLController> instances = new ArrayList<>();
+    private final List<Controller> instances = new ArrayList<>();
     private boolean allRunning = false;
 
     /**
      * Erstellt neuen GoLMainWindow
      */
-    public GoLMainController() {
+    public MainController() {
         mainView.initFiguresMenu(mainModel.getPreMadeFigures());
         mainView.setMainListener(this, this, this);
     }
@@ -38,7 +38,7 @@ public class GoLMainController extends GoLAdapter {
      * @param args
      */
     public static void main(String[] args) {
-        new GoLMainController();
+        new MainController();
     }
 
     /**
@@ -51,10 +51,10 @@ public class GoLMainController extends GoLAdapter {
             try {
                 FileInputStream fs = new FileInputStream(filePath);
                 ObjectInputStream os = new ObjectInputStream(fs);
-                GoLPrefab m = (GoLPrefab) os.readObject();
+                Prefab m = (Prefab) os.readObject();
                 mainModel.updateRecentFigures(m);
                 calculateCenter();
-                for (GoLController c : instances) {
+                for (Controller c : instances) {
                     c.setPlacingFigure(true);
                 }
                 mainView.updateRunButton(false);
@@ -69,7 +69,7 @@ public class GoLMainController extends GoLAdapter {
      * Neues Fenster wird hinzugefügt.
      */
     private void addNewWindow() {
-        GoLController controller = new GoLController(this, mainModel);
+        Controller controller = new Controller(this, mainModel);
         JInternalFrame internalFrame = controller.getView().getFrame();
         instances.add(controller);
         Point frameSize = new Point(mainView.getWidth(), mainView.getHeight());
@@ -96,7 +96,7 @@ public class GoLMainController extends GoLAdapter {
      */
     public void updateWindowNumbers() {
         int number = 1;
-        for (GoLController c : instances) {
+        for (Controller c : instances) {
             c.getView().addIFL(this);
             c.getView().setNewTitle();
             c.getView().updateSetColorFrameTitle();
@@ -110,7 +110,7 @@ public class GoLMainController extends GoLAdapter {
      *
      * @param recent
      */
-    public void updateRecentFiguresMenu(ArrayList<GoLPrefab> recent) {
+    public void updateRecentFiguresMenu(ArrayList<Prefab> recent) {
         mainView.updateRecentFiguresMenu(recent, this);
     }
 
@@ -129,12 +129,12 @@ public class GoLMainController extends GoLAdapter {
                 mainView.updateRunButton(((JMenuItem) e.getSource()).getText().equals("Alle Laufen"));
                 if (allRunning) {
                     allRunning = false;
-                    for (GoLController c : instances) {
+                    for (Controller c : instances) {
                         c.stopRunning();
                     }
                 } else {
                     allRunning = true;
-                    for (GoLController c : instances) {
+                    for (Controller c : instances) {
                         c.startRunning();
                     }
                 }
@@ -142,7 +142,7 @@ public class GoLMainController extends GoLAdapter {
             case "recent" -> {
                 allRunning = false;
                 mainView.updateRunButton(false);
-                for (GoLController c : instances) {
+                for (Controller c : instances) {
                     c.setPlacingFigure(true);
                 }
                 String name = ((JMenuItem) e.getSource()).getText();
@@ -154,7 +154,7 @@ public class GoLMainController extends GoLAdapter {
                 allRunning = false;
                 mainView.updateRunButton(false);
                 int number = Integer.parseInt(e.getActionCommand());
-                for (GoLController c : instances) {
+                for (Controller c : instances) {
                     c.setPlacingFigure(true);
                 }
                 mainModel.updateRecentFigures(mainModel.getPreMadeFigures(number));
@@ -171,7 +171,7 @@ public class GoLMainController extends GoLAdapter {
      */
     @Override
     public void stateChanged(ChangeEvent e) {
-        for (GoLController c : instances) {
+        for (Controller c : instances) {
             c.getView().updateSlider(mainView.getMainSliderstat());
         }
 
@@ -185,7 +185,7 @@ public class GoLMainController extends GoLAdapter {
      */
     @Override
     public void internalFrameClosing(InternalFrameEvent e) {
-        for (GoLController c : instances) {
+        for (Controller c : instances) {
             if (e.getSource().equals(c.getView().getFrame())) {
                 c.getView().disposeSetSizeFrame();
                 c.getView().disposeSetColorFrame();
@@ -201,7 +201,7 @@ public class GoLMainController extends GoLAdapter {
      * Setzt den AllRunButton auf alle Stoppen
      */
     public void updateAllRunButton() {
-        for (GoLController c : instances) {
+        for (Controller c : instances) {
             if (c.getActiveMode().equals("RUNNING")) {
                 mainView.updateRunButton(true);
                 allRunning = true;

@@ -1,4 +1,4 @@
-package second;
+package second.GoL;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -11,7 +11,7 @@ import java.awt.event.*;
  * @version 1, 18/06/2023
  */
 
-public class GoLAdapter implements ActionListener, KeyListener, MouseMotionListener, MouseListener, ChangeListener, MouseWheelListener, InternalFrameListener {
+public class Adapter implements ActionListener, KeyListener, MouseMotionListener, MouseListener, ChangeListener, MouseWheelListener, InternalFrameListener {
     @Override
     public void actionPerformed(ActionEvent e) {
     }

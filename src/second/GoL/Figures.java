@@ -1,4 +1,4 @@
-package second;
+package second.GoL;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -9,20 +9,20 @@ import java.util.Set;
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
  * @version 1, 22/06/2023
  */
-public class GoLFigures {
+public class Figures {
     //Erstellt eine Arraylist "GoLPrefab, um alle Figuren als "Prefabs" darin zu speichern
-    private final ArrayList<GoLPrefab> figures = new ArrayList<>();
+    private final ArrayList<Prefab> figures = new ArrayList<>();
     //Legt die Anzahl fest, wie viele Objekte es von den einzelnen Kategorien geben soll
     private final int stillLifesCount = 8, oscillatorsCount = 9, spaceshipsCount = 4, methuselahsCount = 3, ggCount = 2, otherCount = 4;
 
-    public GoLFigures() {
+    public Figures() {
         //Erstellt die Figur "Block" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> blockSet = new HashSet<>();
         blockSet.add(new Point(0, 0));
         blockSet.add(new Point(0, 1));
         blockSet.add(new Point(1, 0));
         blockSet.add(new Point(1, 1));
-        figures.add(new GoLPrefab("Block", blockSet));
+        figures.add(new Prefab("Block", blockSet));
 
         //Erstellt die Figur "Beehive" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> beehiveSet = new HashSet<>();
@@ -32,7 +32,7 @@ public class GoLFigures {
         beehiveSet.add(new Point(1, 2));
         beehiveSet.add(new Point(2, 2));
         beehiveSet.add(new Point(3, 1));
-        figures.add(new GoLPrefab("Beehive", beehiveSet));
+        figures.add(new Prefab("Beehive", beehiveSet));
 
         //Erstellt die Figur "Loaf" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> loafSet = new HashSet<>();
@@ -43,7 +43,7 @@ public class GoLFigures {
         loafSet.add(new Point(2, 3));
         loafSet.add(new Point(3, 1));
         loafSet.add(new Point(3, 2));
-        figures.add(new GoLPrefab("Loaf", loafSet));
+        figures.add(new Prefab("Loaf", loafSet));
 
         //Erstellt die Figur "Boat" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> boatSet = new HashSet<>();
@@ -52,7 +52,7 @@ public class GoLFigures {
         boatSet.add(new Point(0, 0));
         boatSet.add(new Point(2, 1));
         boatSet.add(new Point(1, 2));
-        figures.add(new GoLPrefab("Boat", boatSet));
+        figures.add(new Prefab("Boat", boatSet));
 
         //Erstellt die Figur "Tub" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> tubSet = new HashSet<>();
@@ -60,7 +60,7 @@ public class GoLFigures {
         tubSet.add(new Point(1, 2));
         tubSet.add(new Point(0, 1));
         tubSet.add(new Point(2, 1));
-        figures.add(new GoLPrefab("Tub", tubSet));
+        figures.add(new Prefab("Tub", tubSet));
 
         //Erstellt die Figur "Barge" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> bargeSet = new HashSet<>();
@@ -70,7 +70,7 @@ public class GoLFigures {
         bargeSet.add(new Point(3, 1));
         bargeSet.add(new Point(2, 2));
         bargeSet.add(new Point(1, 3));
-        figures.add(new GoLPrefab("Barge", bargeSet));
+        figures.add(new Prefab("Barge", bargeSet));
 
         //Erstellt die Figur "Pond" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> pondSet = new HashSet<>();
@@ -82,7 +82,7 @@ public class GoLFigures {
         pondSet.add(new Point(0, 2));
         pondSet.add(new Point(3, 1));
         pondSet.add(new Point(3, 2));
-        figures.add(new GoLPrefab("Pond", pondSet));
+        figures.add(new Prefab("Pond", pondSet));
 
         //Erstellt die Figur "Eater" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> eaterSet = new HashSet<>();
@@ -93,14 +93,14 @@ public class GoLFigures {
         eaterSet.add(new Point(2, 2));
         eaterSet.add(new Point(2, 3));
         eaterSet.add(new Point(3, 3));
-        figures.add(new GoLPrefab("Eater", eaterSet));
+        figures.add(new Prefab("Eater", eaterSet));
 
         //Erstellt die Figur "Blinker" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> blinkerSet = new HashSet<>();
         blinkerSet.add(new Point(0, 0));
         blinkerSet.add(new Point(1, 0));
         blinkerSet.add(new Point(2, 0));
-        figures.add(new GoLPrefab("Blinker", blinkerSet));
+        figures.add(new Prefab("Blinker", blinkerSet));
 
         //Erstellt die Figur "Clock" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> clockSet = new HashSet<>();
@@ -110,7 +110,7 @@ public class GoLFigures {
         clockSet.add(new Point(2, 2));
         clockSet.add(new Point(3, 2));
         clockSet.add(new Point(1, 3));
-        figures.add(new GoLPrefab("Clock", clockSet));
+        figures.add(new Prefab("Clock", clockSet));
 
         //Erstellt die Figur "Toad" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> toadSet = new HashSet<>();
@@ -120,7 +120,7 @@ public class GoLFigures {
         toadSet.add(new Point(0, 1));
         toadSet.add(new Point(1, 1));
         toadSet.add(new Point(2, 1));
-        figures.add(new GoLPrefab("Toad", toadSet));
+        figures.add(new Prefab("Toad", toadSet));
 
         //Erstellt die Figur "Beacon" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> beaconSet = new HashSet<>();
@@ -130,7 +130,7 @@ public class GoLFigures {
         beaconSet.add(new Point(3, 2));
         beaconSet.add(new Point(3, 3));
         beaconSet.add(new Point(2, 3));
-        figures.add(new GoLPrefab("Beacon", beaconSet));
+        figures.add(new Prefab("Beacon", beaconSet));
 
         //Erstellt die Figur "Tripole" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> tripoleSet = new HashSet<>();
@@ -142,7 +142,7 @@ public class GoLFigures {
         tripoleSet.add(new Point(4, 3));
         tripoleSet.add(new Point(3, 4));
         tripoleSet.add(new Point(4, 4));
-        figures.add(new GoLPrefab("Tripole", tripoleSet));
+        figures.add(new Prefab("Tripole", tripoleSet));
 
         //Erstellt die Figur "Octagon" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> octagonSet = new HashSet<>();
@@ -162,7 +162,7 @@ public class GoLFigures {
         octagonSet.add(new Point(5, 6));
         octagonSet.add(new Point(3, 7));
         octagonSet.add(new Point(4, 7));
-        figures.add(new GoLPrefab("Octagon", octagonSet));
+        figures.add(new Prefab("Octagon", octagonSet));
 
 
         //Erstellt die Figur "Pulsar" aus einem Set von Pixeln, und erstellt daraus ein Prefab
@@ -215,7 +215,7 @@ public class GoLFigures {
         pulsarSet.add(new Point(7, 8));
         pulsarSet.add(new Point(4, 5));
         pulsarSet.add(new Point(10, 12));
-        figures.add(new GoLPrefab("Pulsar", pulsarSet));
+        figures.add(new Prefab("Pulsar", pulsarSet));
 
         //Erstellt die Figur "Pentadecathlon" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> pentadecathlonSet = new HashSet<>();
@@ -231,7 +231,7 @@ public class GoLFigures {
         pentadecathlonSet.add(new Point(0, 7));
         pentadecathlonSet.add(new Point(2, 2));
         pentadecathlonSet.add(new Point(2, 7));
-        figures.add(new GoLPrefab("Pentadecathlon", pentadecathlonSet));
+        figures.add(new Prefab("Pentadecathlon", pentadecathlonSet));
 
         //Erstellt die Figur "Fontaine" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> fontaineSet = new HashSet<>();
@@ -253,7 +253,7 @@ public class GoLFigures {
         fontaineSet.add(new Point(7, 4));
         fontaineSet.add(new Point(7, 5));
         fontaineSet.add(new Point(6, 5));
-        figures.add(new GoLPrefab("Fontaine", fontaineSet));
+        figures.add(new Prefab("Fontaine", fontaineSet));
 
         //Erstellt die Figur "Glider" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> gliderSet = new HashSet<>();
@@ -262,7 +262,7 @@ public class GoLFigures {
         gliderSet.add(new Point(2, 1));
         gliderSet.add(new Point(0, 2));
         gliderSet.add(new Point(1, 2));
-        figures.add(new GoLPrefab("Glider", gliderSet));
+        figures.add(new Prefab("Glider", gliderSet));
 
         //Erstellt die Figur "LWSS" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> LWSSSet = new HashSet<>();
@@ -275,7 +275,7 @@ public class GoLFigures {
         LWSSSet.add(new Point(2, 3));
         LWSSSet.add(new Point(3, 3));
         LWSSSet.add(new Point(4, 3));
-        figures.add(new GoLPrefab("LWSS", LWSSSet));
+        figures.add(new Prefab("LWSS", LWSSSet));
 
         //Erstellt die Figur "MWSS" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> MWSSSet = new HashSet<>();
@@ -294,7 +294,7 @@ public class GoLFigures {
         MWSSSet.add(new Point(1, 3));
         MWSSSet.add(new Point(2, 3));
         MWSSSet.add(new Point(3, 3));
-        figures.add(new GoLPrefab("MWSS", MWSSSet));
+        figures.add(new Prefab("MWSS", MWSSSet));
 
         //Erstellt die Figur "HWSS" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> HWSSSet = new HashSet<>();
@@ -311,7 +311,7 @@ public class GoLFigures {
         HWSSSet.add(new Point(3, 4));
         HWSSSet.add(new Point(6, 2));
         HWSSSet.add(new Point(0, 3));
-        figures.add(new GoLPrefab("HWSS", HWSSSet));
+        figures.add(new Prefab("HWSS", HWSSSet));
 
         //Erstellt die Figur "R-Pentomino" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> rpentominoSet = new HashSet<>();
@@ -320,7 +320,7 @@ public class GoLFigures {
         rpentominoSet.add(new Point(1, 0));
         rpentominoSet.add(new Point(1, 1));
         rpentominoSet.add(new Point(1, 2));
-        figures.add(new GoLPrefab("R-Pentomino", rpentominoSet));
+        figures.add(new Prefab("R-Pentomino", rpentominoSet));
 
         //Erstellt die Figur "Diehard" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> diehardSet = new HashSet<>();
@@ -331,7 +331,7 @@ public class GoLFigures {
         diehardSet.add(new Point(5, 2));
         diehardSet.add(new Point(6, 2));
         diehardSet.add(new Point(7, 2));
-        figures.add(new GoLPrefab("Diehard", diehardSet));
+        figures.add(new Prefab("Diehard", diehardSet));
 
         //Erstellt die Figur "Acorn" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> acornSet = new HashSet<>();
@@ -342,7 +342,7 @@ public class GoLFigures {
         acornSet.add(new Point(5, 2));
         acornSet.add(new Point(6, 2));
         acornSet.add(new Point(7, 2));
-        figures.add(new GoLPrefab("Acorn", acornSet));
+        figures.add(new Prefab("Acorn", acornSet));
 
         //Erstellt die Figur "Gosper Glider Gun" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> gopserGGSet = new HashSet<>();
@@ -382,7 +382,7 @@ public class GoLFigures {
         gopserGGSet.add(new Point(15, 7));
         gopserGGSet.add(new Point(12, 8));
         gopserGGSet.add(new Point(13, 8));
-        figures.add(new GoLPrefab("Gosper Glider Gun", gopserGGSet));
+        figures.add(new Prefab("Gosper Glider Gun", gopserGGSet));
 
         //Erstellt die Figur "Simkin Glider Gun" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> simkinGGSet = new HashSet<>();
@@ -422,7 +422,7 @@ public class GoLFigures {
         simkinGGSet.add(new Point(20, 17));
         simkinGGSet.add(new Point(21, 17));
         simkinGGSet.add(new Point(23, 20));
-        figures.add(new GoLPrefab("Simkin Glider Gun", simkinGGSet));
+        figures.add(new Prefab("Simkin Glider Gun", simkinGGSet));
 
         //Erstellt die Figur "Infinite 1" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> infinite_1Set = new HashSet<>();
@@ -436,7 +436,7 @@ public class GoLFigures {
         infinite_1Set.add(new Point(6, 1));
         infinite_1Set.add(new Point(6, 2));
         infinite_1Set.add(new Point(7, 1));
-        figures.add(new GoLPrefab("Infinite 1", infinite_1Set));
+        figures.add(new Prefab("Infinite 1", infinite_1Set));
 
         //Erstellt die Figur "Infinite 2" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> infinite_2Set = new HashSet<>();
@@ -453,7 +453,7 @@ public class GoLFigures {
         infinite_2Set.add(new Point(0, 4));
         infinite_2Set.add(new Point(2, 4));
         infinite_2Set.add(new Point(4, 4));
-        figures.add(new GoLPrefab("Infinite 2", infinite_2Set));
+        figures.add(new Prefab("Infinite 2", infinite_2Set));
 
         //Erstellt die Figur "Infinite 3" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> infinite_3Set = new HashSet<>();
@@ -485,7 +485,7 @@ public class GoLFigures {
         infinite_3Set.add(new Point(36, 0));
         infinite_3Set.add(new Point(37, 0));
         infinite_3Set.add(new Point(38, 0));
-        figures.add(new GoLPrefab("Infinite 3", infinite_3Set));
+        figures.add(new Prefab("Infinite 3", infinite_3Set));
 
         //Erstellt die Figur "U" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> USet = new HashSet<>();
@@ -503,7 +503,7 @@ public class GoLFigures {
         USet.add(new Point(2, 4));
         USet.add(new Point(2, 2));
         USet.add(new Point(2, 1));
-        figures.add(new GoLPrefab("U", USet));
+        figures.add(new Prefab("U", USet));
     }
 
     /**
@@ -512,7 +512,7 @@ public class GoLFigures {
      * @param position
      * @return prefab
      */
-    public GoLPrefab getFigure(int position) {
+    public Prefab getFigure(int position) {
         return figures.get(position);
     }
 
@@ -521,7 +521,7 @@ public class GoLFigures {
      *
      * @return figures
      */
-    public ArrayList<GoLPrefab> getFigures() {
+    public ArrayList<Prefab> getFigures() {
         return figures;
     }
 
