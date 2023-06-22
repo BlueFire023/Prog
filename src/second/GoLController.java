@@ -26,11 +26,10 @@ public class GoLController extends GoLAdapter {
     private final GoLMainController mainController;
     private final Set<Point> lastCells = new HashSet<>();
     private final JFileChooser fileChooser = new JFileChooser();
-    private final Object lock = new Object();
     private boolean painting, mouseHeld, placingFigure;
     private Point prevPos = new Point(), mousePos = new Point();
     private Mode activeMode = Mode.PAINTING;
-    public final GoLView view;
+    private final GoLView view;
 
     /**
      * Konstruktor der Controller Klasse. Wird für jedes neue JInternalFrame aufgerufen.
@@ -201,6 +200,7 @@ public class GoLController extends GoLAdapter {
                 placingFigure = true;
                 activeMode = Mode.SET;
                 mainController.updateRecentFiguresMenu(mainModel.getRecentFigures());
+                mainController.updateAllRunButton();
                 JOptionPane.showMessageDialog(null, "Das Objekt wurde erfolgreich gespeichert.");
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Fehler beim Schreiben des Objekts: " + e.getMessage());
@@ -345,6 +345,7 @@ public class GoLController extends GoLAdapter {
     public void setPlacingFigure(boolean placingFigure) {
         this.placingFigure = placingFigure;
         activeMode = GoLController.Mode.SET;
+        view.updateCurrentMode(activeMode.toString());
     }
 
     /**
@@ -365,6 +366,7 @@ public class GoLController extends GoLAdapter {
         };
         Thread runningThread = new Thread(runningTask);
         runningThread.start();
+        view.updateCurrentMode(activeMode.toString());
     }
 
     /**
@@ -404,18 +406,25 @@ public class GoLController extends GoLAdapter {
                 ((JButton) e.getSource()).setBackground(newColor);
             }
             case "Speichern" -> saveFigure();
-            case "Laufen" -> startRunning();
+            case "Laufen" -> {
+                startRunning();
+                mainController.updateAllRunButton();
+            }
             case "Malen" -> {
+
                 placingFigure = false;
                 activeMode = Mode.PAINTING;
+                mainController.updateAllRunButton();
             }
             case "Setzen" -> {
                 placingFigure = false;
                 activeMode = Mode.SET;
+                mainController.updateAllRunButton();
             }
             case "Linien" -> {
                 placingFigure = false;
                 activeMode = Mode.LINE;
+                mainController.updateAllRunButton();
             }
             case "Kreuz" -> {
                 prevPos = new Point(0, 0);
@@ -569,5 +578,29 @@ public class GoLController extends GoLAdapter {
     public void setCurrentWindowNumber(int number) {
         model.setCurrentWindowNumber(number);
         view.setNewTitle();
+    }
+
+    /**
+     * stoppt das Laufen
+     */
+    public void stopRunning(){
+        activeMode = Mode.PAINTING;
+        view.updateCurrentMode(activeMode.toString());
+    }
+
+    /**
+     * Gibt das View Objekt zurück
+     * @return view
+     */
+    public GoLView getView(){
+        return view;
+    }
+
+    /**
+     * Gibt den aktuellen Modus zurück
+     * @return
+     */
+    public String getActiveMode(){
+        return activeMode.toString();
     }
 }

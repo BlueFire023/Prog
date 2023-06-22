@@ -22,7 +22,7 @@ public class GoLMainController extends GoLAdapter {
     private final GoLMainModel mainModel = new GoLMainModel();
     private final JFileChooser mainFileChooser = new JFileChooser();
     private final List<GoLController> instances = new ArrayList<>();
-
+    private boolean allRunning = false;
     /**
      * Erstellt neuen GoLMainWindow
      */
@@ -56,6 +56,7 @@ public class GoLMainController extends GoLAdapter {
                 for (GoLController c : instances) {
                     c.setPlacingFigure(true);
                 }
+                mainView.updateRunButton(false);
                 updateRecentFiguresMenu(mainModel.getRecentFigures());
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Fehler beim laden des Objekts: " + e.getMessage());
@@ -68,7 +69,7 @@ public class GoLMainController extends GoLAdapter {
      */
     private void addNewWindow() {
         GoLController controller = new GoLController(this, mainModel);
-        JInternalFrame internalFrame = controller.view.getFrame();
+        JInternalFrame internalFrame = controller.getView().getFrame();
         instances.add(controller);
         Point frameSize = new Point(mainView.getWidth(), mainView.getHeight());
         mainView.addInternalFrame(internalFrame, new Point(random.nextInt(0, frameSize.x - internalFrame.getWidth()), random.nextInt(0, frameSize.y - internalFrame.getHeight())));
@@ -95,8 +96,8 @@ public class GoLMainController extends GoLAdapter {
     public void updateWindowNumbers() {
         int number = 1;
         for (GoLController c : instances) {
-            c.view.addIFL(this);
-            c.view.setNewTitle();
+            c.getView().addIFL(this);
+            c.getView().setNewTitle();
             c.setCurrentWindowNumber(number++);
         }
     }
@@ -121,12 +122,23 @@ public class GoLMainController extends GoLAdapter {
             case "Neues Fenster" -> addNewWindow();
             case "Hotkeys" -> mainView.showHotKeys();
             case "Laden" -> loadSavedFigure();
-            case "Alle Laufen" -> {
-                for (GoLController c : instances) {
-                    c.startRunning();
+            case "run" -> {
+                mainView.updateRunButton(((JMenuItem)e.getSource()).getText().equals("Alle Laufen"));
+                if(allRunning){
+                    allRunning = false;
+                    for (GoLController c : instances) {
+                        c.stopRunning();
+                    }
+                } else {
+                    allRunning = true;
+                    for (GoLController c : instances) {
+                        c.startRunning();
+                    }
                 }
             }
             case "recent" -> {
+                allRunning = false;
+                mainView.updateRunButton(false);
                 for (GoLController c : instances) {
                     c.setPlacingFigure(true);
                 }
@@ -136,6 +148,8 @@ public class GoLMainController extends GoLAdapter {
                 calculateCenter();
             }
             default -> {
+                allRunning = false;
+                mainView.updateRunButton(false);
                 int number = Integer.parseInt(e.getActionCommand());
                 for (GoLController c : instances) {
                     c.setPlacingFigure(true);
@@ -155,14 +169,40 @@ public class GoLMainController extends GoLAdapter {
     @Override
     public void stateChanged(ChangeEvent e) {
         for (GoLController c : instances) {
-            c.view.updateSlider(mainView.getMainSliderstat());
+            c.getView().updateSlider(mainView.getMainSliderstat());
         }
         updateWindowNumbers();
     }
 
+    /**
+     * Aktualisiert die noch vorhanden Instances an GoLController und disposed alle übrigen Frames
+     * @param e an {@code InternalFrameEvent} with information about the
+     *          {@code JInteralFrame} that originated the event
+     */
+
     @Override
     public void internalFrameClosing(InternalFrameEvent e) {
-        instances.removeIf(g -> e.getSource().equals(g.view.getFrame()));
+        for(GoLController c : instances){
+            if(e.getSource().equals(c.getView().getFrame())){
+                c.getView().disposeSetSizeFrame();
+                c.getView().disposeSetColorFrame();
+            }
+        }
         updateWindowNumbers();
+    }
+
+    /**
+     * Setzt den AllRunButton auf alle Stoppen
+     */
+    public void updateAllRunButton(){
+        for(GoLController c : instances) {
+            if (c.getActiveMode().equals("RUNNING")) {
+                mainView.updateRunButton(true);
+                allRunning = true;
+                return;
+            }
+        }
+        mainView.updateRunButton(false);
+        allRunning = false;
     }
 }

@@ -23,7 +23,6 @@ public class GoLView extends JPanel {
     private final JMenu extraMenu = new JMenu("Extras");
     private final JMenu shapesMenu = new JMenu("Formen");
     private final JMenu sliderMenu = new JMenu("Geschwindigkeit");
-    private final JMenu saveMenu = new JMenu("Datei");
     private final JMenuItem clearButton = new JMenuItem("Löschen");
     private final JMenuItem setSizeButton = new JMenuItem("Auflösung");
     private final JMenuItem setColorButton = new JMenuItem("Farben");
@@ -341,5 +340,12 @@ public class GoLView extends JPanel {
      */
     public JInternalFrame getFrame() {
         return frame;
+    }
+
+    /**
+     * Schließt das Farben-Fenster
+     */
+    public void disposeSetColorFrame(){
+        setColorFrame.dispose();
     }
 }

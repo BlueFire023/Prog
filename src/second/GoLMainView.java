@@ -30,7 +30,6 @@ public class GoLMainView extends JFrame {
     private final JMenu gunsMenu = new JMenu("Gleiter Kanonen");
     private final JMenu otherMenu = new JMenu("Andere");
     private final JMenu recentFiguresMenu = new JMenu("Zuletzt benutzt");
-    private final JMenu selectionMenu = new JMenu("Auswahl");
     private final JMenu speed = new JMenu("Geschwindigkeit");
     private final JMenuItem newWindow = new JMenuItem("Neues Fenster");
     private final JMenuItem showHotKeysButton = new JMenuItem("Hotkeys");
@@ -51,13 +50,20 @@ public class GoLMainView extends JFrame {
         setBackground(Color.LIGHT_GRAY);
         setJMenuBar(menuBar);
 
-        runAllButton.setSize(menu.getSize());
+        runAllButton.setActionCommand("run");
+        runAllButton.setMargin(new Insets(2, 2, 2, 2));
+        runAllButton.setMaximumSize(new Dimension(runAllButton.getPreferredSize().width - 5, runAllButton.getPreferredSize().height));
+        runAllButton.setFocusable(false);
+        runAllButton.setBackground(new Color(86, 149, 91));
+        runAllButton.setForeground(Color.WHITE);
 
         menu.add(newWindow);
         menu.add(showHotKeysButton);
 
-        menuBar.add(menu);
+        menuBar.setBackground(Color.LIGHT_GRAY);
+
         menuBar.add(runAllButton);
+        menuBar.add(menu);
         menuBar.add(speed);
         menuBar.add(figuresMenu);
         menuBar.add(recentFiguresMenu);
@@ -297,5 +303,14 @@ public class GoLMainView extends JFrame {
             figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
             otherMenu.add(figures.get(i));
         }
+    }
+
+    /**
+     * Ändert die Farben des Alle Laufen Buttons
+     * @param run
+     */
+    public void updateRunButton(boolean run){
+        runAllButton.setText(run ? "Alle Stoppen" : "Alle Laufen");
+        runAllButton.setBackground(run ? new Color(199, 78, 78) : new Color(86, 149, 91));
     }
 }
