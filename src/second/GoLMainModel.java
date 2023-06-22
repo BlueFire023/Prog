@@ -43,18 +43,15 @@ public class GoLMainModel {
      *
      * @return
      */
-
     public GoLFigures getPreMadeFigures() {
         return preMadeFigures;
     }
-
-
+    
     /**
      * Aktualisiert die Liste der aktuellen Figuren mit einer bestimmten Figur basierend auf dem Namen
      *
      * @param name
      */
-
     public void updateRecentFigures(String name) {
         for (GoLPrefab prefab : recentFigures) {
             if (prefab.name().equals(name)) {
@@ -70,7 +67,6 @@ public class GoLMainModel {
      *
      * @param figure
      */
-
     public void updateRecentFigures(GoLPrefab figure) {
         recentFigures.removeIf(prefab -> prefab.name().equals(figure.name()));
         recentFigures.add(figure);
@@ -81,10 +77,7 @@ public class GoLMainModel {
      *
      * @return
      */
-
-    public ArrayList<GoLPrefab> getRecentFigures() {
-        return recentFigures;
-    }
+    public ArrayList<GoLPrefab> getRecentFigures() {return recentFigures;}
 
     /**
      * Gibt den Mittelpunkt zurück
