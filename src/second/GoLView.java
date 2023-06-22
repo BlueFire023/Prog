@@ -11,7 +11,6 @@ import java.util.Hashtable;
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
  * @version 1, 15/06/2023
  */
-
 public class GoLView extends JPanel {
     private final JTextField widthTextArea;
     private final JTextField heightTextArea;
@@ -48,7 +47,6 @@ public class GoLView extends JPanel {
      * @param model
      */
     public GoLView(GoLModel model) {
-
         this.model = model;
 
         widthTextArea = new JTextField(String.valueOf(model.getCanvas().getTileWidth()));
@@ -85,7 +83,7 @@ public class GoLView extends JPanel {
         speedSlider.setValue(10);
         speedSlider.setLabelTable(labelTable);
 
-        saveButton.setMargin(new Insets(2,2,2,2));
+        saveButton.setMargin(new Insets(2, 2, 2, 2));
         saveButton.setMaximumSize(new Dimension(saveButton.getPreferredSize().width - 10, saveButton.getPreferredSize().height));
         saveButton.setFocusable(false);
         saveButton.setBackground(Color.LIGHT_GRAY);
@@ -214,13 +212,13 @@ public class GoLView extends JPanel {
      *
      * @param mode
      */
-    public void updateCurrentMode(String mode) {
+    public void updateCurrentMode() {
         modeMenu.removeAll();
         modeMenu.add(runButton);
         modeMenu.add(paintButton);
         modeMenu.add(setButton);
         modeMenu.add(lineButton);
-        switch (mode) {
+        switch (model.getActiveMode().toString()) {
             case "RUNNING" -> {
                 modeMenu.remove(runButton);
                 modeMenu.setText("Laufen");
@@ -244,8 +242,15 @@ public class GoLView extends JPanel {
      * Canvas Größe wird aktualisiert.
      */
     public void updateCanvasSize() {
-        setSizeFrame.setTitle("Auflösung " + model.getCurrentWindowNumber());
+        updateSetSizeFrameTitle();
         setSizeFrame.setVisible(true);
+    }
+
+    /**
+     * Aktualisiert den Title des SetSizeFrame
+     */
+    public void updateSetSizeFrameTitle() {
+        setSizeFrame.setTitle("Auflösung " + model.getCurrentWindowNumber());
     }
 
     /**
@@ -255,10 +260,17 @@ public class GoLView extends JPanel {
      * @param dColor
      */
     public void updateCellColor(Color aColor, Color dColor) {
-        setColorFrame.setTitle("Farben " + model.getCurrentWindowNumber());
+        updateSetColorFrameTitle();
         aliveCellColorDisplay.setBackground(aColor);
         deadCellColorDisplay.setBackground(dColor);
         setColorFrame.setVisible(true);
+    }
+
+    /**
+     * Aktualisiert den Title des SetColorFrames
+     */
+    public void updateSetColorFrameTitle() {
+        setColorFrame.setTitle("Farben " + model.getCurrentWindowNumber());
     }
 
     /**
@@ -309,7 +321,7 @@ public class GoLView extends JPanel {
     /**
      * Breite wird aktualisiert
      *
-     * @return
+     * @return Wert aus Textarea
      */
     public int getNewWidth() {
         return Integer.parseInt(widthTextArea.getText());
@@ -318,7 +330,7 @@ public class GoLView extends JPanel {
     /**
      * Höhe wird aktualisiert
      *
-     * @return
+     * @return Wert aus Textarea
      */
     public int getNewHeight() {
         return Integer.parseInt(heightTextArea.getText());
@@ -327,7 +339,7 @@ public class GoLView extends JPanel {
     /**
      * Status des Schiebereglers wird aktualisiert
      *
-     * @return
+     * @return slider Value
      */
     public int getSliderstat() {
         return speedSlider.getValue();
@@ -336,7 +348,7 @@ public class GoLView extends JPanel {
     /**
      * JInternalFrame wird aktualisiert.
      *
-     * @return
+     * @return Frame
      */
     public JInternalFrame getFrame() {
         return frame;
@@ -345,7 +357,7 @@ public class GoLView extends JPanel {
     /**
      * Schließt das Farben-Fenster
      */
-    public void disposeSetColorFrame(){
+    public void disposeSetColorFrame() {
         setColorFrame.dispose();
     }
 }

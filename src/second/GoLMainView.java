@@ -1,7 +1,5 @@
 package second;
 
-import org.w3c.dom.css.RGBColor;
-
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -68,7 +66,6 @@ public class GoLMainView extends JFrame {
         menuBar.add(figuresMenu);
         menuBar.add(recentFiguresMenu);
 
-
         figuresMenu.add(load);
         figuresMenu.add(staticMenu);
         figuresMenu.add(oscMenu);
@@ -100,11 +97,6 @@ public class GoLMainView extends JFrame {
         hotKeyFrame.setResizable(false);
         hotKeyFrame.setLayout(new GridLayout(11, 2));
 
-        /*JPanel windowLabelPanel = new JPanel(new GridBagLayout());
-        JPanel windowPanel = new JPanel(new GridBagLayout());
-        JPanel hotkeyLabelPanel = new JPanel(new GridBagLayout());
-        JPanel hotkeyPanel = new JPanel(new GridBagLayout());
-        */
         JPanel runLabelPanel = new JPanel(new GridBagLayout());
         JPanel runPanel = new JPanel(new GridBagLayout());
         JPanel drawLabelPanel = new JPanel(new GridBagLayout());
@@ -127,13 +119,7 @@ public class GoLMainView extends JFrame {
         JPanel flipVPanel = new JPanel(new GridBagLayout());
         JPanel rotateLabelPanel = new JPanel(new GridBagLayout());
         JPanel rotatePanel = new JPanel(new GridBagLayout());
-        /*
-        windowLabelPanel.add(new JLabel("F"));
-        windowPanel.add(new JLabel("Neues Fenster"));
 
-        hotkeyLabelPanel.add(new JLabel("H"));
-        hotkeyPanel.add(new JLabel("Hotkeys"));
-         */
         runLabelPanel.add(new JLabel("S"));
         runPanel.add(new JLabel("Laufen"));
 
@@ -181,10 +167,6 @@ public class GoLMainView extends JFrame {
         hotKeyFrame.add(clearLabelPanel);
         hotKeyFrame.add(colorPanel);
         hotKeyFrame.add(colorLabelPanel);
-        /*hotKeyFrame.add(windowPanel);
-        hotKeyFrame.add(windowLabelPanel);
-        hotKeyFrame.add(hotkeyPanel);
-        hotKeyFrame.add(hotkeyLabelPanel);*/
         hotKeyFrame.add(nextPanel);
         hotKeyFrame.add(nextLabelPanel);
         hotKeyFrame.add(flipHPanel);
@@ -261,7 +243,7 @@ public class GoLMainView extends JFrame {
     /**
      * Gibt den SchiebeReglerWert vom Hauptfenster zurück.
      *
-     * @return
+     * @return slider Value
      */
     public int getMainSliderstat() {
         return mainSpeedSlider.getValue();
@@ -307,9 +289,10 @@ public class GoLMainView extends JFrame {
 
     /**
      * Ändert die Farben des Alle Laufen Buttons
+     *
      * @param run
      */
-    public void updateRunButton(boolean run){
+    public void updateRunButton(boolean run) {
         runAllButton.setText(run ? "Alle Stoppen" : "Alle Laufen");
         runAllButton.setBackground(run ? new Color(199, 78, 78) : new Color(86, 149, 91));
     }
