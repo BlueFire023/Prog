@@ -196,9 +196,8 @@ public class GoLFigures {
         octagonSet.add(new Point(4, 7));
         figures.add(new GoLPrefab("Octagon", octagonSet));
 
-        /**
-         * Erstellt die Figur "Pulsar" aus einem Set von Pixeln, und erstellt daraus ein Prefab
-         */
+
+        //Erstellt die Figur "Pulsar" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> pulsarSet = new HashSet<>();
         pulsarSet.add(new Point(2, 0));
         pulsarSet.add(new Point(10, 7));
