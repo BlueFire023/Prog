@@ -1,4 +1,4 @@
-package second;
+package second.GoL;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -14,7 +14,7 @@ import java.util.Hashtable;
  * @version 1, 22/06/2023
  */
 
-public class GoLMainView extends JFrame {
+public class MainView extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private final JFrame hotKeyFrame = new JFrame("Hotkeys");
     private final JSlider mainSpeedSlider = new JSlider();
@@ -38,7 +38,7 @@ public class GoLMainView extends JFrame {
     /**
      * Konstruktor der MainView Klasse.
      */
-    public GoLMainView() {
+    public MainView() {
         desktopPane.setDesktopManager(new DefaultDesktopManager());
 
         setContentPane(desktopPane);
@@ -230,7 +230,7 @@ public class GoLMainView extends JFrame {
      * @param recent
      * @param al
      */
-    public void updateRecentFiguresMenu(ArrayList<GoLPrefab> recent, ActionListener al) {
+    public void updateRecentFiguresMenu(ArrayList<Prefab> recent, ActionListener al) {
         recentFiguresMenu.removeAll();
         for (int i = recent.size() - 1; i >= Math.max(recent.size() - 1 - 4, 0); i--) {
             JMenuItem item = new JMenuItem(recent.get(i).name());
@@ -254,7 +254,7 @@ public class GoLMainView extends JFrame {
      *
      * @param preMadeFigures
      */
-    public void initFiguresMenu(GoLFigures preMadeFigures) {
+    public void initFiguresMenu(Figures preMadeFigures) {
         int count = 0;
         for (int i = 0; i < preMadeFigures.getStillLifesCount(); i++) {
             figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));

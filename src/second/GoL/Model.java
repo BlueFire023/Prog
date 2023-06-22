@@ -1,4 +1,4 @@
-package second;
+package second.GoL;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -10,7 +10,7 @@ import java.util.Set;
  * @version 1, 22/06/2023
  */
 
-public class GoLModel {
+public class Model {
     private final Set<Point> aliveCells = new HashSet<>();
     private int currentWindowNumber;
     private Color aliveCellColor = Color.BLACK;

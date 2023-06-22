@@ -1,4 +1,4 @@
-package second;
+package second.GoL;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -11,7 +11,7 @@ import java.util.Hashtable;
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
  * @version 1, 15/06/2023
  */
-public class GoLView extends JPanel {
+public class View extends JPanel {
     private final JTextField widthTextArea;
     private final JTextField heightTextArea;
     private final JLabel aliveCellColorTag = new JLabel(" Lebende Zellen:");
@@ -39,14 +39,14 @@ public class GoLView extends JPanel {
     private final JFrame setSizeFrame = new JFrame();
     private final JFrame setColorFrame = new JFrame();
     private final JInternalFrame frame = new JInternalFrame();
-    private final GoLModel model;
+    private final Model model;
 
     /**
      * Konstruktor der View Klasse.
      *
      * @param model
      */
-    public GoLView(GoLModel model) {
+    public View(Model model) {
         this.model = model;
 
         widthTextArea = new JTextField(String.valueOf(model.getCanvas().getTileWidth()));

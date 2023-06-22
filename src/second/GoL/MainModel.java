@@ -1,4 +1,4 @@
-package second;
+package second.GoL;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -8,9 +8,9 @@ import java.util.ArrayList;
  * @version 1, 22/06/2023
  */
 
-public class GoLMainModel {
-    private final GoLFigures preMadeFigures = new GoLFigures();
-    private final ArrayList<GoLPrefab> recentFigures = new ArrayList<>();
+public class MainModel {
+    private final Figures preMadeFigures = new Figures();
+    private final ArrayList<Prefab> recentFigures = new ArrayList<>();
     private int brushSize = 1;
     private Point center;
 
@@ -19,7 +19,7 @@ public class GoLMainModel {
      *
      * @return currentFigure
      */
-    public GoLPrefab getCurrentFigure() {
+    public Prefab getCurrentFigure() {
         return recentFigures.get(recentFigures.size() - 1);
     }
 
@@ -28,7 +28,7 @@ public class GoLMainModel {
      *
      * @param figure GoLPrefab
      */
-    public void setCurrentFigure(GoLPrefab figure) {
+    public void setCurrentFigure(Prefab figure) {
         recentFigures.add(figure);
     }
 
@@ -38,7 +38,7 @@ public class GoLMainModel {
      * @param position
      * @return prefab
      */
-    public GoLPrefab getPreMadeFigures(int position) {
+    public Prefab getPreMadeFigures(int position) {
         return preMadeFigures.getFigure(position);
     }
 
@@ -47,7 +47,7 @@ public class GoLMainModel {
      *
      * @return figures
      */
-    public GoLFigures getPreMadeFigures() {
+    public Figures getPreMadeFigures() {
         return preMadeFigures;
     }
 
@@ -57,7 +57,7 @@ public class GoLMainModel {
      * @param name
      */
     public void updateRecentFigures(String name) {
-        for (GoLPrefab prefab : recentFigures) {
+        for (Prefab prefab : recentFigures) {
             if (prefab.name().equals(name)) {
                 recentFigures.remove(prefab);
                 recentFigures.add(prefab);
@@ -71,7 +71,7 @@ public class GoLMainModel {
      *
      * @param figure
      */
-    public void updateRecentFigures(GoLPrefab figure) {
+    public void updateRecentFigures(Prefab figure) {
         recentFigures.removeIf(prefab -> prefab.name().equals(figure.name()));
         recentFigures.add(figure);
     }
@@ -81,7 +81,7 @@ public class GoLMainModel {
      *
      * @return recentFigures
      */
-    public ArrayList<GoLPrefab> getRecentFigures() {
+    public ArrayList<Prefab> getRecentFigures() {
         return recentFigures;
     }
 
