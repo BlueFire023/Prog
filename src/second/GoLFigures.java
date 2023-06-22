@@ -548,9 +548,7 @@ public class GoLFigures {
         infinite_3Set.add(new Point(38, 0));
         figures.add(new GoLPrefab("Infinite 3", infinite_3Set));
 
-        /**
-         * Erstellt die Figur "U" aus einem Set von Pixeln, und erstellt daraus ein Prefab
-         */
+        //Erstellt die Figur "U" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> USet = new HashSet<>();
         USet.add(new Point(0, 0));
         USet.add(new Point(0, 1));

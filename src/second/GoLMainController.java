@@ -32,7 +32,7 @@ public class GoLMainController extends GoLAdapter {
                 JInternalFrame internalFrame = controller.view.getFrame();
                 instances.add(controller);
                 Point frameSize = new Point(mainView.getWidth(), mainView.getHeight());
-                mainView.addInternalFrame(internalFrame, new Point(random.nextInt(frameSize.x), random.nextInt(frameSize.y)));
+                mainView.addInternalFrame(internalFrame, new Point(random.nextInt(0,frameSize.x - internalFrame.getWidth()), random.nextInt(0,frameSize.y - internalFrame.getHeight())));
                 update();
             }
             case "Hotkeys" -> mainView.showHotKeys();
@@ -99,7 +99,7 @@ public class GoLMainController extends GoLAdapter {
         mainModel.setCenter(center);
     }
 
-    public void updateRecentFiguresMenu(ArrayList<GoLPrefab> recent, ActionListener al) {
-        mainView.updateRecentFiguresMenu(recent, al);
+    public void updateRecentFiguresMenu(ArrayList<GoLPrefab> recent) {
+        mainView.updateRecentFiguresMenu(recent, this);
     }
 }

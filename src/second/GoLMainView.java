@@ -4,6 +4,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
+import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -35,7 +36,7 @@ public class GoLMainView extends JFrame {
 
         setContentPane(desktopPane);
         setTitle("Game of Life Hauptfenster");
-        setSize(new Dimension(500,500));
+        setSize(new Dimension(1500,1000));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setBackground(Color.LIGHT_GRAY);
 
@@ -194,9 +195,14 @@ public class GoLMainView extends JFrame {
         addKeyListener(kl);
     }
 
-    public void addInternalFrame(JInternalFrame jif, Point randomPos){
+    public void addInternalFrame(JInternalFrame jif, Point randomPos) {
         desktopPane.add(jif);
         jif.setLocation(randomPos);
+        try {
+            jif.setSelected(true);
+        } catch (PropertyVetoException e) {
+            throw new RuntimeException(e);
+        }
         jif.setVisible(true);
     }
 

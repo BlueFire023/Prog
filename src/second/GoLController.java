@@ -255,7 +255,7 @@ public class GoLController extends GoLAdapter {
                 refreshCanvas();
                 placingFigure = true;
                 activeMode = Mode.SET;
-                mainController.updateRecentFiguresMenu(mainModel.getRecentFigures(), this);
+                mainController.updateRecentFiguresMenu(mainModel.getRecentFigures());
                 JOptionPane.showMessageDialog(null, "Das Objekt wurde erfolgreich gespeichert.");
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Fehler beim Schreiben des Objekts: " + e.getMessage());
@@ -286,7 +286,7 @@ public class GoLController extends GoLAdapter {
                 refreshCanvas();
                 placingFigure = true;
                 activeMode = Mode.SET;
-                mainController.updateRecentFiguresMenu(mainModel.getRecentFigures(), this);
+                mainController.updateRecentFiguresMenu(mainModel.getRecentFigures());
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Fehler beim laden des Objekts: " + e.getMessage());
             }
@@ -372,115 +372,5 @@ public class GoLController extends GoLAdapter {
     public void mouseMoved(MouseEvent e) {
         mousePos = calculateMousePosition(e.getPoint());
         showPreview();
-    }
-
-    private void showPreview() {
-        if (placingFigure) {
-            for (Point p : lastCells) {
-                model.setCanvasRGB(p, model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
-            }
-            lastCells.clear();
-            for (Point p : mainModel.getCurrentFigure().cells()) {
-                Point calculatedPoint = new Point(p.x + mousePos.x - mainModel.getCenter().x, p.y + mousePos.y - mainModel.getCenter().y);
-                model.setCanvasRGB(calculateWrap(calculatedPoint), model.getInvertedColor());
-                lastCells.add(calculateWrap(calculatedPoint));
-            }
-        } else if (activeMode == Mode.LINE && mouseHeld) {
-            for (Point p : lastCells) {
-                model.setCanvasRGB(calculateWrap(p), model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
-            }
-            lastCells.clear();
-            drawLineBresenham(mousePos, true);
-        } else {
-            for (Point p : lastCells) {
-                model.setCanvasRGB(calculateWrap(p), model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
-            }
-            lastCells.clear();
-            paintPixel(mousePos, true);
-        }
-    }
-
-    private Color invertColor(Color initalColor) {
-        return new Color(255 - initalColor.getRed(), 255 - initalColor.getGreen(), 255 - initalColor.getBlue());
-    }
-
-    private Point calculateMousePosition(Point pos) {
-        double scaleX = (double) model.getCanvasWidth() / view.getWidth();
-        double scaleY = (double) model.getCanvasHeight() / view.getHeight();
-        int posOnCanvasX = (int) (pos.x * scaleX);
-        int posOnCanvasY = (int) (pos.y * scaleY);
-        return new Point(posOnCanvasX, posOnCanvasY);
-    }
-
-    private void calculateCenter() {
-        Point center = new Point();
-        for (Point p : mainModel.getCurrentFigure().cells()) {
-            center.x = Math.max(center.x, p.x);
-            center.y = Math.max(center.y, p.y);
-        }
-        center.x /= 2;
-        center.y /= 2;
-        mainModel.setCenter(center);
-    }
-
-    private void rotate(int direction) {
-        Set<Point> figure = mainModel.getCurrentFigure().cells();
-        calculateCenter();
-        Point center = mainModel.getCenter();
-
-        Set<Point> rotatedFigure = new HashSet<>();
-        for (Point p : figure) {
-            Point relative = new Point(p.x - center.x, p.y - center.y);
-
-            double radians = Math.toRadians(direction);
-            int rotatedX = (int) Math.round(relative.x * Math.cos(radians) - relative.y * Math.sin(radians));
-            int rotatedY = (int) Math.round(relative.x * Math.sin(radians) + relative.y * Math.cos(radians));
-
-            rotatedFigure.add(new Point(rotatedX + center.x, rotatedY + center.y));
-        }
-        GoLPrefab rotatedPrefab = new GoLPrefab(mainModel.getCurrentFigure().name(), normalizePosition(rotatedFigure));
-        mainModel.updateRecentFigures(rotatedPrefab);
-        mainController.updateRecentFiguresMenu(mainModel.getRecentFigures(), this);
-        calculateCenter();
-        showPreview();
-    }
-
-    private void flip(boolean horizontal) {
-        Set<Point> mirroredFigure = new HashSet<>();
-        for (Point p : mainModel.getCurrentFigure().cells()) {
-            mirroredFigure.add(new Point(horizontal ? -p.x : p.x, horizontal ? p.y : -p.y));
-        }
-        GoLPrefab mirroredPrefab = new GoLPrefab(mainModel.getCurrentFigure().name(), normalizePosition(mirroredFigure));
-        mainModel.updateRecentFigures(mirroredPrefab);
-        mainController.updateRecentFiguresMenu(mainModel.getRecentFigures(), this);
-        calculateCenter();
-        showPreview();
-    }
-
-    private Set<Point> normalizePosition(Set<Point> figure) {
-        int lowestX = model.getCanvasWidth();
-        int lowestY = model.getCanvasHeight();
-
-        for (Point p : figure) {
-            lowestX = Math.min(lowestX, p.x);
-            lowestY = Math.min(lowestY, p.y);
-        }
-        Set<Point> adjustedFigure = new HashSet<>();
-
-        for (Point p : figure) {
-            Point adjustedPoint = new Point(p.x - lowestX, p.y - lowestY);
-            adjustedFigure.add(adjustedPoint);
-        }
-        return adjustedFigure;
-    }
-
-
-    private enum Mode {
-        RUNNING, PAINTING, SET, LINE
-    }
-
-    public void setPlacingFigure(boolean placingFigure) {
-        this.placingFigure = placingFigure;
-        activeMode = GoLController.Mode.SET;
     }
 }

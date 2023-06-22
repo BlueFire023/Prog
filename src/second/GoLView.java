@@ -150,8 +150,7 @@ public class GoLView extends JPanel {
         setSizeFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         frame.setJMenuBar(menuBar);
-        frame.setSize(new Dimension(300, 300));
-        frame.setBounds(50,50,200,200);
+        frame.setSize(new Dimension(800, 800));
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setClosable(true);
         frame.setIconifiable(true);

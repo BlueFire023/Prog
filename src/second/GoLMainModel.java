@@ -48,15 +48,6 @@ public class GoLMainModel {
         return preMadeFigures;
     }
 
-    /**
-     * Gibt die Liste der aktuellen Figuren zurück
-     *
-     * @return
-     */
-
-    public ArrayList<GoLPrefab> getRecentFigures() {
-        return recentFigures;
-    }
 
     /**
      * Aktualisiert die Liste der aktuellen Figuren mit einer bestimmten Figur basierend auf dem Namen
@@ -83,6 +74,16 @@ public class GoLMainModel {
     public void updateRecentFigures(GoLPrefab figure) {
         recentFigures.removeIf(prefab -> prefab.name().equals(figure.name()));
         recentFigures.add(figure);
+    }
+
+    /**
+     * Gibt die Liste der aktuellen Figuren zurück
+     *
+     * @return
+     */
+
+    public ArrayList<GoLPrefab> getRecentFigures() {
+        return recentFigures;
     }
 
     /**
