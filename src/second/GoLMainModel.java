@@ -57,7 +57,6 @@ public class GoLMainModel {
             if (prefab.name().equals(name)) {
                 recentFigures.remove(prefab);
                 recentFigures.add(prefab);
-                break;
             }
         }
     }

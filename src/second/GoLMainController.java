@@ -5,6 +5,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.InternalFrameEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
@@ -52,14 +53,7 @@ public class GoLMainController extends GoLAdapter {
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
-            case "Neues Fenster" -> {
-                GoLController controller = new GoLController(this, mainModel);
-                JInternalFrame internalFrame = controller.view.getFrame();
-                instances.add(controller);
-                Point frameSize = new Point(mainView.getWidth(), mainView.getHeight());
-                mainView.addInternalFrame(internalFrame, new Point(random.nextInt(0, frameSize.x - internalFrame.getWidth()), random.nextInt(0, frameSize.y - internalFrame.getHeight())));
-                update();
-            }
+            case "Neues Fenster" -> addNewWindow();
             case "Hotkeys" -> mainView.showHotKeys();
             case "Laden" -> loadSavedFigure();
             case "Alle Laufen" -> {
@@ -86,6 +80,14 @@ public class GoLMainController extends GoLAdapter {
                 calculateCenter();
             }
         }
+    }
+    private void addNewWindow(){
+        GoLController controller = new GoLController(this, mainModel);
+        JInternalFrame internalFrame = controller.view.getFrame();
+        instances.add(controller);
+        Point frameSize = new Point(mainView.getWidth(), mainView.getHeight());
+        mainView.addInternalFrame(internalFrame, new Point(random.nextInt(0, frameSize.x - internalFrame.getWidth()), random.nextInt(0, frameSize.y - internalFrame.getHeight())));
+        update();
     }
 
     public void update() {
@@ -114,7 +116,10 @@ public class GoLMainController extends GoLAdapter {
         update();
     }
 
-    private void calculateCenter() {
+    /**
+     * Berechnet die Mitte der Figur.
+     */
+    public void calculateCenter() {
         Point center = new Point();
         for (Point p : mainModel.getCurrentFigure().cells()) {
             center.x = Math.max(center.x, p.x);
@@ -127,5 +132,13 @@ public class GoLMainController extends GoLAdapter {
 
     public void updateRecentFiguresMenu(ArrayList<GoLPrefab> recent) {
         mainView.updateRecentFiguresMenu(recent, this);
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        switch (e.getKeyCode()){
+            case KeyEvent.VK_H -> mainView.showHotKeys();
+            case KeyEvent.VK_F -> addNewWindow();
+        }
     }
 }

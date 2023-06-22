@@ -190,7 +190,7 @@ public class GoLMainView extends JFrame {
             j.addActionListener(al);
             j.setActionCommand(String.valueOf(index++));
         }
-        addKeyListener(kl);
+        desktopPane.addKeyListener(kl);
     }
 
     public void addInternalFrame(JInternalFrame jif, Point randomPos) {

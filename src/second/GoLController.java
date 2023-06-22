@@ -196,7 +196,7 @@ public class GoLController extends GoLAdapter {
                 mainModel.setCurrentFigure(figureToSave);
                 objectOut.close();
                 fileOut.close();
-                calculateCenter();
+                mainController.calculateCenter();
                 refreshCanvas();
                 placingFigure = true;
                 activeMode = Mode.SET;
@@ -262,21 +262,6 @@ public class GoLController extends GoLAdapter {
         int posOnCanvasY = (int) (pos.y * scaleY);
         return new Point(posOnCanvasX, posOnCanvasY);
     }
-
-    /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     */
-    private void calculateCenter() {
-        Point center = new Point();
-        for (Point p : mainModel.getCurrentFigure().cells()) {
-            center.x = Math.max(center.x, p.x);
-            center.y = Math.max(center.y, p.y);
-        }
-        center.x /= 2;
-        center.y /= 2;
-        mainModel.setCenter(center);
-    }
-
     /**
      * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      *
@@ -284,7 +269,7 @@ public class GoLController extends GoLAdapter {
      */
     private void rotate(int direction) {
         Set<Point> figure = mainModel.getCurrentFigure().cells();
-        calculateCenter();
+        mainController.calculateCenter();
         Point center = mainModel.getCenter();
 
         Set<Point> rotatedFigure = new HashSet<>();
@@ -300,7 +285,7 @@ public class GoLController extends GoLAdapter {
         GoLPrefab rotatedPrefab = new GoLPrefab(mainModel.getCurrentFigure().name(), normalizePosition(rotatedFigure));
         mainModel.updateRecentFigures(rotatedPrefab);
         mainController.updateRecentFiguresMenu(mainModel.getRecentFigures());
-        calculateCenter();
+        mainController.calculateCenter();
         showPreview();
     }
 
@@ -317,7 +302,7 @@ public class GoLController extends GoLAdapter {
         GoLPrefab mirroredPrefab = new GoLPrefab(mainModel.getCurrentFigure().name(), normalizePosition(mirroredFigure));
         mainModel.updateRecentFigures(mirroredPrefab);
         mainController.updateRecentFiguresMenu(mainModel.getRecentFigures());
-        calculateCenter();
+        mainController.calculateCenter();
         showPreview();
     }
 
@@ -419,7 +404,6 @@ public class GoLController extends GoLAdapter {
                 ((JButton) e.getSource()).setBackground(newColor);
             }
             case "Speichern" -> saveFigure();
-
             case "Laufen" -> startRunning();
             case "Malen" -> {
                 placingFigure = false;
