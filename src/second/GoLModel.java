@@ -245,8 +245,5 @@ public class GoLModel {
      *
      * @param figure
      */
-    public void updateRecentFigures(GoLPrefab figure) {
-        recentFigures.removeIf(prefab -> prefab.name().equals(figure.name()));
-        recentFigures.add(figure);
-    }
+
 }

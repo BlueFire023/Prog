@@ -186,7 +186,11 @@ public class GoLMainView extends JFrame {
         save.addActionListener(al);
         load.addActionListener(al);
         mainSpeedSlider.addChangeListener(cl);
-
+        int index = 0;
+        for (JMenuItem j : figures) {
+            j.addActionListener(al);
+            j.setActionCommand(String.valueOf(index++));
+        }
         addKeyListener(kl);
     }
 

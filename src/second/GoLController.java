@@ -25,9 +25,10 @@ public class GoLController extends GoLAdapter {
 
 
     public GoLController(GoLMainController mainController) {
+
         this.mainController = mainController;
         view = new GoLView(model.getCanvas());
-        view.setListeners(this, this, this,  this, this, this,this);
+        view.setListeners(this, this, this,  this, this, this);
         view.updateCurrentMode(activeMode.toString());
         refreshCanvas();
     }

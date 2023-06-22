@@ -160,7 +160,7 @@ public class GoLView extends JPanel {
         frame.setVisible(true);
     }
 
-    public void setListeners(ActionListener al, KeyListener kl, MouseListener ml, MouseMotionListener mml, ChangeListener cl, MouseWheelListener mwl, InternalFrameListener ifl) {
+    public void setListeners(ActionListener al, KeyListener kl, MouseListener ml, MouseMotionListener mml, ChangeListener cl, MouseWheelListener mwl) {
         addKeyListener(kl);
         addMouseWheelListener(mwl);
         addMouseMotionListener(mml);
@@ -182,7 +182,6 @@ public class GoLView extends JPanel {
         plusButton.addActionListener(al);
         plusButton.addMouseListener(ml);
         speedSlider.addChangeListener(cl);
-        frame.addInternalFrameListener(ifl);
         int index = 0;
         for (JMenuItem j : shapes) {
             j.addActionListener(al);
@@ -262,5 +261,8 @@ public class GoLView extends JPanel {
                 modeMenu.setText("Linien");
             }
         }
+    }
+    public void addIFL(InternalFrameListener ifl){
+        frame.addInternalFrameListener(ifl);
     }
 }

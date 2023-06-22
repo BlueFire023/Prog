@@ -43,6 +43,7 @@ public class GoLMainController extends GoLAdapter {
             }
             default -> {
                 int number = Integer.parseInt(e.getActionCommand());
+                System.out.println(number);
                 for(GoLController c : instances){
                     c.setPlacingFigure(true);
                 }
@@ -56,6 +57,7 @@ public class GoLMainController extends GoLAdapter {
     public void update(){
         int number = 1;
         for(GoLController c : instances){
+            c.view.addIFL(this);
             c.view.setNewTitle(number++);
         }
     }
@@ -74,7 +76,9 @@ public class GoLMainController extends GoLAdapter {
 
     @Override
     public void internalFrameClosing(InternalFrameEvent e) {
+        System.out.println(e.getSource());
         instances.removeIf(g -> e.getSource().equals(g.view.getFrame()));
+        instances.forEach(g -> System.out.println(e.getSource().equals(g.view.getFrame())));
     }
 
     private void calculateCenter() {
