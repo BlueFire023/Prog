@@ -13,14 +13,14 @@ import java.util.Random;
 public class GoLMainController extends GoLAdapter {
     private final List<GoLController> instances = new ArrayList<>();
     private final GoLMainView mainView = new GoLMainView();
-    private final GoLModel model = new GoLModel();
+    private final GoLMainModel mainModel = new GoLMainModel();
     private final Random random = new Random();
 
     /**
      * Erstellt neuen GoLMainWindow
      */
     public GoLMainController() {
-        mainView.initFiguresMenu(model.getPreMadeFigures());
+        mainView.initFiguresMenu(mainModel.getPreMadeFigures());
         mainView.setMainListener(this, this, this);
     }
 
@@ -28,7 +28,7 @@ public class GoLMainController extends GoLAdapter {
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case "Neues Fenster" -> {
-                GoLController controller = new GoLController(this);
+                GoLController controller = new GoLController(this, mainModel);
                 JInternalFrame internalFrame = controller.view.getFrame();
                 instances.add(controller);
                 Point frameSize = new Point(mainView.getWidth(), mainView.getHeight());
@@ -41,22 +41,30 @@ public class GoLMainController extends GoLAdapter {
                     c.startRunning();
                 }
             }
-            default -> {
-                int number = Integer.parseInt(e.getActionCommand());
-                System.out.println(number);
-                for(GoLController c : instances){
+            case "recent" -> {
+                for (GoLController c : instances) {
                     c.setPlacingFigure(true);
                 }
-                model.updateRecentFigures(model.getPreMadeFigures(number));
-                mainView.updateRecentFiguresMenu(model.getRecentFigures(), this);
+                String name = ((JMenuItem) e.getSource()).getText();
+                mainModel.updateRecentFigures(name);
+                mainView.updateRecentFiguresMenu(mainModel.getRecentFigures(), this);
+                calculateCenter();
+            }
+            default -> {
+                int number = Integer.parseInt(e.getActionCommand());
+                for (GoLController c : instances) {
+                    c.setPlacingFigure(true);
+                }
+                mainModel.updateRecentFigures(mainModel.getPreMadeFigures(number));
+                mainView.updateRecentFiguresMenu(mainModel.getRecentFigures(), this);
                 calculateCenter();
             }
         }
     }
 
-    public void update(){
+    public void update() {
         int number = 1;
-        for(GoLController c : instances){
+        for (GoLController c : instances) {
             c.view.addIFL(this);
             c.view.setNewTitle(number++);
         }
@@ -68,7 +76,7 @@ public class GoLMainController extends GoLAdapter {
 
     @Override
     public void stateChanged(ChangeEvent e) {
-        for(GoLController c : instances){
+        for (GoLController c : instances) {
             c.view.updateSlider(mainView.getMainSliderstat());
         }
         update();
@@ -76,22 +84,22 @@ public class GoLMainController extends GoLAdapter {
 
     @Override
     public void internalFrameClosing(InternalFrameEvent e) {
-        System.out.println(e.getSource());
         instances.removeIf(g -> e.getSource().equals(g.view.getFrame()));
-        instances.forEach(g -> System.out.println(e.getSource().equals(g.view.getFrame())));
+        update();
     }
 
     private void calculateCenter() {
         Point center = new Point();
-        for (Point p : model.getCurrentFigure().cells()) {
+        for (Point p : mainModel.getCurrentFigure().cells()) {
             center.x = Math.max(center.x, p.x);
             center.y = Math.max(center.y, p.y);
         }
         center.x /= 2;
         center.y /= 2;
-        model.setCenter(center);
+        mainModel.setCenter(center);
     }
-    public void updateRecentFiguresMenu(ArrayList<GoLPrefab> recent, ActionListener al){
-        mainView.updateRecentFiguresMenu(recent,al);
+
+    public void updateRecentFiguresMenu(ArrayList<GoLPrefab> recent, ActionListener al) {
+        mainView.updateRecentFiguresMenu(recent, al);
     }
 }

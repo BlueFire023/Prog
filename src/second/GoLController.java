@@ -2,10 +2,16 @@ package second;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
@@ -14,6 +20,7 @@ import java.util.*;
 
 public class GoLController extends GoLAdapter {
     private final GoLModel model = new GoLModel();
+    private final GoLMainModel mainModel;
     public final GoLView view;
     private final GoLMainController mainController;
     private Point prevPos = new Point(), mousePos = new Point();
@@ -24,11 +31,12 @@ public class GoLController extends GoLAdapter {
     private final Object lock = new Object();
 
 
-    public GoLController(GoLMainController mainController) {
+    public GoLController(GoLMainController mainController, GoLMainModel mainModel) {
 
+        this.mainModel = mainModel;
         this.mainController = mainController;
         view = new GoLView(model.getCanvas());
-        view.setListeners(this, this, this,  this, this, this);
+        view.setListeners(this, this, this, this, this, this);
         view.updateCurrentMode(activeMode.toString());
         refreshCanvas();
     }
@@ -106,7 +114,7 @@ public class GoLController extends GoLAdapter {
     }
 
     private void paintPixel(Point p, boolean preview) {
-        int brushSize = model.getBrushSize();
+        int brushSize = mainModel.getBrushSize();
         for (int i = 0; i < brushSize; i++) {
             for (int j = 0; j < brushSize; j++) {
                 if (((int) (brushSize / 2.5d)) + p.x - i >= 0 && ((int) (brushSize / 2.5d)) + p.y - j >= 0 && ((int) (brushSize / 2.5d)) + p.x - i < model.getCanvasWidth() && ((int) (brushSize / 2.5d)) + p.y - j < model.getCanvasHeight()) {
@@ -226,15 +234,6 @@ public class GoLController extends GoLAdapter {
                 prevPos = new Point((model.getCanvasWidth() - 1) / 2, 0);
                 drawLineBresenham(new Point((model.getCanvasWidth() - 1) / 2, model.getCanvasHeight()), false);
             }
-            case "recent" -> {
-                placingFigure = true;
-                activeMode = Mode.SET;
-                String name = ((JMenuItem) e.getSource()).getText();
-                model.updateRecentFigures(name);
-                mainController.updateRecentFiguresMenu(model.getRecentFigures(), this);
-                calculateCenter();
-            }
-
         }
         refreshCanvas();
         view.updateCurrentMode(activeMode.toString());
@@ -249,14 +248,14 @@ public class GoLController extends GoLAdapter {
                 FileOutputStream fileOut = new FileOutputStream(filePath);
                 ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
                 objectOut.writeObject(figureToSave);
-                model.setCurrentFigure(figureToSave);
+                mainModel.setCurrentFigure(figureToSave);
                 objectOut.close();
                 fileOut.close();
                 calculateCenter();
                 refreshCanvas();
                 placingFigure = true;
                 activeMode = Mode.SET;
-                mainController.updateRecentFiguresMenu(model.getRecentFigures(), this);
+                mainController.updateRecentFiguresMenu(mainModel.getRecentFigures(), this);
                 JOptionPane.showMessageDialog(null, "Das Objekt wurde erfolgreich gespeichert.");
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Fehler beim Schreiben des Objekts: " + e.getMessage());
@@ -282,12 +281,12 @@ public class GoLController extends GoLAdapter {
                 if (maxX > model.getCanvasWidth() || maxY > model.getCanvasHeight()) {
                     throw new Exception("Figur(Breite: " + maxX + ", Höhe: " + maxY + ") ist größer als Auflösung(Breite: " + model.getCanvasWidth() + ", Höhe: " + model.getCanvasHeight() + ")");
                 }
-                model.updateRecentFigures(m);
+                mainModel.updateRecentFigures(m);
                 calculateCenter();
                 refreshCanvas();
                 placingFigure = true;
                 activeMode = Mode.SET;
-                mainController.updateRecentFiguresMenu(model.getRecentFigures(), this);
+                mainController.updateRecentFiguresMenu(mainModel.getRecentFigures(), this);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Fehler beim laden des Objekts: " + e.getMessage());
             }
@@ -324,7 +323,7 @@ public class GoLController extends GoLAdapter {
         } else if (placingFigure && (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN)) {
             flip(e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT);
         } else {
-            model.setBrushSize(Character.isDigit(e.getKeyChar()) ? Character.getNumericValue(e.getKeyChar()) : model.getBrushSize());
+            mainModel.setBrushSize(Character.isDigit(e.getKeyChar()) ? Character.getNumericValue(e.getKeyChar()) : mainModel.getBrushSize());
             showPreview();
         }
     }
@@ -342,7 +341,7 @@ public class GoLController extends GoLAdapter {
         painting = e.getButton() == 1;
         mouseHeld = true;
         if (placingFigure) {
-            model.getCurrentFigure().cells().forEach(p -> model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), painting));
+            mainModel.getCurrentFigure().cells().forEach(p -> model.setCell(calculateWrap(new Point(p.x + prevPos.x - mainModel.getCenter().x, p.y + prevPos.y - mainModel.getCenter().y)), painting));
         } else if (activeMode != Mode.LINE) {
             paintPixel(mousePos, false);
         }
@@ -381,8 +380,8 @@ public class GoLController extends GoLAdapter {
                 model.setCanvasRGB(p, model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
             }
             lastCells.clear();
-            for (Point p : model.getCurrentFigure().cells()) {
-                Point calculatedPoint = new Point(p.x + mousePos.x - model.getCenter().x, p.y + mousePos.y - model.getCenter().y);
+            for (Point p : mainModel.getCurrentFigure().cells()) {
+                Point calculatedPoint = new Point(p.x + mousePos.x - mainModel.getCenter().x, p.y + mousePos.y - mainModel.getCenter().y);
                 model.setCanvasRGB(calculateWrap(calculatedPoint), model.getInvertedColor());
                 lastCells.add(calculateWrap(calculatedPoint));
             }
@@ -415,19 +414,19 @@ public class GoLController extends GoLAdapter {
 
     private void calculateCenter() {
         Point center = new Point();
-        for (Point p : model.getCurrentFigure().cells()) {
+        for (Point p : mainModel.getCurrentFigure().cells()) {
             center.x = Math.max(center.x, p.x);
             center.y = Math.max(center.y, p.y);
         }
         center.x /= 2;
         center.y /= 2;
-        model.setCenter(center);
+        mainModel.setCenter(center);
     }
 
     private void rotate(int direction) {
-        Set<Point> figure = model.getCurrentFigure().cells();
+        Set<Point> figure = mainModel.getCurrentFigure().cells();
         calculateCenter();
-        Point center = model.getCenter();
+        Point center = mainModel.getCenter();
 
         Set<Point> rotatedFigure = new HashSet<>();
         for (Point p : figure) {
@@ -439,21 +438,21 @@ public class GoLController extends GoLAdapter {
 
             rotatedFigure.add(new Point(rotatedX + center.x, rotatedY + center.y));
         }
-        GoLPrefab rotatedPrefab = new GoLPrefab(model.getCurrentFigure().name(), normalizePosition(rotatedFigure));
-        model.updateRecentFigures(rotatedPrefab);
-        mainController.updateRecentFiguresMenu(model.getRecentFigures(), this);
+        GoLPrefab rotatedPrefab = new GoLPrefab(mainModel.getCurrentFigure().name(), normalizePosition(rotatedFigure));
+        mainModel.updateRecentFigures(rotatedPrefab);
+        mainController.updateRecentFiguresMenu(mainModel.getRecentFigures(), this);
         calculateCenter();
         showPreview();
     }
 
     private void flip(boolean horizontal) {
         Set<Point> mirroredFigure = new HashSet<>();
-        for (Point p : model.getCurrentFigure().cells()) {
+        for (Point p : mainModel.getCurrentFigure().cells()) {
             mirroredFigure.add(new Point(horizontal ? -p.x : p.x, horizontal ? p.y : -p.y));
         }
-        GoLPrefab mirroredPrefab = new GoLPrefab(model.getCurrentFigure().name(), normalizePosition(mirroredFigure));
-        model.updateRecentFigures(mirroredPrefab);
-        mainController.updateRecentFiguresMenu(model.getRecentFigures(), this);
+        GoLPrefab mirroredPrefab = new GoLPrefab(mainModel.getCurrentFigure().name(), normalizePosition(mirroredFigure));
+        mainModel.updateRecentFigures(mirroredPrefab);
+        mainController.updateRecentFiguresMenu(mainModel.getRecentFigures(), this);
         calculateCenter();
         showPreview();
     }
@@ -480,7 +479,7 @@ public class GoLController extends GoLAdapter {
         RUNNING, PAINTING, SET, LINE
     }
 
-    public void setPlacingFigure(boolean placingFigure){
+    public void setPlacingFigure(boolean placingFigure) {
         this.placingFigure = placingFigure;
         activeMode = GoLController.Mode.SET;
     }
