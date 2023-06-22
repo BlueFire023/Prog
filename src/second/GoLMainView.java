@@ -9,6 +9,11 @@ import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+/**
+ * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
+ * @version 1, 22/06/2023
+ */
+
 public class GoLMainView extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private final JMenuBar menuBar = new JMenuBar();

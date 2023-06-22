@@ -12,6 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
+ * @version 1, 22/06/2023
+ */
+
 public class GoLMainController extends GoLAdapter {
     private final List<GoLController> instances = new ArrayList<>();
     private final GoLMainView mainView = new GoLMainView();

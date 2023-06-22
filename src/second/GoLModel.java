@@ -9,6 +9,7 @@ import java.util.Set;
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
  * @version 1, 22/06/2023
  */
+
 public class GoLModel {
 
     private BufferedImage canvas = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
