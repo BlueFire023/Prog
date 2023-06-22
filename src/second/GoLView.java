@@ -17,32 +17,21 @@ public class GoLView extends JPanel {
     private final JMenuBar menuBar = new JMenuBar();
     private final JMenu modeMenu = new JMenu("Modus");
     private final JMenu extraMenu = new JMenu("Extras");
-    private final JMenu figuresMenu = new JMenu("Figuren");
-    private final JMenu sliderMenu = new JMenu("Geschwindigkeit");
-    private final JMenu staticMenu = new JMenu("Statische");
-    private final JMenu oscMenu = new JMenu("Oszillierende");
-    private final JMenu shipsMenu = new JMenu("Raum Schiffe");
-    private final JMenu methMenu = new JMenu("Methuselahs");
-    private final JMenu gunsMenu = new JMenu("Gleiter Kanonen");
-    private final JMenu otherMenu = new JMenu("Andere");
-    private final ArrayList<JMenuItem> figures = new ArrayList<>();
     private final JSlider speedSlider = new JSlider();
-    private final JMenu recentFiguresMenu = new JMenu("Zuletzt benutzt");
-    private final JMenuItem save = new JMenuItem("Speichern");
-    private final JMenuItem load = new JMenuItem("Laden");
     private final JMenuItem clearButton = new JMenuItem("Löschen");
     private final JMenuItem setSizeButton = new JMenuItem("Auflösung");
     private final JMenuItem setColorButton = new JMenuItem("Farben");
-    private final JMenuItem showHotKeysButton = new JMenuItem("Hotkeys");
     private final JMenuItem runButton = new JMenuItem("Laufen");
     private final JMenuItem paintButton = new JMenuItem("Malen");
     private final JMenuItem setButton = new JMenuItem("Setzen");
+    private final JMenu shapesMenu = new JMenu("Formen");
     private final JMenuItem lineButton = new JMenuItem("Linien");
     private final JMenuItem frameButton = new JMenuItem("Rahmen");
     private final JMenuItem crossButton = new JMenuItem("Kreuz");
     private final JMenuItem plusButton = new JMenuItem("Plus");
+    private final JMenu sliderMenu = new JMenu("Geschwindigkeit");
     private final JFrame setSizeFrame = new JFrame();
-    private final JFrame hotKeyFrame = new JFrame("Hotkeys");
+    private final ArrayList<JMenuItem> shapes = new ArrayList<>();
     private final JTextField widthTextArea;
     private final JTextField heightTextArea;
     private final JButton applySizeButton = new JButton("Apply");
@@ -88,31 +77,18 @@ public class GoLView extends JPanel {
         modeMenu.add(lineButton);
         menuBar.add(modeMenu);
 
-        //Füge dem "figuresMenu" die verschiedenen Optionen, Menus, etc. hinzu und Füge es der "menuBar" hinzu
-        figuresMenu.add(save);
-        figuresMenu.add(load);
-        figuresMenu.add(staticMenu);
-        figuresMenu.add(oscMenu);
-        figuresMenu.add(shipsMenu);
-        figuresMenu.add(methMenu);
-        figuresMenu.add(gunsMenu);
-        figuresMenu.add(otherMenu);
-        figuresMenu.add(frameButton);
-        figuresMenu.add(crossButton);
-        figuresMenu.add(plusButton);
-        menuBar.add(figuresMenu);
-        menuBar.add(recentFiguresMenu);
-
-        //Füge der "menuBar" das "sliderMenu" hinzu und füge dem den "speedSlider" hinzu
+        shapesMenu.add(frameButton);
+        shapesMenu.add(crossButton);
+        shapesMenu.add(plusButton);
         sliderMenu.add(speedSlider);
-        menuBar.add(sliderMenu);
 
         //Füge dem "extraMenu" die verschiedenen Optionen und Buttons hinzu und Füge es der "menuBar" hinzu
         extraMenu.add(clearButton);
         extraMenu.add(setSizeButton);
         extraMenu.add(setColorButton);
-        extraMenu.add(showHotKeysButton);
         menuBar.add(extraMenu);
+
+        menuBar.add(sliderMenu);
 
         //Setze den Hintergrund der "menuBar" auf "Light_GRAY"
         menuBar.setBackground(Color.LIGHT_GRAY);
@@ -193,15 +169,12 @@ public class GoLView extends JPanel {
         setSizeButton.addActionListener(al);
         applySizeButton.addActionListener(al);
         setColorButton.addActionListener(al);
-        showHotKeysButton.addActionListener(al);
         runButton.addActionListener(al);
         paintButton.addActionListener(al);
         setButton.addActionListener(al);
         lineButton.addActionListener(al);
         aliveCellColorDisplay.addActionListener(al);
         deadCellColorDisplay.addActionListener(al);
-        save.addActionListener(al);
-        load.addActionListener(al);
         frameButton.addActionListener(al);
         frameButton.addMouseListener(ml);
         crossButton.addActionListener(al);
@@ -211,7 +184,7 @@ public class GoLView extends JPanel {
         speedSlider.addChangeListener(cl);
         frame.addInternalFrameListener(ifl);
         int index = 0;
-        for (JMenuItem j : figures) {
+        for (JMenuItem j : shapes) {
             j.addActionListener(al);
             j.setActionCommand(String.valueOf(index++));
         }
@@ -223,16 +196,6 @@ public class GoLView extends JPanel {
 
     public void disposeSetSizeFrame() {
         setSizeFrame.dispose();
-    }
-
-    public void updateRecentFiguresMenu(ArrayList<GoLPrefab> recent, ActionListener al) {
-        recentFiguresMenu.removeAll();
-        for (int i = recent.size() - 1; i >= Math.max(recent.size() - 1 - 4, 0); i--) {
-            JMenuItem item = new JMenuItem(recent.get(i).name());
-            item.addActionListener(al);
-            item.setActionCommand("recent");
-            recentFiguresMenu.add(item);
-        }
     }
 
     public void updateCellColor(Color aColor, Color dColor) {
@@ -261,39 +224,6 @@ public class GoLView extends JPanel {
 
     public int getSliderstat() {
         return speedSlider.getValue();
-    }
-
-    public void initFiguresMenu(GoLFigures preMadeFigures) {
-        int count = 0;
-        for (int i = 0; i < stillLifesCount; i++) {
-            figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
-            staticMenu.add(figures.get(i));
-        }
-        count += stillLifesCount;
-        for (int i = count; i < oscillatorsCount + count; i++) {
-            figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
-            oscMenu.add(figures.get(i));
-        }
-        count += oscillatorsCount;
-        for (int i = count; i < spaceshipsCount + count; i++) {
-            figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
-            shipsMenu.add(figures.get(i));
-        }
-        count += spaceshipsCount;
-        for (int i = count; i < methuselahsCount + count; i++) {
-            figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
-            methMenu.add(figures.get(i));
-        }
-        count += methuselahsCount;
-        for (int i = count; i < ggCount + count; i++) {
-            figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
-            gunsMenu.add(figures.get(i));
-        }
-        count += ggCount;
-        for (int i = count; i < otherCount + count; i++) {
-            figures.add(new JMenuItem(preMadeFigures.getFigure(i).name()));
-            otherMenu.add(figures.get(i));
-        }
     }
 
     public JInternalFrame getFrame() {
@@ -332,9 +262,5 @@ public class GoLView extends JPanel {
                 modeMenu.setText("Linien");
             }
         }
-    }
-
-    public void showHotKeys() {
-        hotKeyFrame.setVisible(true);
     }
 }
