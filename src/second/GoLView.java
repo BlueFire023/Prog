@@ -41,6 +41,7 @@ public class GoLView extends JPanel {
     private final JFrame setSizeFrame = new JFrame();
     private final JFrame setColorFrame = new JFrame();
     private final JInternalFrame frame = new JInternalFrame();
+    private final GoLModel model;
 
     /**
      * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -167,6 +168,11 @@ public class GoLView extends JPanel {
         frame.setContentPane(this);
         frame.setResizable(true);
         frame.setVisible(true);
+        frame.setMaximizable(true);
+
+        applySizeButton.setActionCommand("size");
+        applySizeButton.setBackground(Color.WHITE);
+        applyPanel.add(applySizeButton);
     }
 
     /**
