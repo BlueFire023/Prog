@@ -2,9 +2,11 @@ package second;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 import java.awt.event.*;
 
-public class GoLAdapter implements ActionListener, KeyListener, MouseMotionListener, MouseListener, ChangeListener, WindowFocusListener, WindowListener, MouseWheelListener {
+public class GoLAdapter implements ActionListener, KeyListener, MouseMotionListener, MouseListener, ChangeListener, MouseWheelListener, InternalFrameListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -62,51 +64,6 @@ public class GoLAdapter implements ActionListener, KeyListener, MouseMotionListe
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-
-    }
-
-    @Override
-    public void windowGainedFocus(WindowEvent e) {
-
-    }
-
-    @Override
-    public void windowLostFocus(WindowEvent e) {
-
-    }
-
-    @Override
-    public void windowOpened(WindowEvent e) {
-
-    }
-
-    @Override
-    public void windowClosing(WindowEvent e) {
-
-    }
-
-    @Override
-    public void windowClosed(WindowEvent e) {
-
-    }
-
-    @Override
-    public void windowIconified(WindowEvent e) {
-
-    }
-
-    @Override
-    public void windowDeiconified(WindowEvent e) {
-
-    }
-
-    @Override
-    public void windowActivated(WindowEvent e) {
-
-    }
-
-    @Override
-    public void windowDeactivated(WindowEvent e) {
 
     }
 

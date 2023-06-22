@@ -506,4 +506,32 @@ public class GoLFigures {
     public GoLPrefab getFigure(int position) { //Gibt die Figur and der angegebenen Position zurück
         return figures.get(position);
     }
+
+    public ArrayList<GoLPrefab> getFigures() {
+        return figures;
+    }
+
+    public int getStillLifesCount() {
+        return stillLifesCount;
+    }
+
+    public int getOscillatorsCount() {
+        return oscillatorsCount;
+    }
+
+    public int getSpaceshipsCount() {
+        return spaceshipsCount;
+    }
+
+    public int getMethuselahsCount() {
+        return methuselahsCount;
+    }
+
+    public int getGgCount() {
+        return ggCount;
+    }
+
+    public int getOtherCount() {
+        return otherCount;
+    }
 }

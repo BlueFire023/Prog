@@ -16,6 +16,7 @@ import java.util.*;
 public class GoLController extends GoLAdapter {
     private final GoLModel model = new GoLModel();
     public final GoLView view;
+    private final GoLMainController mainController;
     private Point prevPos = new Point(), mousePos = new Point();
     private boolean painting, mouseHeld, placingFigure;
     private final Set<Point> lastCells = new HashSet<>();
@@ -24,10 +25,10 @@ public class GoLController extends GoLAdapter {
     private final Object lock = new Object();
 
 
-    public GoLController() {
-        view = new GoLView(model.getCanvas(), instances.size() + 1);
-        view.initFiguresMenu(model.getPreMadeFigures());
-        view.setListeners(this, this, this, this, this, this, this, this);
+    public GoLController(GoLMainController mainController) {
+        this.mainController = mainController;
+        view = new GoLView(model.getCanvas());
+        view.setListeners(this, this, this,  this, this, this,this);
         view.updateCurrentMode(activeMode.toString());
         refreshCanvas();
         instances.add(this);
@@ -303,7 +304,6 @@ public class GoLController extends GoLAdapter {
                 activeMode = Mode.PAINTING;
                 view.updateCanvasSize();
             }
-            case KeyEvent.VK_F -> new GoLController();
             case KeyEvent.VK_C -> view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
             case KeyEvent.VK_S -> calculateNextGenerationAll();
             case KeyEvent.VK_L -> {
@@ -318,7 +318,6 @@ public class GoLController extends GoLAdapter {
                 placingFigure = false;
                 activeMode = Mode.SET;
             }
-            case KeyEvent.VK_H -> view.showHotKeys();
         }
         view.updateCurrentMode(activeMode.toString());
         if (activeMode != Mode.RUNNING && e.getKeyCode() == KeyEvent.VK_SPACE) {
@@ -426,27 +425,6 @@ public class GoLController extends GoLAdapter {
         model.setCenter(center);
     }
 
-    @Override
-    public void windowLostFocus(WindowEvent e) {
-        mouseHeld = false;
-        for (Point p : lastCells) {
-            model.setCanvasRGB(calculateWrap(p), model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
-        }
-    }
-
-    @Override
-    public void windowClosing(WindowEvent e) {
-        instances.removeIf(g -> e.getSource().equals(g.view.getFrame()));
-    }
-
-    @Override
-    public void windowClosed(WindowEvent e) {
-        int number = 1;
-        for (GoLController g : instances) {
-            g.updateWindowCountTitle(number++);
-        }
-    }
-
     private void rotate(int direction) {
         Set<Point> figure = model.getCurrentFigure().cells();
         calculateCenter();
@@ -498,11 +476,13 @@ public class GoLController extends GoLAdapter {
         return adjustedFigure;
     }
 
-    private void updateWindowCountTitle(int number) {
-        view.setNewTitle(number);
-    }
 
     private enum Mode {
         RUNNING, PAINTING, SET, LINE
+    }
+
+    public void setPlacingFigure(boolean placingFigure){
+        this.placingFigure = placingFigure;
+        activeMode = GoLController.Mode.SET;
     }
 }

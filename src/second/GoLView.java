@@ -2,6 +2,7 @@ package second;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.InternalFrameListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -183,7 +184,7 @@ public class GoLView extends JPanel {
         frame.setVisible(true);
     }
 
-    public void setListeners(ActionListener al, KeyListener kl, MouseListener ml, MouseMotionListener mml, ChangeListener cl, WindowFocusListener wfl, WindowListener wl, MouseWheelListener mwl) {
+    public void setListeners(ActionListener al, KeyListener kl, MouseListener ml, MouseMotionListener mml, ChangeListener cl, MouseWheelListener mwl, InternalFrameListener ifl) {
         addKeyListener(kl);
         addMouseWheelListener(mwl);
         addMouseMotionListener(mml);
@@ -207,9 +208,8 @@ public class GoLView extends JPanel {
         crossButton.addMouseListener(ml);
         plusButton.addActionListener(al);
         plusButton.addMouseListener(ml);
-        //frame.addWindowFocusListener(wfl);
         speedSlider.addChangeListener(cl);
-        //frame.addWindowListener(wl);
+        frame.addInternalFrameListener(ifl);
         int index = 0;
         for (JMenuItem j : figures) {
             j.addActionListener(al);
