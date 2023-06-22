@@ -156,10 +156,6 @@ public class GoLView extends JPanel {
         heightPanelLayout.add(heightTextArea);
         heightPanel.add(heightPanelLayout);
 
-        applySizeButton.setActionCommand("size");
-        applySizeButton.setBackground(Color.WHITE);
-        applyPanel.add(applySizeButton);
-
         frame.setJMenuBar(menuBar);
         frame.setSize(new Dimension(800, 800));
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -190,24 +186,56 @@ public class GoLView extends JPanel {
         addMouseWheelListener(mwl);
         addMouseMotionListener(mml);
         addMouseListener(ml);
+
+        speedSlider.addChangeListener(cl);
+        aliveCellColorDisplay.addActionListener(al);
+        deadCellColorDisplay.addActionListener(al);
         saveButton.addActionListener(al);
         clearButton.addActionListener(al);
         setSizeButton.addActionListener(al);
-        applySizeButton.addActionListener(al);
         setColorButton.addActionListener(al);
         runButton.addActionListener(al);
         paintButton.addActionListener(al);
         setButton.addActionListener(al);
         lineButton.addActionListener(al);
-        aliveCellColorDisplay.addActionListener(al);
-        deadCellColorDisplay.addActionListener(al);
         frameButton.addActionListener(al);
         frameButton.addMouseListener(ml);
         crossButton.addActionListener(al);
         crossButton.addMouseListener(ml);
         plusButton.addActionListener(al);
         plusButton.addMouseListener(ml);
-        speedSlider.addChangeListener(cl);
+        applySizeButton.addActionListener(al);
+    }
+
+    /**
+     * Updated den aktuellen den aktuellen Modus
+     *
+     * @param mode
+     */
+    public void updateCurrentMode(String mode) {
+        modeMenu.removeAll();
+        modeMenu.add(runButton);
+        modeMenu.add(paintButton);
+        modeMenu.add(setButton);
+        modeMenu.add(lineButton);
+        switch (mode) {
+            case "RUNNING" -> {
+                modeMenu.remove(runButton);
+                modeMenu.setText("Laufen");
+            }
+            case "SET" -> {
+                modeMenu.remove(setButton);
+                modeMenu.setText("Setzen");
+            }
+            case "PAINTING" -> {
+                modeMenu.remove(paintButton);
+                modeMenu.setText("Malen");
+            }
+            case "LINE" -> {
+                modeMenu.remove(lineButton);
+                modeMenu.setText("Linien");
+            }
+        }
     }
 
     /**
@@ -257,6 +285,15 @@ public class GoLView extends JPanel {
     }
 
     /**
+     * Neue Titel Number wird gesetzt.
+     *
+     * @param
+     */
+    public void setNewTitle() {
+        frame.setTitle("Game of Life " + model.getCurrentWindowNumber());
+    }
+
+    /**
      * Ausgewählte Fläche wird eingefärbt
      *
      * @param g the <code>Graphics</code> object to protect
@@ -265,6 +302,13 @@ public class GoLView extends JPanel {
         super.paintComponent(g);
         g.drawImage(model.getCanvas(), 0, 0, getWidth(), getHeight(), null);
         repaint();
+    }
+
+    /**
+     * Schließt das Fenster mit den Auflösungen.
+     */
+    public void disposeSetSizeFrame() {
+        setSizeFrame.dispose();
     }
 
     /**

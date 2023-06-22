@@ -17,11 +17,11 @@ import java.util.Random;
  */
 
 public class GoLMainController extends GoLAdapter {
-    private final List<GoLController> instances = new ArrayList<>();
+    private final Random random = new Random();
     private final GoLMainView mainView = new GoLMainView();
     private final GoLMainModel mainModel = new GoLMainModel();
-    private final Random random = new Random();
     private final JFileChooser mainFileChooser = new JFileChooser();
+    private final List<GoLController> instances = new ArrayList<>();
 
     /**
      * Erstellt neuen GoLMainWindow
@@ -29,6 +29,15 @@ public class GoLMainController extends GoLAdapter {
     public GoLMainController() {
         mainView.initFiguresMenu(mainModel.getPreMadeFigures());
         mainView.setMainListener(this, this, this);
+    }
+
+    /**
+     * Main-Methode, das Programm wird gestartet.
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        new GoLMainController();
     }
 
     /**
@@ -54,6 +63,58 @@ public class GoLMainController extends GoLAdapter {
         }
     }
 
+    /**
+     * Neues Fenster wird hinzugefügt.
+     */
+    private void addNewWindow() {
+        GoLController controller = new GoLController(this, mainModel);
+        JInternalFrame internalFrame = controller.view.getFrame();
+        instances.add(controller);
+        Point frameSize = new Point(mainView.getWidth(), mainView.getHeight());
+        mainView.addInternalFrame(internalFrame, new Point(random.nextInt(0, frameSize.x - internalFrame.getWidth()), random.nextInt(0, frameSize.y - internalFrame.getHeight())));
+        updateWindowNumbers();
+    }
+
+    /**
+     * Berechnet die Mitte der Figur.
+     */
+    public void calculateCenter() {
+        Point center = new Point();
+        for (Point p : mainModel.getCurrentFigure().cells()) {
+            center.x = Math.max(center.x, p.x);
+            center.y = Math.max(center.y, p.y);
+        }
+        center.x /= 2;
+        center.y /= 2;
+        mainModel.setCenter(center);
+    }
+
+    /**
+     * Aktualisiert Fenster Nummern.
+     */
+    public void updateWindowNumbers() {
+        int number = 1;
+        for (GoLController c : instances) {
+            c.view.addIFL(this);
+            c.view.setNewTitle();
+            c.setCurrentWindowNumber(number++);
+        }
+    }
+
+    /**
+     * Aktualisiert das Figuren Menu der letzten verwendeten Figuren.
+     *
+     * @param recent
+     */
+    public void updateRecentFiguresMenu(ArrayList<GoLPrefab> recent) {
+        mainView.updateRecentFiguresMenu(recent, this);
+    }
+
+    /**
+     * Legt fest, für welchen Fall des ActionCommands was tun soll
+     *
+     * @param e the event to be processed
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {

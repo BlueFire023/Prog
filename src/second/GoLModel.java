@@ -11,7 +11,10 @@ import java.util.Set;
  */
 
 public class GoLModel {
-
+    private int currentWindowNumber;
+    private Color aliveCellColor = Color.BLACK;
+    private Color deadCellColor = Color.WHITE;
+    private Color invertedColor = Color.BLACK;
     private BufferedImage canvas = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
     private final Set<Point> aliveCells = new HashSet<>();
 
@@ -29,6 +32,25 @@ public class GoLModel {
             canvas.setRGB(nextCellPosition.x, nextCellPosition.y, deadCellColor.getRGB());
             aliveCells.remove(nextCellPosition);
         }
+    }
+
+    /**
+     * Überprüft, ob eine Zelle lebendig ist
+     *
+     * @param p Point
+     * @return true wenn Zelle lebendig
+     */
+    public boolean isCellAlive(Point p) {
+        return aliveCells.contains(p);
+    }
+
+    /**
+     * Setzt das Bild "canvas"
+     *
+     * @param canvas
+     */
+    public void setCanvas(BufferedImage canvas) {
+        this.canvas = canvas;
     }
 
     /**
@@ -50,13 +72,12 @@ public class GoLModel {
         return canvas;
     }
 
+
     /**
-     * Setzt das Bild "canvas"
-     *
-     * @param canvas
+     * Leert die Menge der lebendigen Zellen
      */
-    public void setCanvas(BufferedImage canvas) {
-        this.canvas = canvas;
+    public void clearAliveCells() {
+        aliveCells.clear();
     }
 
     /**
@@ -69,10 +90,12 @@ public class GoLModel {
     }
 
     /**
-     * Leert die Menge der lebendigen Zellen
+     * Setzt die Farbe der lebendigen Zellen
+     *
+     * @param aliveCellColor
      */
-    public void clearAliveCells() {
-        aliveCells.clear();
+    public void setAliveCellColor(Color aliveCellColor) {
+        this.aliveCellColor = aliveCellColor;
     }
 
     /**
@@ -85,12 +108,12 @@ public class GoLModel {
     }
 
     /**
-     * Setzt die Farbe der lebendigen Zellen
+     * Setzt die Farbe der toten Zellen
      *
-     * @param aliveCellColor
+     * @param deadCellColor
      */
-    public void setAliveCellColor(Color aliveCellColor) {
-        this.aliveCellColor = aliveCellColor;
+    public void setDeadCellColor(Color deadCellColor) {
+        this.deadCellColor = deadCellColor;
     }
 
     /**
@@ -100,15 +123,6 @@ public class GoLModel {
      */
     public Color getDeadCellColor() {
         return deadCellColor;
-    }
-
-    /**
-     * Setzt die Farbe der toten Zellen
-     *
-     * @param deadCellColor
-     */
-    public void setDeadCellColor(Color deadCellColor) {
-        this.deadCellColor = deadCellColor;
     }
 
     /**
@@ -130,13 +144,12 @@ public class GoLModel {
     }
 
     /**
-     * Überprüft, ob eine Zelle lebendig ist
+     * Setzt die invertierte Farbe
      *
-     * @param p Point
-     * @return true wenn Zelle lebendig
+     * @param invertedColor
      */
-    public boolean isCellAlive(Point p) {
-        return aliveCells.contains(p);
+    public void setInvertedColor(Color invertedColor) {
+        this.invertedColor = invertedColor;
     }
 
     /**
@@ -146,6 +159,15 @@ public class GoLModel {
      */
     public Color getInvertedColor() {
         return invertedColor;
+    }
+
+    /**
+     * Setzt aktuelle Fenster Nummer.
+     *
+     * @param currentWindowNumber
+     */
+    public void setCurrentWindowNumber(int currentWindowNumber) {
+        this.currentWindowNumber = currentWindowNumber;
     }
 
     /**
