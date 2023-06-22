@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.List;
 import java.util.*;
 
 /**
@@ -31,7 +30,6 @@ public class GoLController extends GoLAdapter {
         view.setListeners(this, this, this,  this, this, this,this);
         view.updateCurrentMode(activeMode.toString());
         refreshCanvas();
-        instances.add(this);
     }
 
     public synchronized void calculateNextGeneration() {

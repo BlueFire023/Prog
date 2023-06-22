@@ -19,26 +19,49 @@ public class GoLMainController extends GoLAdapter {
     /**
      * Erstellt neuen GoLMainWindow
      */
-    public GoLMainWindow(){
-        desktopPane.setDesktopManager(new DefaultDesktopManager());
+    public GoLMainController() {
+        mainView.initFiguresMenu(model.getPreMadeFigures());
+        mainView.setMainListener(this, this, this);
+    }
 
-        setContentPane(desktopPane);
-        setSize(new Dimension(500,500));
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        switch (e.getActionCommand()) {
+            case "Neues Fenster" -> {
+                GoLController controller = new GoLController(this);
+                JInternalFrame internalFrame = controller.view.getFrame();
+                instances.add(controller);
+                Point frameSize = new Point(mainView.getWidth(), mainView.getHeight());
+                mainView.addInternalFrame(internalFrame, new Point(random.nextInt(frameSize.x), random.nextInt(frameSize.y)));
+                update();
+            }
+            case "Hotkeys" -> mainView.showHotKeys();
+            case "Alle Laufen" -> {
+                for (GoLController c : instances) {
+                    c.startRunning();
+                }
+            }
+            default -> {
+                int number = Integer.parseInt(e.getActionCommand());
+                for(GoLController c : instances){
+                    c.setPlacingFigure(true);
+                }
+                model.updateRecentFigures(model.getPreMadeFigures(number));
+                mainView.updateRecentFiguresMenu(model.getRecentFigures(), this);
+                calculateCenter();
+            }
+        }
+    }
 
-        newWindow.addActionListener(e -> {
-            JInternalFrame internalFrame = new GoLController().view.getFrame();
-            desktopPane.add(internalFrame);
-            internalFrame.setVisible(true);
-        });
-        menu.add(newWindow);
-        menuBar.add(menu);
-        setJMenuBar(menuBar);
-        setVisible(true);
+    public void update(){
+        int number = 1;
+        for(GoLController c : instances){
+            c.view.setNewTitle(number++);
+        }
     }
 
     public static void main(String[] args) {
-        new GoLMainWindow();
+        new GoLMainController();
     }
 
     @Override
