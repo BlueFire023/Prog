@@ -41,7 +41,7 @@ public class GoLController extends GoLAdapter {
     public GoLController(GoLMainController mainController, GoLMainModel mainModel) {
         this.mainModel = mainModel;
         this.mainController = mainController;
-        view = new GoLView(model.getCanvas());
+        view = new GoLView(model);
         view.setListeners(this, this, this, this, this, this);
         view.updateCurrentMode(activeMode.toString());
         refreshCanvas();
@@ -212,8 +212,7 @@ public class GoLController extends GoLAdapter {
 
     /**
      * Zeigt Vorschau der Figur.
-     *
-     * */
+     */
     private void showPreview() {
         if (placingFigure) {
             for (Point p : lastCells) {
@@ -263,6 +262,7 @@ public class GoLController extends GoLAdapter {
         int posOnCanvasY = (int) (pos.y * scaleY);
         return new Point(posOnCanvasX, posOnCanvasY);
     }
+
     /**
      * Lässt die Figuren Rotieren.
      *
@@ -384,7 +384,6 @@ public class GoLController extends GoLAdapter {
             case "size" -> {
                 model.setCanvas(new BufferedImage(view.getNewWidth(), view.getNewHeight(), BufferedImage.TYPE_INT_RGB));
                 view.disposeSetSizeFrame();
-                view.updateCanvasObject(model.getCanvas());
                 clearCanvas();
             }
             case "acc" -> {
@@ -498,7 +497,8 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     *Stellt fest, ob die Maustaste gedrückt wurde und setzt ein je nach Modus ein Pixel oder eine figur
+     * Stellt fest, ob die Maustaste gedrückt wurde und setzt ein je nach Modus ein Pixel oder eine figur
+     *
      * @param e the event to be processed
      */
     @Override
@@ -558,5 +558,16 @@ public class GoLController extends GoLAdapter {
     public void mouseMoved(MouseEvent e) {
         mousePos = calculateMousePosition(e.getPoint());
         showPreview();
+    }
+
+    /**
+     * Setzt aktuelle Fenster Nummer
+     *
+     * @param number
+     */
+
+    public void setCurrentWindowNumber(int number) {
+        model.setCurrentWindowNumber(number);
+        view.setNewTitle();
     }
 }

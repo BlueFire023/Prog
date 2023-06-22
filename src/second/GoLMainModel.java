@@ -80,7 +80,9 @@ public class GoLMainModel {
      *
      * @return
      */
-    public ArrayList<GoLPrefab> getRecentFigures() {return recentFigures;}
+    public ArrayList<GoLPrefab> getRecentFigures() {
+        return recentFigures;
+    }
 
     /**
      * Gibt den Mittelpunkt zurück

@@ -5,7 +5,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.InternalFrameListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 import java.util.Hashtable;
 
 /**
@@ -14,7 +13,6 @@ import java.util.Hashtable;
  */
 
 public class GoLView extends JPanel {
-    private BufferedImage canvas;
     private final JTextField widthTextArea;
     private final JTextField heightTextArea;
     private final JLabel aliveCellColorTag = new JLabel(" Lebende Zellen:");
@@ -47,15 +45,16 @@ public class GoLView extends JPanel {
     /**
      * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      *
-     * @param canvas
+     * @param model
      */
-    public GoLView(BufferedImage canvas) {
-        this.canvas = canvas;
+    public GoLView(GoLModel model) {
 
-        widthTextArea = new JTextField(String.valueOf(canvas.getTileWidth()));
+        this.model = model;
+
+        widthTextArea = new JTextField(String.valueOf(model.getCanvas().getTileWidth()));
         widthTextArea.setColumns(7);
 
-        heightTextArea = new JTextField(String.valueOf(canvas.getTileHeight()));
+        heightTextArea = new JTextField(String.valueOf(model.getCanvas().getTileHeight()));
         heightTextArea.setColumns(7);
 
         shapesMenu.add(frameButton);
@@ -141,10 +140,10 @@ public class GoLView extends JPanel {
         setSizeFrame.setTitle("Auflösung");
         setSizeFrame.setSize(new Dimension(250, 200));
         setSizeFrame.setLayout(new GridLayout(3, 1));
-        setSizeFrame.add(applyPanel);
         setSizeFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setSizeFrame.add(heightPanel);
         setSizeFrame.add(widthPanel);
+        setSizeFrame.add(applyPanel);
 
         widthLabelLayout.add(widthLabel);
         widthPanelLayout.add(widthTextArea);
@@ -209,6 +208,7 @@ public class GoLView extends JPanel {
      * Canvas Größe wird aktualisiert.
      */
     public void updateCanvasSize() {
+        setSizeFrame.setTitle("Auflösung " + model.getCurrentWindowNumber());
         setSizeFrame.setVisible(true);
     }
 
@@ -226,18 +226,28 @@ public class GoLView extends JPanel {
      * @param dColor
      */
     public void updateCellColor(Color aColor, Color dColor) {
+        setColorFrame.setTitle("Farben " + model.getCurrentWindowNumber());
         aliveCellColorDisplay.setBackground(aColor);
         deadCellColorDisplay.setBackground(dColor);
         setColorFrame.setVisible(true);
     }
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Schieberegler wird aktualisiert
      *
-     * @param canvas
+     * @param i
      */
-    public void updateCanvasObject(BufferedImage canvas) {
-        this.canvas = canvas;
+    public void updateSlider(int i) {
+        speedSlider.setValue(i);
+    }
+
+    /**
+     * Fügt den InternalFrameListener hinzu
+     *
+     * @param ifl
+     */
+    public void addIFL(InternalFrameListener ifl) {
+        frame.addInternalFrameListener(ifl);
     }
 
     /**
@@ -247,7 +257,7 @@ public class GoLView extends JPanel {
      */
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(canvas, 0, 0, getWidth(), getHeight(), null);
+        g.drawImage(model.getCanvas(), 0, 0, getWidth(), getHeight(), null);
         repaint();
     }
 
@@ -285,63 +295,5 @@ public class GoLView extends JPanel {
      */
     public JInternalFrame getFrame() {
         return frame;
-    }
-
-    /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     *
-     * @param number
-     */
-    public void setNewTitle(int number) {
-        frame.setTitle("Game of Life " + number);
-    }
-
-    /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     *
-     * @param i
-     */
-    public void updateSlider(int i) {
-        speedSlider.setValue(i);
-    }
-
-    /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     *
-     * @param mode
-     */
-    public void updateCurrentMode(String mode) {
-        modeMenu.removeAll();
-        modeMenu.add(runButton);
-        modeMenu.add(paintButton);
-        modeMenu.add(setButton);
-        modeMenu.add(lineButton);
-        switch (mode) {
-            case "RUNNING" -> {
-                modeMenu.remove(runButton);
-                modeMenu.setText("Laufen");
-            }
-            case "SET" -> {
-                modeMenu.remove(setButton);
-                modeMenu.setText("Setzen");
-            }
-            case "PAINTING" -> {
-                modeMenu.remove(paintButton);
-                modeMenu.setText("Malen");
-            }
-            case "LINE" -> {
-                modeMenu.remove(lineButton);
-                modeMenu.setText("Linien");
-            }
-        }
-    }
-
-    /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     *
-     * @param ifl
-     */
-    public void addIFL(InternalFrameListener ifl) {
-        frame.addInternalFrameListener(ifl);
     }
 }

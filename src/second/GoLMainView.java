@@ -87,60 +87,9 @@ public class GoLMainView extends JFrame {
 
         hotKeyFrame.setSize(new Dimension(250, 250));
         hotKeyFrame.setResizable(false);
-        hotKeyFrame.setLayout(new GridLayout(13, 2));
+        hotKeyFrame.setLayout(new GridLayout(11, 2));
 
-        JPanel runLabelPanel = new JPanel(new GridBagLayout());
-        runLabelPanel.add(new JLabel("S"));
-        JPanel runPanel = new JPanel(new GridBagLayout());
-        runPanel.add(new JLabel("Laufen"));
-        hotKeyFrame.add(runPanel);
-        hotKeyFrame.add(runLabelPanel);
-
-        JPanel drawLabelPanel = new JPanel(new GridBagLayout());
-        drawLabelPanel.add(new JLabel("D"));
-        JPanel drawPanel = new JPanel(new GridBagLayout());
-        drawPanel.add(new JLabel("Malen"));
-
-        hotKeyFrame.add(drawPanel);
-        hotKeyFrame.add(drawLabelPanel);
-
-        JPanel setLabelPanel = new JPanel(new GridBagLayout());
-        setLabelPanel.add(new JLabel("P"));
-        JPanel setPanel = new JPanel(new GridBagLayout());
-        setPanel.add(new JLabel("Setzen"));
-        hotKeyFrame.add(setPanel);
-        hotKeyFrame.add(setLabelPanel);
-
-        JPanel lineLabelPanel = new JPanel(new GridBagLayout());
-        lineLabelPanel.add(new JLabel("L"));
-        JPanel linePanel = new JPanel(new GridBagLayout());
-        linePanel.add(new JLabel("Linien"));
-        hotKeyFrame.add(linePanel);
-        hotKeyFrame.add(lineLabelPanel);
-
-        JPanel sizeLabelPanel = new JPanel(new GridBagLayout());
-        sizeLabelPanel.add(new JLabel("A"));
-        JPanel sizePanel = new JPanel(new GridBagLayout());
-        sizePanel.add(new JLabel("Auflösung"));
-        hotKeyFrame.add(sizePanel);
-        hotKeyFrame.add(sizeLabelPanel);
-
-        JPanel clearLabelPanel = new JPanel(new GridBagLayout());
-        clearLabelPanel.add(new JLabel("R"));
-        JPanel clearPanel = new JPanel(new GridBagLayout());
-        clearPanel.add(new JLabel("Löschen"));
-        hotKeyFrame.add(clearPanel);
-        hotKeyFrame.add(clearLabelPanel);
-
-        JPanel colorLabelPanel = new JPanel(new GridBagLayout());
-        colorLabelPanel.add(new JLabel("C"));
-        JPanel colorPanel = new JPanel(new GridBagLayout());
-        colorPanel.add(new JLabel("Farben"));
-        hotKeyFrame.add(colorPanel);
-        hotKeyFrame.add(colorLabelPanel);
-
-        JPanel windowLabelPanel = new JPanel(new GridBagLayout());
-        windowLabelPanel.add(new JLabel("F"));
+        /*JPanel windowLabelPanel = new JPanel(new GridBagLayout());
         JPanel windowPanel = new JPanel(new GridBagLayout());
         windowPanel.add(new JLabel("Neues Fenster"));
         hotKeyFrame.add(windowPanel);
@@ -195,7 +144,7 @@ public class GoLMainView extends JFrame {
             j.addActionListener(al);
             j.setActionCommand(String.valueOf(index++));
         }
-        desktopPane.addKeyListener(kl);
+        addKeyListener(kl);
     }
 
     public void addInternalFrame(JInternalFrame jif, Point randomPos) {

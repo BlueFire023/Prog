@@ -5,7 +5,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.InternalFrameEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
@@ -86,64 +85,23 @@ public class GoLMainController extends GoLAdapter {
             }
         }
     }
-    private void addNewWindow(){
-        GoLController controller = new GoLController(this, mainModel);
-        JInternalFrame internalFrame = controller.view.getFrame();
-        instances.add(controller);
-        Point frameSize = new Point(mainView.getWidth(), mainView.getHeight());
-        mainView.addInternalFrame(internalFrame, new Point(random.nextInt(0, frameSize.x - internalFrame.getWidth()), random.nextInt(0, frameSize.y - internalFrame.getHeight())));
-        update();
-    }
 
-    public void update() {
-        int number = 1;
-        for (GoLController c : instances) {
-            c.view.addIFL(this);
-            c.view.setNewTitle(number++);
-        }
-    }
-
-    public static void main(String[] args) {
-        new GoLMainController();
-    }
-
+    /**
+     * Slider Wert wird geändert.
+     *
+     * @param e a ChangeEvent object
+     */
     @Override
     public void stateChanged(ChangeEvent e) {
         for (GoLController c : instances) {
             c.view.updateSlider(mainView.getMainSliderstat());
         }
-        update();
+        updateWindowNumbers();
     }
 
     @Override
     public void internalFrameClosing(InternalFrameEvent e) {
         instances.removeIf(g -> e.getSource().equals(g.view.getFrame()));
-        update();
-    }
-
-    /**
-     * Berechnet die Mitte der Figur.
-     */
-    public void calculateCenter() {
-        Point center = new Point();
-        for (Point p : mainModel.getCurrentFigure().cells()) {
-            center.x = Math.max(center.x, p.x);
-            center.y = Math.max(center.y, p.y);
-        }
-        center.x /= 2;
-        center.y /= 2;
-        mainModel.setCenter(center);
-    }
-
-    public void updateRecentFiguresMenu(ArrayList<GoLPrefab> recent) {
-        mainView.updateRecentFiguresMenu(recent, this);
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-        switch (e.getKeyCode()){
-            case KeyEvent.VK_H -> mainView.showHotKeys();
-            case KeyEvent.VK_F -> addNewWindow();
-        }
+        updateWindowNumbers();
     }
 }

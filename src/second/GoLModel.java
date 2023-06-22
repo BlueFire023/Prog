@@ -14,9 +14,6 @@ public class GoLModel {
 
     private BufferedImage canvas = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
     private final Set<Point> aliveCells = new HashSet<>();
-    private Color aliveCellColor = Color.BLACK;
-    private Color deadCellColor = Color.WHITE;
-    private Color invertedColor = Color.BLACK;
 
     /**
      * Setzt die Farbe der Zelle im Bild "canvas" abhängig davon, ob sie lebendig sind oder nicht
@@ -152,11 +149,11 @@ public class GoLModel {
     }
 
     /**
-     * Setzt die invertierte Farbe
+     * Gibt aktuelle Fenster Nummer zurück.
      *
-     * @param invertedColor
+     * @return
      */
-    public void setInvertedColor(Color invertedColor) {
-        this.invertedColor = invertedColor;
+    public int getCurrentWindowNumber() {
+        return currentWindowNumber;
     }
 }
