@@ -11,12 +11,14 @@ import java.util.Set;
  */
 
 public class GoLModel {
+    private final Set<Point> aliveCells = new HashSet<>();
     private int currentWindowNumber;
     private Color aliveCellColor = Color.BLACK;
     private Color deadCellColor = Color.WHITE;
     private Color invertedColor = Color.BLACK;
     private BufferedImage canvas = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
-    private final Set<Point> aliveCells = new HashSet<>();
+    private Mode lastMode = Mode.PAINTING;
+    private Mode activeMode = Mode.PAINTING;
 
     /**
      * Setzt die Farbe der Zelle im Bild "canvas" abhängig davon, ob sie lebendig sind oder nicht
@@ -45,15 +47,6 @@ public class GoLModel {
     }
 
     /**
-     * Setzt das Bild "canvas"
-     *
-     * @param canvas
-     */
-    public void setCanvas(BufferedImage canvas) {
-        this.canvas = canvas;
-    }
-
-    /**
      * Setzt die Farbe eines bestimmten Punktes im Bild "canvas"
      *
      * @param pos
@@ -72,6 +65,14 @@ public class GoLModel {
         return canvas;
     }
 
+    /**
+     * Setzt das Bild "canvas"
+     *
+     * @param canvas
+     */
+    public void setCanvas(BufferedImage canvas) {
+        this.canvas = canvas;
+    }
 
     /**
      * Leert die Menge der lebendigen Zellen
@@ -90,15 +91,6 @@ public class GoLModel {
     }
 
     /**
-     * Setzt die Farbe der lebendigen Zellen
-     *
-     * @param aliveCellColor
-     */
-    public void setAliveCellColor(Color aliveCellColor) {
-        this.aliveCellColor = aliveCellColor;
-    }
-
-    /**
      * Gibt die Farbe der lebendigen Zellen zurück
      *
      * @return Farbe für lebende Zellen
@@ -108,12 +100,12 @@ public class GoLModel {
     }
 
     /**
-     * Setzt die Farbe der toten Zellen
+     * Setzt die Farbe der lebendigen Zellen
      *
-     * @param deadCellColor
+     * @param aliveCellColor
      */
-    public void setDeadCellColor(Color deadCellColor) {
-        this.deadCellColor = deadCellColor;
+    public void setAliveCellColor(Color aliveCellColor) {
+        this.aliveCellColor = aliveCellColor;
     }
 
     /**
@@ -123,6 +115,15 @@ public class GoLModel {
      */
     public Color getDeadCellColor() {
         return deadCellColor;
+    }
+
+    /**
+     * Setzt die Farbe der toten Zellen
+     *
+     * @param deadCellColor
+     */
+    public void setDeadCellColor(Color deadCellColor) {
+        this.deadCellColor = deadCellColor;
     }
 
     /**
@@ -144,6 +145,15 @@ public class GoLModel {
     }
 
     /**
+     * Gibt die invertierte Farbe zurück
+     *
+     * @return invertedColor
+     */
+    public Color getInvertedColor() {
+        return invertedColor;
+    }
+
+    /**
      * Setzt die invertierte Farbe
      *
      * @param invertedColor
@@ -153,12 +163,12 @@ public class GoLModel {
     }
 
     /**
-     * Gibt die invertierte Farbe zurück
+     * Gibt aktuelle Fenster Nummer zurück.
      *
-     * @return invertedColor
+     * @return currentWindowNumber
      */
-    public Color getInvertedColor() {
-        return invertedColor;
+    public int getCurrentWindowNumber() {
+        return currentWindowNumber;
     }
 
     /**
@@ -171,11 +181,55 @@ public class GoLModel {
     }
 
     /**
-     * Gibt aktuelle Fenster Nummer zurück.
+     * Gibt den Letzten verwendeten Modus
      *
-     * @return
+     * @return lastMode
      */
-    public int getCurrentWindowNumber() {
-        return currentWindowNumber;
+    public Mode getLastMode() {
+        return lastMode;
+    }
+
+    /**
+     * Setzt den Letzten verwendeten Modus
+     *
+     * @param lastMode
+     */
+    public void setLastMode(Mode lastMode) {
+        this.lastMode = lastMode;
+    }
+
+    /**
+     * Gibt den aktiven Modus
+     *
+     * @return activeMode
+     */
+    public Mode getActiveMode() {
+        return activeMode;
+    }
+
+    /**
+     * Setzt den aktiven Modus
+     *
+     * @param activeMode
+     */
+    public void setActiveMode(Mode activeMode) {
+        this.activeMode = activeMode;
+    }
+
+    /**
+     * Gibt zurück, ob der aktive Modus mit dem übergebenen Modus übereinstimmt
+     *
+     * @param mode
+     * @return true, wenn der aktive Modus mit dem übergebenen Modus übereinstimmt
+     */
+    public boolean isActiveMode(Mode mode) {
+        return activeMode == mode;
+    }
+
+    /**
+     * Verschiedene Modi
+     */
+    public enum Mode {
+        RUNNING, PAINTING, SET, LINE
     }
 }

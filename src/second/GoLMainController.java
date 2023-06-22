@@ -183,7 +183,6 @@ public class GoLMainController extends GoLAdapter {
      * @param e an {@code InternalFrameEvent} with information about the
      *          {@code JInteralFrame} that originated the event
      */
-
     @Override
     public void internalFrameClosing(InternalFrameEvent e) {
         for (GoLController c : instances) {

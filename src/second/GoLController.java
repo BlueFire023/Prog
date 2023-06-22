@@ -26,10 +26,9 @@ public class GoLController extends GoLAdapter {
     private final GoLMainController mainController;
     private final Set<Point> lastCells = new HashSet<>();
     private final JFileChooser fileChooser = new JFileChooser();
+    private final GoLView view;
     private boolean painting, mouseHeld, placingFigure;
     private Point prevPos = new Point(), mousePos = new Point();
-    private Mode activeMode = Mode.PAINTING;
-    private final GoLView view;
 
     /**
      * Konstruktor der Controller Klasse. Wird für jedes neue JInternalFrame aufgerufen.
@@ -42,7 +41,7 @@ public class GoLController extends GoLAdapter {
         this.mainController = mainController;
         view = new GoLView(model);
         view.setListeners(this, this, this, this, this, this);
-        view.updateCurrentMode(activeMode.toString());
+        view.updateCurrentMode();
         refreshCanvas();
     }
 
@@ -151,10 +150,10 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     * Torus-Eigenschaften wird erstellt.
+     * Torus Welt berechnung.
      *
      * @param pos
-     * @return
+     * @return der gewrappte Punkt
      */
     public Point calculateWrap(Point pos) {
         return new Point(Math.floorMod(pos.x, model.getCanvasWidth()), Math.floorMod(pos.y, model.getCanvasHeight()));
@@ -166,7 +165,8 @@ public class GoLController extends GoLAdapter {
     public void clearCanvas() {
         model.clearAliveCells();
         refreshCanvas();
-        activeMode = activeMode != Mode.RUNNING ? activeMode : Mode.PAINTING;
+        model.setActiveMode(model.isActiveMode(GoLModel.Mode.RUNNING) ? model.getLastMode() : model.getActiveMode());
+        mainController.updateAllRunButton();
     }
 
     /**
@@ -198,7 +198,6 @@ public class GoLController extends GoLAdapter {
                 mainController.calculateCenter();
                 refreshCanvas();
                 placingFigure = true;
-                activeMode = Mode.SET;
                 mainController.updateRecentFiguresMenu(mainModel.getRecentFigures());
                 mainController.updateAllRunButton();
                 JOptionPane.showMessageDialog(null, "Das Objekt wurde erfolgreich gespeichert.");
@@ -224,7 +223,7 @@ public class GoLController extends GoLAdapter {
                 model.setCanvasRGB(calculateWrap(calculatedPoint), model.getInvertedColor());
                 lastCells.add(calculateWrap(calculatedPoint));
             }
-        } else if (activeMode == Mode.LINE && mouseHeld) {
+        } else if (model.isActiveMode(GoLModel.Mode.LINE) && mouseHeld) {
             for (Point p : lastCells) {
                 model.setCanvasRGB(calculateWrap(p), model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
             }
@@ -243,17 +242,17 @@ public class GoLController extends GoLAdapter {
      * Invertiert die Farbe.
      *
      * @param initialColor
-     * @return
+     * @return negative Color
      */
-    private Color invertColor(Color initalColor) {
-        return new Color(255 - initalColor.getRed(), 255 - initalColor.getGreen(), 255 - initalColor.getBlue());
+    private Color invertColor(Color initialColor) {
+        return new Color(255 - initialColor.getRed(), 255 - initialColor.getGreen(), 255 - initialColor.getBlue());
     }
 
     /**
      * Berechnet die Position der Maus.
      *
      * @param pos
-     * @return
+     * @return projected MousePosition
      */
     private Point calculateMousePosition(Point pos) {
         double scaleX = (double) model.getCanvasWidth() / view.getWidth();
@@ -331,31 +330,22 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     * Speichert den Modus.
-     */
-    private enum Mode {
-        RUNNING, PAINTING, SET, LINE
-    }
-
-    /**
      * Platziert die Figuren.
      *
      * @param placingFigure
      */
     public void setPlacingFigure(boolean placingFigure) {
         this.placingFigure = placingFigure;
-        activeMode = GoLController.Mode.SET;
-        view.updateCurrentMode(activeMode.toString());
+        view.updateCurrentMode();
     }
 
     /**
      * Ein neuer Thread wird gestartet und das Game of Life fängt an zu laufen
      */
-    @SuppressWarnings("BusyWait")
     public void startRunning() {
-        activeMode = Mode.RUNNING;
+        model.setActiveMode(GoLModel.Mode.RUNNING);
         Runnable runningTask = () -> {
-            while (activeMode == Mode.RUNNING) {
+            while (model.isActiveMode(GoLModel.Mode.RUNNING)) {
                 try {
                     calculateNextGeneration();
                     Thread.sleep(1000 / view.getSliderstat());
@@ -366,7 +356,7 @@ public class GoLController extends GoLAdapter {
         };
         Thread runningThread = new Thread(runningTask);
         runningThread.start();
-        view.updateCurrentMode(activeMode.toString());
+        view.updateCurrentMode();
     }
 
     /**
@@ -378,15 +368,14 @@ public class GoLController extends GoLAdapter {
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case "Löschen" -> clearCanvas();
-            case "Auflösung" -> {
-                activeMode = Mode.PAINTING;
-                view.updateCanvasSize();
-            }
+            case "Auflösung" -> view.updateCanvasSize();
             case "Farben" -> view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
             case "size" -> {
+                clearCanvas();
                 model.setCanvas(new BufferedImage(view.getNewWidth(), view.getNewHeight(), BufferedImage.TYPE_INT_RGB));
                 view.disposeSetSizeFrame();
-                clearCanvas();
+                model.setActiveMode(model.isActiveMode(GoLModel.Mode.RUNNING) ? model.getLastMode() : model.getActiveMode());
+                mainController.updateAllRunButton();
             }
             case "acc" -> {
                 Color newColor = JColorChooser.showDialog(view, "Wähle eine Farbe", model.getAliveCellColor());
@@ -407,23 +396,23 @@ public class GoLController extends GoLAdapter {
             }
             case "Speichern" -> saveFigure();
             case "Laufen" -> {
+                model.setLastMode(model.getActiveMode());
                 startRunning();
                 mainController.updateAllRunButton();
             }
             case "Malen" -> {
-
                 placingFigure = false;
-                activeMode = Mode.PAINTING;
+                model.setActiveMode(GoLModel.Mode.PAINTING);
                 mainController.updateAllRunButton();
             }
             case "Setzen" -> {
                 placingFigure = false;
-                activeMode = Mode.SET;
+                model.setActiveMode(GoLModel.Mode.SET);
                 mainController.updateAllRunButton();
             }
             case "Linien" -> {
                 placingFigure = false;
-                activeMode = Mode.LINE;
+                model.setActiveMode(GoLModel.Mode.LINE);
                 mainController.updateAllRunButton();
             }
             case "Kreuz" -> {
@@ -450,7 +439,7 @@ public class GoLController extends GoLAdapter {
             }
         }
         refreshCanvas();
-        view.updateCurrentMode(activeMode.toString());
+        view.updateCurrentMode();
     }
 
     /**
@@ -462,28 +451,36 @@ public class GoLController extends GoLAdapter {
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_C -> view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
-            case KeyEvent.VK_S -> startRunning();
+            case KeyEvent.VK_S -> {
+                model.setLastMode(model.getActiveMode());
+                startRunning();
+                mainController.updateAllRunButton();
+            }
             case KeyEvent.VK_L -> {
                 placingFigure = false;
-                activeMode = Mode.LINE;
+                model.setActiveMode(GoLModel.Mode.LINE);
+                mainController.updateAllRunButton();
             }
             case KeyEvent.VK_R -> clearCanvas();
             case KeyEvent.VK_A -> {
                 placingFigure = false;
-                activeMode = Mode.PAINTING;
+                model.setActiveMode(GoLModel.Mode.PAINTING);
                 view.updateCanvasSize();
+                mainController.updateAllRunButton();
             }
             case KeyEvent.VK_D -> {
                 placingFigure = false;
-                activeMode = Mode.PAINTING;
+                model.setActiveMode(GoLModel.Mode.PAINTING);
+                mainController.updateAllRunButton();
             }
             case KeyEvent.VK_P -> {
                 placingFigure = false;
-                activeMode = Mode.SET;
+                model.setActiveMode(GoLModel.Mode.SET);
+                mainController.updateAllRunButton();
             }
         }
-        view.updateCurrentMode(activeMode.toString());
-        if (activeMode != Mode.RUNNING && e.getKeyCode() == KeyEvent.VK_SPACE) {
+        view.updateCurrentMode();
+        if (!model.isActiveMode(GoLModel.Mode.RUNNING) && e.getKeyCode() == KeyEvent.VK_SPACE) {
             calculateNextGeneration();
         } else if (placingFigure && (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN)) {
             flip(e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT);
@@ -511,20 +508,44 @@ public class GoLController extends GoLAdapter {
      * @param e the event to be processed
      */
     @Override
-    public synchronized void mousePressed(MouseEvent e) {
+    public void mousePressed(MouseEvent e) {
         prevPos = calculateMousePosition(e.getPoint());
         painting = e.getButton() == 1;
         mouseHeld = true;
         if (placingFigure) {
             mainModel.getCurrentFigure().cells().forEach(p -> model.setCell(calculateWrap(new Point(p.x + prevPos.x - mainModel.getCenter().x, p.y + prevPos.y - mainModel.getCenter().y)), painting));
-        } else if (activeMode != Mode.LINE) {
+        } else if (!model.isActiveMode(GoLModel.Mode.LINE)) {
             paintPixel(mousePos, false);
         }
     }
 
+    /**
+     * Aktualisiert den Canvas wenn man den Frame verlässt
+     *
+     * @param e the event to be processed
+     */
     @Override
     public void mouseExited(MouseEvent e) {
         refreshCanvas();
+    }
+
+    /**
+     * verhindert das Laden von zu großen Figuren
+     *
+     * @param e the event to be processed
+     */
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        if (mainModel.getRecentFigures().size() == 0) {
+            return;
+        }
+        for (Point p : mainModel.getCurrentFigure().cells()) {
+            if (p.x > model.getCanvasWidth() || p.y > model.getCanvasHeight()) {
+                placingFigure = false;
+                model.setActiveMode(model.isActiveMode(GoLModel.Mode.RUNNING) ? model.getLastMode() : model.getActiveMode());
+                mainController.updateAllRunButton();
+            }
+        }
     }
 
     /**
@@ -535,7 +556,7 @@ public class GoLController extends GoLAdapter {
     @Override
     public void mouseReleased(MouseEvent e) {
         mouseHeld = false;
-        if (activeMode == Mode.LINE && !placingFigure) {
+        if (model.isActiveMode(GoLModel.Mode.LINE) && !placingFigure) {
             mousePos = calculateMousePosition(e.getPoint());
             drawLineBresenham(mousePos, false);
         }
@@ -549,7 +570,7 @@ public class GoLController extends GoLAdapter {
     @Override
     public void mouseDragged(MouseEvent e) {
         mousePos = calculateMousePosition(e.getPoint());
-        if (activeMode == Mode.PAINTING && !placingFigure) {
+        if (model.isActiveMode(GoLModel.Mode.PAINTING) && !placingFigure) {
             drawLineBresenham(mousePos, false);
             prevPos = mousePos;
         } else {
@@ -581,11 +602,11 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     * stoppt das Laufen
+     * Stoppt das Laufen
      */
     public void stopRunning() {
-        activeMode = Mode.PAINTING;
-        view.updateCurrentMode(activeMode.toString());
+        model.setActiveMode(model.getLastMode());
+        view.updateCurrentMode();
     }
 
     /**
@@ -600,9 +621,9 @@ public class GoLController extends GoLAdapter {
     /**
      * Gibt den aktuellen Modus zurück
      *
-     * @return
+     * @return activeMode
      */
     public String getActiveMode() {
-        return activeMode.toString();
+        return model.getActiveMode().toString();
     }
 }

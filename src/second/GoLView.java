@@ -11,7 +11,6 @@ import java.util.Hashtable;
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
  * @version 1, 15/06/2023
  */
-
 public class GoLView extends JPanel {
     private final JTextField widthTextArea;
     private final JTextField heightTextArea;
@@ -48,7 +47,6 @@ public class GoLView extends JPanel {
      * @param model
      */
     public GoLView(GoLModel model) {
-
         this.model = model;
 
         widthTextArea = new JTextField(String.valueOf(model.getCanvas().getTileWidth()));
@@ -214,13 +212,13 @@ public class GoLView extends JPanel {
      *
      * @param mode
      */
-    public void updateCurrentMode(String mode) {
+    public void updateCurrentMode() {
         modeMenu.removeAll();
         modeMenu.add(runButton);
         modeMenu.add(paintButton);
         modeMenu.add(setButton);
         modeMenu.add(lineButton);
-        switch (mode) {
+        switch (model.getActiveMode().toString()) {
             case "RUNNING" -> {
                 modeMenu.remove(runButton);
                 modeMenu.setText("Laufen");
@@ -323,7 +321,7 @@ public class GoLView extends JPanel {
     /**
      * Breite wird aktualisiert
      *
-     * @return
+     * @return Wert aus Textarea
      */
     public int getNewWidth() {
         return Integer.parseInt(widthTextArea.getText());
@@ -332,7 +330,7 @@ public class GoLView extends JPanel {
     /**
      * Höhe wird aktualisiert
      *
-     * @return
+     * @return Wert aus Textarea
      */
     public int getNewHeight() {
         return Integer.parseInt(heightTextArea.getText());
@@ -341,7 +339,7 @@ public class GoLView extends JPanel {
     /**
      * Status des Schiebereglers wird aktualisiert
      *
-     * @return
+     * @return slider Value
      */
     public int getSliderstat() {
         return speedSlider.getValue();
@@ -350,7 +348,7 @@ public class GoLView extends JPanel {
     /**
      * JInternalFrame wird aktualisiert.
      *
-     * @return
+     * @return Frame
      */
     public JInternalFrame getFrame() {
         return frame;

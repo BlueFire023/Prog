@@ -36,7 +36,7 @@ public class GoLMainModel {
      * Gibt eine vordefinierte Figur an einer bestimmten Position zurück
      *
      * @param position
-     * @return
+     * @return prefab
      */
     public GoLPrefab getPreMadeFigures(int position) {
         return preMadeFigures.getFigure(position);
@@ -45,7 +45,7 @@ public class GoLMainModel {
     /**
      * Gibt die vordefinierten Figuren zurück
      *
-     * @return
+     * @return figures
      */
     public GoLFigures getPreMadeFigures() {
         return preMadeFigures;
@@ -79,7 +79,7 @@ public class GoLMainModel {
     /**
      * Gibt die Liste der aktuellen Figuren zurück
      *
-     * @return
+     * @return recentFigures
      */
     public ArrayList<GoLPrefab> getRecentFigures() {
         return recentFigures;
@@ -88,7 +88,7 @@ public class GoLMainModel {
     /**
      * Gibt den Mittelpunkt zurück
      *
-     * @return
+     * @return Point
      */
     public Point getCenter() {
         return center;
@@ -106,7 +106,7 @@ public class GoLMainModel {
     /**
      * Gibt die Größe des Pinsels zurück
      *
-     * @return
+     * @return BrushSize
      */
     public int getBrushSize() {
         return brushSize;
