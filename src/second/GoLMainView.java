@@ -36,6 +36,9 @@ public class GoLMainView extends JFrame {
     private final JMenuItem load = new JMenuItem("Laden");
     private final ArrayList<JMenuItem> figures = new ArrayList<>();
 
+    /**
+     * Konstruktor der MainView Klasse.
+     */
     public GoLMainView() {
         desktopPane.setDesktopManager(new DefaultDesktopManager());
 

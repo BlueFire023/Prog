@@ -44,7 +44,7 @@ public class GoLView extends JPanel {
     private final GoLModel model;
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Konstruktor der View Klasse.
      *
      * @param model
      */
@@ -247,14 +247,7 @@ public class GoLView extends JPanel {
     }
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     */
-    public void disposeSetSizeFrame() {
-        setSizeFrame.dispose();
-    }
-
-    /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Farbe der Zellen wird aktualisiert.
      *
      * @param aColor
      * @param dColor
@@ -339,7 +332,7 @@ public class GoLView extends JPanel {
     }
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * JInternalFrame wird aktualisiert.
      *
      * @return
      */
