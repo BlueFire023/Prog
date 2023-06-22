@@ -8,16 +8,16 @@ import java.util.Set;
 
 /**
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
- * @version 1, 15/06/2023
+ * @version 1, 22/06/2023
  */
 public class GoLModel {
-    private final GoLFigures preMadeFigures = new GoLFigures();
+
     private BufferedImage canvas = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
     private final Set<Point> aliveCells = new HashSet<>();
     private Color aliveCellColor = Color.BLACK;
     private Color deadCellColor = Color.WHITE;
     private Color invertedColor = Color.BLACK;
-    private final ArrayList<GoLPrefab> recentFigures = new ArrayList<>();
+
     private Point center;
     private int brushSize = 1;
 
@@ -168,17 +168,13 @@ public class GoLModel {
      *
      * @return currentFigure
      */
-    public GoLPrefab getCurrentFigure() {
-        return recentFigures.get(recentFigures.size() - 1);
-    }
+
 
     /**
      * Setzt die aktuelle Figur
      * @param figure GoLPrefab
      */
-    public void setCurrentFigure(GoLPrefab figure) {
-        recentFigures.add(figure);
-    }
+
 
     /**
      * Gibt eine vordefinierte Figur an einer bestimmten Position zurück
@@ -186,9 +182,7 @@ public class GoLModel {
      * @param position
      * @return
      */
-    public GoLPrefab getPreMadeFigures(int position) {
-        return preMadeFigures.getFigure(position);
-    }
+
 
     /**
      * Gibt den Mittelpunkt zurück
@@ -213,9 +207,6 @@ public class GoLModel {
      *
      * @return
      */
-    public GoLFigures getPreMadeFigures() {
-        return preMadeFigures;
-    }
 
     /**
      * Gibt die Größe des Pinsels zurück
@@ -240,32 +231,19 @@ public class GoLModel {
      *
      * @return
      */
-    public ArrayList<GoLPrefab> getRecentFigures() {
-        return recentFigures;
-    }
+
 
     /**
      * Aktualisiert die Liste der aktuellen Figuren mit einer bestimmten Figur basierend auf dem Namen
      *
      * @param name
      */
-    public void updateRecentFigures(String name) {
-        for (GoLPrefab prefab : recentFigures) {
-            if (prefab.name().equals(name)) {
-                recentFigures.remove(prefab);
-                recentFigures.add(prefab);
-                break;
-            }
-        }
-    }
+
 
     /**
      * Aktualisiert die Liste der aktuellen Figuren mit einer bestimmten Figur
      *
      * @param figure
      */
-    public void updateRecentFigures(GoLPrefab figure) {
-        recentFigures.removeIf(prefab -> prefab.name().equals(figure.name()));
-        recentFigures.add(figure);
-    }
+
 }
