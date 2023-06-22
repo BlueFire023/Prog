@@ -7,7 +7,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -46,7 +48,7 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     *  Berechnet die Daten, um die nächste Generation darzustellen
+     * Berechnet die Daten, um die nächste Generation darzustellen
      */
     public synchronized void calculateNextGeneration() {
         Map<Point, Boolean> cellsToUpdate = new HashMap<>();
@@ -99,7 +101,7 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     *  Berechnet über den Bresenham Algorithmus die nötigen Daten, um eine Linie zu zeichnen
+     * Berechnet über den Bresenham Algorithmus die nötigen Daten, um eine Linie zu zeichnen
      *
      * @param curr
      * @param preview
@@ -127,7 +129,7 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     *  Führt die Berechnungen durch, um ein Pixel zu setzen
+     * Führt die Berechnungen durch, um ein Pixel zu setzen
      *
      * @param p
      * @param preview
@@ -160,7 +162,7 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     *  Der Canvas bereich wird "leergeräumt"
+     * Der Canvas bereich wird "leergeräumt".
      */
     public void clearCanvas() {
         model.clearAliveCells();
@@ -169,7 +171,7 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     *  Der Canvas wird aktualisiert, um eventuelle Änderungen anzuzeigen
+     * Der Canvas wird aktualisiert, um eventuelle Änderungen anzuzeigen
      */
     private void refreshCanvas() {
         for (int i = 0; i < model.getCanvasWidth(); i++) {
@@ -279,7 +281,7 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     *  Speichert den aktuellen Canvas als eine "Figur"
+     * Speichert den aktuellen Canvas als eine "Figur"
      */
     private void saveFigure() {
         if (!model.getAliveCells().isEmpty() && fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
@@ -518,6 +520,11 @@ public class GoLController extends GoLAdapter {
         } else if (activeMode != Mode.LINE) {
             paintPixel(mousePos, false);
         }
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        refreshCanvas();
     }
 
     /**

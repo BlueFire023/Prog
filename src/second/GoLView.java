@@ -6,7 +6,6 @@ import javax.swing.event.InternalFrameListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.Hashtable;
 
 /**
@@ -30,8 +29,9 @@ public class GoLView extends JPanel {
     private final JMenuItem crossButton = new JMenuItem("Kreuz");
     private final JMenuItem plusButton = new JMenuItem("Plus");
     private final JMenu sliderMenu = new JMenu("Geschwindigkeit");
+    private final JMenu saveMenu = new JMenu("Datei");
+    private final JMenuItem saveButton = new JMenuItem("Speichern");
     private final JFrame setSizeFrame = new JFrame();
-    private final ArrayList<JMenuItem> shapes = new ArrayList<>();
     private final JTextField widthTextArea;
     private final JTextField heightTextArea;
     private final JButton applySizeButton = new JButton("Apply");
@@ -81,8 +81,9 @@ public class GoLView extends JPanel {
         shapesMenu.add(crossButton);
         shapesMenu.add(plusButton);
         sliderMenu.add(speedSlider);
-
-        //Füge dem "extraMenu" die verschiedenen Optionen und Buttons hinzu und Füge es der "menuBar" hinzu
+        menuBar.add(shapesMenu);
+        saveMenu.add(saveButton);
+        menuBar.add(saveMenu);
         extraMenu.add(clearButton);
         extraMenu.add(setSizeButton);
         extraMenu.add(setColorButton);
@@ -164,6 +165,7 @@ public class GoLView extends JPanel {
         addMouseWheelListener(mwl);
         addMouseMotionListener(mml);
         addMouseListener(ml);
+        saveButton.addActionListener(al);
         clearButton.addActionListener(al);
         setSizeButton.addActionListener(al);
         applySizeButton.addActionListener(al);
@@ -181,11 +183,6 @@ public class GoLView extends JPanel {
         plusButton.addActionListener(al);
         plusButton.addMouseListener(ml);
         speedSlider.addChangeListener(cl);
-        int index = 0;
-        for (JMenuItem j : shapes) {
-            j.addActionListener(al);
-            j.setActionCommand(String.valueOf(index++));
-        }
     }
 
     public void updateCanvasSize() {

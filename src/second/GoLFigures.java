@@ -507,26 +507,42 @@ public class GoLFigures {
     }
 
     //Gibt die Figur an der angegebenen Position zurück
-    public GoLPrefab getFigure(int position) {return figures.get(position);}
+    public GoLPrefab getFigure(int position) {
+        return figures.get(position);
+    }
 
     //Gibt alle Figuren zurück
-    public ArrayList<GoLPrefab> getFigures() {return figures;}
+    public ArrayList<GoLPrefab> getFigures() {
+        return figures;
+    }
 
     //Gibt die Anzahl der statischen Figuren zurück
-    public int getStillLifesCount() {return stillLifesCount;}
+    public int getStillLifesCount() {
+        return stillLifesCount;
+    }
 
     //Gibt die Anzahl der Oszillator Figuren zurück
-    public int getOscillatorsCount() {return oscillatorsCount;}
+    public int getOscillatorsCount() {
+        return oscillatorsCount;
+    }
 
     //Gibt die Anzahl der Spaceship Figuren zurück
-    public int getSpaceshipsCount() {return spaceshipsCount;}
+    public int getSpaceshipsCount() {
+        return spaceshipsCount;
+    }
 
     //Gibt die Anzahl der Methuselah Figuren zurück
-    public int getMethuselahsCount() {return methuselahsCount;}
+    public int getMethuselahsCount() {
+        return methuselahsCount;
+    }
 
     //Gibt die Anzahl der Glider Gun Figuren zurück
-    public int getGgCount() {return ggCount;}
+    public int getGgCount() {
+        return ggCount;
+    }
 
     //Gibt die Anzahl der anderen Figuren zurück
-    public int getOtherCount() {return otherCount;}
+    public int getOtherCount() {
+        return otherCount;
+    }
 }

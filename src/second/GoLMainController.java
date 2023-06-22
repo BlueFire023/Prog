@@ -5,7 +5,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.InternalFrameEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -32,10 +33,11 @@ public class GoLMainController extends GoLAdapter {
                 JInternalFrame internalFrame = controller.view.getFrame();
                 instances.add(controller);
                 Point frameSize = new Point(mainView.getWidth(), mainView.getHeight());
-                mainView.addInternalFrame(internalFrame, new Point(random.nextInt(0,frameSize.x - internalFrame.getWidth()), random.nextInt(0,frameSize.y - internalFrame.getHeight())));
+                mainView.addInternalFrame(internalFrame, new Point(random.nextInt(0, frameSize.x - internalFrame.getWidth()), random.nextInt(0, frameSize.y - internalFrame.getHeight())));
                 update();
             }
             case "Hotkeys" -> mainView.showHotKeys();
+            case "Laden" -> loadSavedFigure();
             case "Alle Laufen" -> {
                 for (GoLController c : instances) {
                     c.startRunning();
