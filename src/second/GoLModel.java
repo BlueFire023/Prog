@@ -2,7 +2,6 @@ package second;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,9 +16,6 @@ public class GoLModel {
     private Color aliveCellColor = Color.BLACK;
     private Color deadCellColor = Color.WHITE;
     private Color invertedColor = Color.BLACK;
-
-    private Point center;
-    private int brushSize = 1;
 
     /**
      * Setzt die Farbe der Zelle im Bild "canvas" abhängig davon, ob sie lebendig sind oder nicht
@@ -162,88 +158,4 @@ public class GoLModel {
     public void setInvertedColor(Color invertedColor) {
         this.invertedColor = invertedColor;
     }
-
-    /**
-     * Gibt die aktuelle Figur zurück
-     *
-     * @return currentFigure
-     */
-
-
-    /**
-     * Setzt die aktuelle Figur
-     * @param figure GoLPrefab
-     */
-
-
-    /**
-     * Gibt eine vordefinierte Figur an einer bestimmten Position zurück
-     *
-     * @param position
-     * @return
-     */
-
-
-    /**
-     * Gibt den Mittelpunkt zurück
-     *
-     * @return
-     */
-    public Point getCenter() {
-        return center;
-    }
-
-    /**
-     * Setzt den Mittelpunkt
-     *
-     * @param center
-     */
-    public void setCenter(Point center) {
-        this.center = center;
-    }
-
-    /**
-     * Gibt die vordefinierten Figuren zurück
-     *
-     * @return
-     */
-
-    /**
-     * Gibt die Größe des Pinsels zurück
-     *
-     * @return
-     */
-    public int getBrushSize() {
-        return brushSize;
-    }
-
-    /**
-     * Setzt die Größe des Pinsels
-     *
-     * @param brushSize
-     */
-    public void setBrushSize(int brushSize) {
-        this.brushSize = brushSize;
-    }
-
-    /**
-     * Gibt die Liste der aktuellen Figuren zurück
-     *
-     * @return
-     */
-
-
-    /**
-     * Aktualisiert die Liste der aktuellen Figuren mit einer bestimmten Figur basierend auf dem Namen
-     *
-     * @param name
-     */
-
-
-    /**
-     * Aktualisiert die Liste der aktuellen Figuren mit einer bestimmten Figur
-     *
-     * @param figure
-     */
-
 }

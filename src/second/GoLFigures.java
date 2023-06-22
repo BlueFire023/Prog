@@ -10,8 +10,10 @@ import java.util.Set;
  * @version 1, 22/06/2023
  */
 public class GoLFigures {
-    private final ArrayList<GoLPrefab> figures = new ArrayList<>(); //Erstellt eine Arraylist "GoLPrefab, um alle Figuren als "Prefabs" darin zu speichern
-    private final int stillLifesCount = 8, oscillatorsCount = 9, spaceshipsCount = 4, methuselahsCount = 3, ggCount = 2, otherCount = 4; //Legt die Anzahl fest, wie viele Objekte es von den einzelnen Kategorien geben soll
+    //Erstellt eine Arraylist "GoLPrefab, um alle Figuren als "Prefabs" darin zu speichern
+    private final ArrayList<GoLPrefab> figures = new ArrayList<>();
+    //Legt die Anzahl fest, wie viele Objekte es von den einzelnen Kategorien geben soll
+    private final int stillLifesCount = 8, oscillatorsCount = 9, spaceshipsCount = 4, methuselahsCount = 3, ggCount = 2, otherCount = 4;
 
     public GoLFigures() {
         //Erstellt die Figur "Block" aus einem Set von Pixeln, und erstellt daraus ein Prefab
@@ -161,6 +163,7 @@ public class GoLFigures {
         octagonSet.add(new Point(3, 7));
         octagonSet.add(new Point(4, 7));
         figures.add(new GoLPrefab("Octagon", octagonSet));
+
 
         //Erstellt die Figur "Pulsar" aus einem Set von Pixeln, und erstellt daraus ein Prefab
         Set<Point> pulsarSet = new HashSet<>();
@@ -503,34 +506,42 @@ public class GoLFigures {
         figures.add(new GoLPrefab("U", USet));
     }
 
-    public GoLPrefab getFigure(int position) { //Gibt die Figur and der angegebenen Position zurück
+    //Gibt die Figur an der angegebenen Position zurück
+    public GoLPrefab getFigure(int position) {
         return figures.get(position);
     }
 
+    //Gibt alle Figuren zurück
     public ArrayList<GoLPrefab> getFigures() {
         return figures;
     }
 
+    //Gibt die Anzahl der statischen Figuren zurück
     public int getStillLifesCount() {
         return stillLifesCount;
     }
 
+    //Gibt die Anzahl der Oszillator Figuren zurück
     public int getOscillatorsCount() {
         return oscillatorsCount;
     }
 
+    //Gibt die Anzahl der Spaceship Figuren zurück
     public int getSpaceshipsCount() {
         return spaceshipsCount;
     }
 
+    //Gibt die Anzahl der Methuselah Figuren zurück
     public int getMethuselahsCount() {
         return methuselahsCount;
     }
 
+    //Gibt die Anzahl der Glider Gun Figuren zurück
     public int getGgCount() {
         return ggCount;
     }
 
+    //Gibt die Anzahl der anderen Figuren zurück
     public int getOtherCount() {
         return otherCount;
     }

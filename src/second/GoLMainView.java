@@ -1,9 +1,11 @@
 package second;
+
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
+import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -27,15 +29,14 @@ public class GoLMainView extends JFrame {
     private final JMenu otherMenu = new JMenu("Andere");
     private final ArrayList<JMenuItem> figures = new ArrayList<>();
     private final JMenu recentFiguresMenu = new JMenu("Zuletzt benutzt");
-    private final JMenuItem save = new JMenuItem("Speichern");
     private final JMenuItem load = new JMenuItem("Laden");
 
-    public GoLMainView(){
+    public GoLMainView() {
         desktopPane.setDesktopManager(new DefaultDesktopManager());
 
         setContentPane(desktopPane);
         setTitle("Game of Life Hauptfenster");
-        setSize(new Dimension(500,500));
+        setSize(new Dimension(1500, 1000));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setBackground(Color.LIGHT_GRAY);
 
@@ -49,7 +50,6 @@ public class GoLMainView extends JFrame {
         menuBar.add(speed);
 
         //Füge dem "figuresMenu" die verschiedenen Optionen, Menus, etc. hinzu und Füge es der "menuBar" hinzu
-        figuresMenu.add(save);
         figuresMenu.add(load);
         figuresMenu.add(staticMenu);
         figuresMenu.add(oscMenu);
@@ -179,11 +179,10 @@ public class GoLMainView extends JFrame {
         setVisible(true);
     }
 
-    public void setMainListener(ActionListener al, ChangeListener cl, KeyListener kl){
+    public void setMainListener(ActionListener al, ChangeListener cl, KeyListener kl) {
         newWindow.addActionListener(al);
         showHotKeysButton.addActionListener(al);
         runAllButton.addActionListener(al);
-        save.addActionListener(al);
         load.addActionListener(al);
         mainSpeedSlider.addChangeListener(cl);
         int index = 0;
@@ -194,9 +193,14 @@ public class GoLMainView extends JFrame {
         addKeyListener(kl);
     }
 
-    public void addInternalFrame(JInternalFrame jif, Point randomPos){
+    public void addInternalFrame(JInternalFrame jif, Point randomPos) {
         desktopPane.add(jif);
         jif.setLocation(randomPos);
+        try {
+            jif.setSelected(true);
+        } catch (PropertyVetoException e) {
+            throw new RuntimeException(e);
+        }
         jif.setVisible(true);
     }
 
