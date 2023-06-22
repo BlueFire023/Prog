@@ -114,4 +114,39 @@ public class GoLAdapter implements ActionListener, KeyListener, MouseMotionListe
     public void stateChanged(ChangeEvent e) {
 
     }
+
+    @Override
+    public void internalFrameOpened(InternalFrameEvent e) {
+
+    }
+
+    @Override
+    public void internalFrameClosing(InternalFrameEvent e) {
+
+    }
+
+    @Override
+    public void internalFrameClosed(InternalFrameEvent e) {
+
+    }
+
+    @Override
+    public void internalFrameIconified(InternalFrameEvent e) {
+
+    }
+
+    @Override
+    public void internalFrameDeiconified(InternalFrameEvent e) {
+
+    }
+
+    @Override
+    public void internalFrameActivated(InternalFrameEvent e) {
+
+    }
+
+    @Override
+    public void internalFrameDeactivated(InternalFrameEvent e) {
+
+    }
 }

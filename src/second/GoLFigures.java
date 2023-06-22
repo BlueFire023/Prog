@@ -11,6 +11,7 @@ import java.util.Set;
  */
 public class GoLFigures {
     private final ArrayList<GoLPrefab> figures = new ArrayList<>(); //Erstellt eine Arraylist "GoLPrefab, um alle Figuren als "Prefabs" darin zu speichern
+    private final int stillLifesCount = 8, oscillatorsCount = 9, spaceshipsCount = 4, methuselahsCount = 3, ggCount = 2, otherCount = 4;
 
     public GoLFigures() {
         //Erstellt die Figur "Block" aus einem Set von Pixeln, und erstellt daraus ein Prefab

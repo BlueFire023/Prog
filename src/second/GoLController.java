@@ -21,7 +21,8 @@ public class GoLController extends GoLAdapter {
     private final Set<Point> lastCells = new HashSet<>();
     private final JFileChooser fileChooser = new JFileChooser();
     private Mode activeMode = Mode.PAINTING;
-    private static final List<GoLController> instances = new ArrayList<>();
+    private final Object lock = new Object();
+
 
     public GoLController() {
         view = new GoLView(model.getCanvas(), instances.size() + 1);
@@ -140,24 +141,20 @@ public class GoLController extends GoLAdapter {
     }
 
     @SuppressWarnings("BusyWait")
-    public void calculateNextGenerationAll() {
-        for (GoLController instance : instances) {
-            instance.activeMode = Mode.RUNNING;
-            instance.refreshCanvas();
-
-            Runnable runningTask = () -> {
-                while (instance.activeMode == Mode.RUNNING) {
-                    try {
-                        instance.calculateNextGeneration();
-                        Thread.sleep(1000 / instance.view.getSliderstat());
-                    } catch (InterruptedException ex) {
-                        throw new RuntimeException(ex);
-                    }
+    public void startRunning() {
+        activeMode = Mode.RUNNING;
+        Runnable runningTask = () -> {
+            while (activeMode == Mode.RUNNING) {
+                try {
+                    calculateNextGeneration();
+                    Thread.sleep(1000 / view.getSliderstat());
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
                 }
-            };
-            Thread runningThread = new Thread(runningTask);
-            runningThread.start();
-        }
+            }
+        };
+        Thread runningThread = new Thread(runningTask);
+        runningThread.start();
     }
 
     @Override
@@ -237,15 +234,7 @@ public class GoLController extends GoLAdapter {
                 view.updateRecentFiguresMenu(model.getRecentFigures(), this);
                 calculateCenter();
             }
-            case "Hotkeys" -> view.showHotKeys();
-            default -> {
-                int number = Integer.parseInt(e.getActionCommand());
-                placingFigure = true;
-                activeMode = Mode.SET;
-                model.updateRecentFigures(model.getPreMadeFigures(number));
-                view.updateRecentFiguresMenu(model.getRecentFigures(), this);
-                calculateCenter();
-            }
+
         }
         refreshCanvas();
         view.updateCurrentMode(activeMode.toString());
@@ -355,7 +344,7 @@ public class GoLController extends GoLAdapter {
         painting = e.getButton() == 1;
         mouseHeld = true;
         if (placingFigure) {
-            model.getCurrentFigure().cells().forEach(p -> model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), painting) );
+            model.getCurrentFigure().cells().forEach(p -> model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), painting));
         } else if (activeMode != Mode.LINE) {
             paintPixel(mousePos, false);
         }
