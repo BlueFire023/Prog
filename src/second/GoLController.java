@@ -152,7 +152,7 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     * Torus  wird erstellt.
+     * Torus-Eigenschaften wird erstellt.
      *
      * @param pos
      * @return
@@ -211,8 +211,9 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     */
+     * Zeigt Vorschau der Figur.
+     *
+     * */
     private void showPreview() {
         if (placingFigure) {
             for (Point p : lastCells) {
@@ -240,9 +241,9 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Invertiert die Farbe.
      *
-     * @param initalColor
+     * @param initialColor
      * @return
      */
     private Color invertColor(Color initalColor) {
@@ -250,7 +251,7 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Berechnet die Position der Maus.
      *
      * @param pos
      * @return
@@ -263,7 +264,7 @@ public class GoLController extends GoLAdapter {
         return new Point(posOnCanvasX, posOnCanvasY);
     }
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Lässt die Figuren Rotieren.
      *
      * @param direction
      */
@@ -290,7 +291,7 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Spiegelt die Figur horizontal.
      *
      * @param horizontal
      */
@@ -330,14 +331,14 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Speichert den Modus.
      */
     private enum Mode {
         RUNNING, PAINTING, SET, LINE
     }
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Platziert die Figuren.
      *
      * @param placingFigure
      */
@@ -518,7 +519,7 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Legt fest, was passiert, wenn man seine Maus loslässt und die Funktionen, die dazu gehören sollen
      *
      * @param e the event to be processed
      */
@@ -549,7 +550,7 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     * Legt fest, dass eine Vorschau von dem zu platzierenden Objekt/Pixel angezeigt wird, sobald man seine Maus beweget
+     * Legt fest, dass eine Vorschau von dem zu platzierenden Objekt/Pixel angezeigt wird, sobald man seine Maus bewegt
      *
      * @param e the event to be processed
      */

@@ -50,7 +50,7 @@ public class GoLMainModel {
     public GoLFigures getPreMadeFigures() {
         return preMadeFigures;
     }
-    
+
     /**
      * Aktualisiert die Liste der aktuellen Figuren mit einer bestimmten Figur basierend auf dem Namen
      *
