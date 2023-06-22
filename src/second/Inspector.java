@@ -1,83 +1,63 @@
 package second;
-
-/**
- * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
- * @version 1, 11/05/2023
- */
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
+import java.lang.reflect.*;
 import java.util.Scanner;
-
 public class Inspector {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
+        System.out.println("Geben sie den Namen ihrer Klasse ein:");
+        Scanner scanner = new Scanner(System.in);
+        String className = scanner.nextLine();
 
-        //Benutzereingabe der gewünschten Klasse
-        System.out.println("Geben sie hier den Namen der gewünschten Klasse ein: ");
-        Scanner scanLeser = new Scanner(System.in);
-        String klassenName = scanLeser.nextLine();
         try {
-
-            //Laufzeit über Benutzereingabe beenden
-            if (klassenName.toLowerCase().startsWith("end")) {
+            if (className.toLowerCase().startsWith("end")){
                 System.exit(1);
             }
 
-            //Klassenobjekt anhand des Klassennamens erstellen
-            Class<?> klassenObjekt = Class.forName(klassenName);
+            Class<?> classObject = Class.forName(className);
 
-            //Superklasse ausgeben
-            Class<?> superklassenObjekt = klassenObjekt.getSuperclass();
-            if (superklassenObjekt != null){
-                System.out.println("Superklasse: " + superklassenObjekt.getName());
+            Class<?> superclassObject = classObject.getSuperclass();
+            if(superclassObject != null) {
+                System.out.println("Superklasse:" + superclassObject.getName());
             }
 
-            //Interfaces ausgeben
-            Class<?>[] interfaceObjekte = klassenObjekt.getInterfaces();
-            if (interfaceObjekte.length > 0){
-                System.out.println("Interfaces: ");
-                for (Class<?> inface: interfaceObjekte){
-                    System.out.println(inface.getName());
-                }
-            }
+            Class<?>[] interfaceObject = classObject.getInterfaces();
+                 if(interfaceObject.length > 0){
+                     System.out.println("Interfaces: ");
+                     for(Class<?> inface : interfaceObject){
+                         System.out.println(inface.getName());
+                     }
+                 }
 
-            //Modifier ausgeben
-            int modifierObjekte = klassenObjekt.getModifiers();
-            System.out.println("Modifier: "+ Modifier.toString(modifierObjekte));
+           int modifierObject = classObject.getModifiers();
+            System.out.println("Modifiers: " + Modifier.toString(modifierObject));
 
-            //Methoden ausgeben
-            Method[] methodenObjekte = klassenObjekt.getMethods();
-            if (methodenObjekte.length > 0){
+           Method[] methodObjects = classObject.getMethods();
+            if (methodObjects.length > 0){
                 System.out.println("Methoden: ");
-                for (Method meth: methodenObjekte){
+                for(Method method : methodObjects){
 
                     System.out.println(" ");
-                    //Modifier, Return Werte, Name ausgeben
                     System.out.println("-Methode:");
-                    System.out.println(" Modifier: " + Modifier.toString(meth.getModifiers()));
-                    System.out.println(" Returnwert: " + meth.getReturnType().getName());
-                    System.out.println(" Methodenname: " + meth.getName());
+                    System.out.println(" Modifier: " + Modifier.toString(method.getModifiers()));
+                    System.out.println(" Returnwert: " + method.getReturnType().getName());
+                    System.out.println(" Methodenname: " + method.getName());
 
-                    //Parameter/Argumente ausgeben
-                    Parameter[] parameterObjekte = meth.getParameters();
+                    Parameter[] parameterObjects = method.getParameters();
                     System.out.print(" Parameter: (");
-                    for(int ind = 0; ind < parameterObjekte.length; ind++){
-                        Parameter para = parameterObjekte[ind];
+                    for (int ind = 0; ind < parameterObjects.length; ind++){
+                        Parameter para = parameterObjects[ind];
                         System.out.print(para.getType().getName());
-                        if (ind < parameterObjekte.length - 1) {
+                        if (ind < parameterObjects.length - 1){
                             System.out.print(", ");
                         }
                     }
-                    System.out.print(")\n");
+                    System.out.print(")");
+                    System.out.println(" ");
                 }
             }
         }
-        //Benutzereingabe konnte nicht gefunden werden
-        catch (ClassNotFoundException e) {
-            System.out.println("Klasse("+klassenName+") wurde nicht gefunden.");
+
+        catch (ClassNotFoundException e){
+            System.out.println(" Klasse (" + className + ") konnte nicht gefunden werden");
         }
     }
 }
-
-
