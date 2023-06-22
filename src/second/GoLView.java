@@ -85,7 +85,7 @@ public class GoLView extends JPanel {
         speedSlider.setValue(10);
         speedSlider.setLabelTable(labelTable);
 
-        saveButton.setMargin(new Insets(2,2,2,2));
+        saveButton.setMargin(new Insets(2, 2, 2, 2));
         saveButton.setMaximumSize(new Dimension(saveButton.getPreferredSize().width - 10, saveButton.getPreferredSize().height));
         saveButton.setFocusable(false);
         saveButton.setBackground(Color.LIGHT_GRAY);
@@ -248,7 +248,10 @@ public class GoLView extends JPanel {
         setSizeFrame.setVisible(true);
     }
 
-    public void updateSetSizeFrameTitle(){
+    /**
+     * Aktualisiert den Title des SetSizeFrame
+     */
+    public void updateSetSizeFrameTitle() {
         setSizeFrame.setTitle("Auflösung " + model.getCurrentWindowNumber());
     }
 
@@ -264,7 +267,11 @@ public class GoLView extends JPanel {
         deadCellColorDisplay.setBackground(dColor);
         setColorFrame.setVisible(true);
     }
-    public void updateSetColorFrameTitle(){
+
+    /**
+     * Aktualisiert den Title des SetColorFrames
+     */
+    public void updateSetColorFrameTitle() {
         setColorFrame.setTitle("Farben " + model.getCurrentWindowNumber());
     }
 
@@ -352,7 +359,7 @@ public class GoLView extends JPanel {
     /**
      * Schließt das Farben-Fenster
      */
-    public void disposeSetColorFrame(){
+    public void disposeSetColorFrame() {
         setColorFrame.dispose();
     }
 }

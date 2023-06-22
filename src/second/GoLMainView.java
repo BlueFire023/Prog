@@ -1,7 +1,5 @@
 package second;
 
-import org.w3c.dom.css.RGBColor;
-
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -307,9 +305,10 @@ public class GoLMainView extends JFrame {
 
     /**
      * Ändert die Farben des Alle Laufen Buttons
+     *
      * @param run
      */
-    public void updateRunButton(boolean run){
+    public void updateRunButton(boolean run) {
         runAllButton.setText(run ? "Alle Stoppen" : "Alle Laufen");
         runAllButton.setBackground(run ? new Color(199, 78, 78) : new Color(86, 149, 91));
     }

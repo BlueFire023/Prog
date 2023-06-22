@@ -583,24 +583,26 @@ public class GoLController extends GoLAdapter {
     /**
      * stoppt das Laufen
      */
-    public void stopRunning(){
+    public void stopRunning() {
         activeMode = Mode.PAINTING;
         view.updateCurrentMode(activeMode.toString());
     }
 
     /**
      * Gibt das View Objekt zurück
+     *
      * @return view
      */
-    public GoLView getView(){
+    public GoLView getView() {
         return view;
     }
 
     /**
      * Gibt den aktuellen Modus zurück
+     *
      * @return
      */
-    public String getActiveMode(){
+    public String getActiveMode() {
         return activeMode.toString();
     }
 }

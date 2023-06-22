@@ -23,6 +23,7 @@ public class GoLMainController extends GoLAdapter {
     private final JFileChooser mainFileChooser = new JFileChooser();
     private final List<GoLController> instances = new ArrayList<>();
     private boolean allRunning = false;
+
     /**
      * Erstellt neuen GoLMainWindow
      */
@@ -125,8 +126,8 @@ public class GoLMainController extends GoLAdapter {
             case "Hotkeys" -> mainView.showHotKeys();
             case "Laden" -> loadSavedFigure();
             case "run" -> {
-                mainView.updateRunButton(((JMenuItem)e.getSource()).getText().equals("Alle Laufen"));
-                if(allRunning){
+                mainView.updateRunButton(((JMenuItem) e.getSource()).getText().equals("Alle Laufen"));
+                if (allRunning) {
                     allRunning = false;
                     for (GoLController c : instances) {
                         c.stopRunning();
@@ -178,14 +179,15 @@ public class GoLMainController extends GoLAdapter {
 
     /**
      * Aktualisiert die noch vorhanden Instances an GoLController und disposed alle übrigen Frames
+     *
      * @param e an {@code InternalFrameEvent} with information about the
      *          {@code JInteralFrame} that originated the event
      */
 
     @Override
     public void internalFrameClosing(InternalFrameEvent e) {
-        for(GoLController c : instances){
-            if(e.getSource().equals(c.getView().getFrame())){
+        for (GoLController c : instances) {
+            if (e.getSource().equals(c.getView().getFrame())) {
                 c.getView().disposeSetSizeFrame();
                 c.getView().disposeSetColorFrame();
                 instances.remove(c);
@@ -199,8 +201,8 @@ public class GoLMainController extends GoLAdapter {
     /**
      * Setzt den AllRunButton auf alle Stoppen
      */
-    public void updateAllRunButton(){
-        for(GoLController c : instances) {
+    public void updateAllRunButton() {
+        for (GoLController c : instances) {
             if (c.getActiveMode().equals("RUNNING")) {
                 mainView.updateRunButton(true);
                 allRunning = true;
