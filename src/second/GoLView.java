@@ -244,8 +244,12 @@ public class GoLView extends JPanel {
      * Canvas Größe wird aktualisiert.
      */
     public void updateCanvasSize() {
-        setSizeFrame.setTitle("Auflösung " + model.getCurrentWindowNumber());
+        updateSetSizeFrameTitle();
         setSizeFrame.setVisible(true);
+    }
+
+    public void updateSetSizeFrameTitle(){
+        setSizeFrame.setTitle("Auflösung " + model.getCurrentWindowNumber());
     }
 
     /**
@@ -255,10 +259,13 @@ public class GoLView extends JPanel {
      * @param dColor
      */
     public void updateCellColor(Color aColor, Color dColor) {
-        setColorFrame.setTitle("Farben " + model.getCurrentWindowNumber());
+        updateSetColorFrameTitle();
         aliveCellColorDisplay.setBackground(aColor);
         deadCellColorDisplay.setBackground(dColor);
         setColorFrame.setVisible(true);
+    }
+    public void updateSetColorFrameTitle(){
+        setColorFrame.setTitle("Farben " + model.getCurrentWindowNumber());
     }
 
     /**

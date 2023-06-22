@@ -98,6 +98,8 @@ public class GoLMainController extends GoLAdapter {
         for (GoLController c : instances) {
             c.getView().addIFL(this);
             c.getView().setNewTitle();
+            c.getView().updateSetColorFrameTitle();
+            c.getView().updateSetSizeFrameTitle();
             c.setCurrentWindowNumber(number++);
         }
     }
@@ -171,7 +173,7 @@ public class GoLMainController extends GoLAdapter {
         for (GoLController c : instances) {
             c.getView().updateSlider(mainView.getMainSliderstat());
         }
-        updateWindowNumbers();
+
     }
 
     /**
@@ -186,9 +188,12 @@ public class GoLMainController extends GoLAdapter {
             if(e.getSource().equals(c.getView().getFrame())){
                 c.getView().disposeSetSizeFrame();
                 c.getView().disposeSetColorFrame();
+                instances.remove(c);
+                break;
             }
         }
         updateWindowNumbers();
+        updateAllRunButton();
     }
 
     /**
