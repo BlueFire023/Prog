@@ -2,6 +2,7 @@ package second.GoL;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,7 +12,7 @@ import java.util.Set;
  */
 
 public class Model {
-    private final Set<Point> aliveCells = new HashSet<>();
+    private final Set<Point> aliveCells = Collections.synchronizedSet(new HashSet<>());
     private int currentWindowNumber;
     private Color aliveCellColor = Color.BLACK;
     private Color deadCellColor = Color.WHITE;
