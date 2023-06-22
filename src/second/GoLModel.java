@@ -8,7 +8,7 @@ import java.util.Set;
 
 /**
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
- * @version 1, 15/06/2023
+ * @version 1, 22/06/2023
  */
 public class GoLModel {
 

@@ -6,104 +6,69 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import java.awt.event.*;
 
+/**
+ * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
+ * @version 1, 18/06/2023
+ */
+
 public class GoLAdapter implements ActionListener, KeyListener, MouseMotionListener, MouseListener, ChangeListener, MouseWheelListener, InternalFrameListener {
     @Override
-    public void actionPerformed(ActionEvent e) {
-
-    }
+    public void actionPerformed(ActionEvent e) {}
 
     @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
+    public void keyTyped(KeyEvent e) {}
 
     @Override
-    public void keyPressed(KeyEvent e) {
-
-    }
+    public void keyPressed(KeyEvent e) {}
 
     @Override
-    public void keyReleased(KeyEvent e) {
-
-    }
+    public void keyReleased(KeyEvent e) {}
 
     @Override
-    public void mouseClicked(MouseEvent e) {
-
-    }
+    public void mouseClicked(MouseEvent e) {}
 
     @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
+    public void mousePressed(MouseEvent e) {}
 
     @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
+    public void mouseReleased(MouseEvent e) {}
 
     @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
+    public void mouseEntered(MouseEvent e) {}
 
     @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
+    public void mouseExited(MouseEvent e) {}
 
     @Override
-    public void mouseDragged(MouseEvent e) {
-
-    }
+    public void mouseDragged(MouseEvent e) {}
 
     @Override
-    public void mouseMoved(MouseEvent e) {
-
-    }
+    public void mouseMoved(MouseEvent e) {}
 
     @Override
-    public void mouseWheelMoved(MouseWheelEvent e) {
-
-    }
+    public void mouseWheelMoved(MouseWheelEvent e) {}
 
     @Override
-    public void stateChanged(ChangeEvent e) {
-
-    }
+    public void stateChanged(ChangeEvent e) {}
 
     @Override
-    public void internalFrameOpened(InternalFrameEvent e) {
-
-    }
+    public void internalFrameOpened(InternalFrameEvent e) {}
 
     @Override
-    public void internalFrameClosing(InternalFrameEvent e) {
-
-    }
+    public void internalFrameClosing(InternalFrameEvent e) {}
 
     @Override
-    public void internalFrameClosed(InternalFrameEvent e) {
-
-    }
+    public void internalFrameClosed(InternalFrameEvent e) {}
 
     @Override
-    public void internalFrameIconified(InternalFrameEvent e) {
-
-    }
+    public void internalFrameIconified(InternalFrameEvent e) {}
 
     @Override
-    public void internalFrameDeiconified(InternalFrameEvent e) {
-
-    }
+    public void internalFrameDeiconified(InternalFrameEvent e) {}
 
     @Override
-    public void internalFrameActivated(InternalFrameEvent e) {
-
-    }
+    public void internalFrameActivated(InternalFrameEvent e) {}
 
     @Override
-    public void internalFrameDeactivated(InternalFrameEvent e) {
-
-    }
+    public void internalFrameDeactivated(InternalFrameEvent e) {}
 }

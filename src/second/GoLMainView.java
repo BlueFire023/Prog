@@ -95,7 +95,7 @@ public class GoLMainView extends JFrame {
         drawLabelPanel.add(new JLabel("D"));
         JPanel drawPanel = new JPanel(new GridBagLayout());
         drawPanel.add(new JLabel("Malen"));
-        ;
+
         hotKeyFrame.add(drawPanel);
         hotKeyFrame.add(drawLabelPanel);
 
@@ -198,7 +198,6 @@ public class GoLMainView extends JFrame {
         desktopPane.add(jif);
         jif.setLocation(randomPos);
         jif.setVisible(true);
-
     }
 
     public void updateRecentFiguresMenu(ArrayList<GoLPrefab> recent, ActionListener al) {
