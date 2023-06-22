@@ -184,11 +184,14 @@ public class Controller extends Adapter {
      * Speichert den aktuellen Canvas als eine "Figur"
      */
     private void saveFigure() {
-        if (!model.getAliveCells().isEmpty() && fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+        if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             String filePath = selectedFile.getAbsolutePath();
             Prefab figureToSave = new Prefab(selectedFile.getName(), normalizePosition(model.getAliveCells()));
             try {
+                if(model.getAliveCells().isEmpty()){
+                    throw new Exception("Leeres Objekt");
+                }
                 FileOutputStream fileOut = new FileOutputStream(filePath);
                 ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
                 objectOut.writeObject(figureToSave);
@@ -204,8 +207,6 @@ public class Controller extends Adapter {
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Fehler beim Schreiben des Objekts: " + e.getMessage());
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "Fehler beim Schreiben des Objekts: Leeres Objekt");
         }
     }
 
@@ -213,27 +214,16 @@ public class Controller extends Adapter {
      * Zeigt Vorschau der Figur.
      */
     private void showPreview() {
+        removePreview();
         if (placingFigure) {
-            for (Point p : lastCells) {
-                model.setCanvasRGB(p, model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
-            }
-            lastCells.clear();
             for (Point p : mainModel.getCurrentFigure().cells()) {
                 Point calculatedPoint = new Point(p.x + mousePos.x - mainModel.getCenter().x, p.y + mousePos.y - mainModel.getCenter().y);
                 model.setCanvasRGB(calculateWrap(calculatedPoint), model.getInvertedColor());
                 lastCells.add(calculateWrap(calculatedPoint));
             }
         } else if (model.isActiveMode(Model.Mode.LINE) && mouseHeld) {
-            for (Point p : lastCells) {
-                model.setCanvasRGB(calculateWrap(p), model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
-            }
-            lastCells.clear();
             drawLineBresenham(mousePos, true);
         } else {
-            for (Point p : lastCells) {
-                model.setCanvasRGB(calculateWrap(p), model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
-            }
-            lastCells.clear();
             paintPixel(mousePos, true);
         }
     }
@@ -343,6 +333,7 @@ public class Controller extends Adapter {
      * Ein neuer Thread wird gestartet und das Game of Life fängt an zu laufen
      */
     public void startRunning() {
+        model.setLastMode(model.getActiveMode());
         model.setActiveMode(Model.Mode.RUNNING);
         Runnable runningTask = () -> {
             while (model.isActiveMode(Model.Mode.RUNNING)) {
@@ -396,7 +387,6 @@ public class Controller extends Adapter {
             }
             case "Speichern" -> saveFigure();
             case "Laufen" -> {
-                model.setLastMode(model.getActiveMode());
                 startRunning();
                 mainController.updateAllRunButton();
             }
@@ -416,6 +406,7 @@ public class Controller extends Adapter {
                 mainController.updateAllRunButton();
             }
             case "Kreuz" -> {
+                lastCells.forEach(p -> model.setCell(p, false));
                 prevPos = new Point(0, 0);
                 drawLineBresenham(new Point(model.getCanvasWidth() - 1, model.getCanvasHeight() - 1), false);
                 prevPos = new Point(model.getCanvasWidth() - 1, 0);
@@ -432,6 +423,7 @@ public class Controller extends Adapter {
                 drawLineBresenham(new Point(model.getCanvasWidth() - 1, model.getCanvasHeight() - 1), false);
             }
             case "Plus" -> {
+                lastCells.forEach(p -> model.setCell(p, false));
                 prevPos = new Point(0, (model.getCanvasHeight() - 1) / 2);
                 drawLineBresenham(new Point(model.getCanvasWidth(), (model.getCanvasHeight() - 1) / 2), false);
                 prevPos = new Point((model.getCanvasWidth() - 1) / 2, 0);
@@ -452,7 +444,6 @@ public class Controller extends Adapter {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_C -> view.updateCellColor(model.getAliveCellColor(), model.getDeadCellColor());
             case KeyEvent.VK_S -> {
-                model.setLastMode(model.getActiveMode());
                 startRunning();
                 mainController.updateAllRunButton();
             }
@@ -605,7 +596,7 @@ public class Controller extends Adapter {
      * Stoppt das Laufen
      */
     public void stopRunning() {
-        model.setActiveMode(model.getLastMode());
+        model.setActiveMode(model.isActiveMode(Model.Mode.RUNNING)? model.getLastMode() : model.getActiveMode());
         view.updateCurrentMode();
     }
 
@@ -625,5 +616,15 @@ public class Controller extends Adapter {
      */
     public String getActiveMode() {
         return model.getActiveMode().toString();
+    }
+
+    /**
+     * Entfernt das Preview aus dem Canvas
+     */
+    public void removePreview(){
+        for (Point p : lastCells) {
+            model.setCanvasRGB(p, model.isCellAlive(p) ? model.getAliveCellColor() : model.getDeadCellColor());
+        }
+        lastCells.clear();
     }
 }
