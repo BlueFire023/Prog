@@ -3,18 +3,22 @@ package second;
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
+ * @version 1, 22/06/2023
+ */
+
 public class GoLMainModel {
     private final GoLFigures preMadeFigures = new GoLFigures();
     private final ArrayList<GoLPrefab> recentFigures = new ArrayList<>();
-    private Point center;
     private int brushSize = 1;
+    private Point center;
 
     /**
      * Gibt die aktuelle Figur zurück
      *
      * @return currentFigure
      */
-
     public GoLPrefab getCurrentFigure() {
         return recentFigures.get(recentFigures.size() - 1);
     }
@@ -46,7 +50,7 @@ public class GoLMainModel {
     public GoLFigures getPreMadeFigures() {
         return preMadeFigures;
     }
-    
+
     /**
      * Aktualisiert die Liste der aktuellen Figuren mit einer bestimmten Figur basierend auf dem Namen
      *
@@ -77,7 +81,9 @@ public class GoLMainModel {
      *
      * @return
      */
-    public ArrayList<GoLPrefab> getRecentFigures() {return recentFigures;}
+    public ArrayList<GoLPrefab> getRecentFigures() {
+        return recentFigures;
+    }
 
     /**
      * Gibt den Mittelpunkt zurück

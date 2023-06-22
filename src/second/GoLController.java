@@ -26,11 +26,10 @@ public class GoLController extends GoLAdapter {
     private final GoLMainController mainController;
     private final Set<Point> lastCells = new HashSet<>();
     private final JFileChooser fileChooser = new JFileChooser();
-    private final Object lock = new Object();
     private boolean painting, mouseHeld, placingFigure;
     private Point prevPos = new Point(), mousePos = new Point();
     private Mode activeMode = Mode.PAINTING;
-    public final GoLView view;
+    private final GoLView view;
 
     /**
      * Konstruktor der Controller Klasse. Wird für jedes neue JInternalFrame aufgerufen.
@@ -41,7 +40,7 @@ public class GoLController extends GoLAdapter {
     public GoLController(GoLMainController mainController, GoLMainModel mainModel) {
         this.mainModel = mainModel;
         this.mainController = mainController;
-        view = new GoLView(model.getCanvas());
+        view = new GoLView(model);
         view.setListeners(this, this, this, this, this, this);
         view.updateCurrentMode(activeMode.toString());
         refreshCanvas();
@@ -152,7 +151,7 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     * Torus  wird erstellt.
+     * Torus-Eigenschaften wird erstellt.
      *
      * @param pos
      * @return
@@ -196,11 +195,12 @@ public class GoLController extends GoLAdapter {
                 mainModel.setCurrentFigure(figureToSave);
                 objectOut.close();
                 fileOut.close();
-                calculateCenter();
+                mainController.calculateCenter();
                 refreshCanvas();
                 placingFigure = true;
                 activeMode = Mode.SET;
                 mainController.updateRecentFiguresMenu(mainModel.getRecentFigures());
+                mainController.updateAllRunButton();
                 JOptionPane.showMessageDialog(null, "Das Objekt wurde erfolgreich gespeichert.");
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Fehler beim Schreiben des Objekts: " + e.getMessage());
@@ -211,7 +211,7 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Zeigt Vorschau der Figur.
      */
     private void showPreview() {
         if (placingFigure) {
@@ -240,9 +240,9 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Invertiert die Farbe.
      *
-     * @param initalColor
+     * @param initialColor
      * @return
      */
     private Color invertColor(Color initalColor) {
@@ -250,7 +250,7 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Berechnet die Position der Maus.
      *
      * @param pos
      * @return
@@ -264,27 +264,13 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     */
-    private void calculateCenter() {
-        Point center = new Point();
-        for (Point p : mainModel.getCurrentFigure().cells()) {
-            center.x = Math.max(center.x, p.x);
-            center.y = Math.max(center.y, p.y);
-        }
-        center.x /= 2;
-        center.y /= 2;
-        mainModel.setCenter(center);
-    }
-
-    /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Lässt die Figuren Rotieren.
      *
      * @param direction
      */
     private void rotate(int direction) {
         Set<Point> figure = mainModel.getCurrentFigure().cells();
-        calculateCenter();
+        mainController.calculateCenter();
         Point center = mainModel.getCenter();
 
         Set<Point> rotatedFigure = new HashSet<>();
@@ -300,12 +286,12 @@ public class GoLController extends GoLAdapter {
         GoLPrefab rotatedPrefab = new GoLPrefab(mainModel.getCurrentFigure().name(), normalizePosition(rotatedFigure));
         mainModel.updateRecentFigures(rotatedPrefab);
         mainController.updateRecentFiguresMenu(mainModel.getRecentFigures());
-        calculateCenter();
+        mainController.calculateCenter();
         showPreview();
     }
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Spiegelt die Figur horizontal.
      *
      * @param horizontal
      */
@@ -317,12 +303,12 @@ public class GoLController extends GoLAdapter {
         GoLPrefab mirroredPrefab = new GoLPrefab(mainModel.getCurrentFigure().name(), normalizePosition(mirroredFigure));
         mainModel.updateRecentFigures(mirroredPrefab);
         mainController.updateRecentFiguresMenu(mainModel.getRecentFigures());
-        calculateCenter();
+        mainController.calculateCenter();
         showPreview();
     }
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Normalisiert die Position der Figur.
      *
      * @param figure
      * @return
@@ -345,20 +331,21 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Speichert den Modus.
      */
     private enum Mode {
         RUNNING, PAINTING, SET, LINE
     }
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Platziert die Figuren.
      *
      * @param placingFigure
      */
     public void setPlacingFigure(boolean placingFigure) {
         this.placingFigure = placingFigure;
         activeMode = GoLController.Mode.SET;
+        view.updateCurrentMode(activeMode.toString());
     }
 
     /**
@@ -379,6 +366,7 @@ public class GoLController extends GoLAdapter {
         };
         Thread runningThread = new Thread(runningTask);
         runningThread.start();
+        view.updateCurrentMode(activeMode.toString());
     }
 
     /**
@@ -398,7 +386,6 @@ public class GoLController extends GoLAdapter {
             case "size" -> {
                 model.setCanvas(new BufferedImage(view.getNewWidth(), view.getNewHeight(), BufferedImage.TYPE_INT_RGB));
                 view.disposeSetSizeFrame();
-                view.updateCanvasObject(model.getCanvas());
                 clearCanvas();
             }
             case "acc" -> {
@@ -419,19 +406,25 @@ public class GoLController extends GoLAdapter {
                 ((JButton) e.getSource()).setBackground(newColor);
             }
             case "Speichern" -> saveFigure();
-
-            case "Laufen" -> startRunning();
+            case "Laufen" -> {
+                startRunning();
+                mainController.updateAllRunButton();
+            }
             case "Malen" -> {
+
                 placingFigure = false;
                 activeMode = Mode.PAINTING;
+                mainController.updateAllRunButton();
             }
             case "Setzen" -> {
                 placingFigure = false;
                 activeMode = Mode.SET;
+                mainController.updateAllRunButton();
             }
             case "Linien" -> {
                 placingFigure = false;
                 activeMode = Mode.LINE;
+                mainController.updateAllRunButton();
             }
             case "Kreuz" -> {
                 prevPos = new Point(0, 0);
@@ -513,7 +506,7 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Stellt fest, ob die Maustaste gedrückt wurde und setzt ein je nach Modus ein Pixel oder eine figur
      *
      * @param e the event to be processed
      */
@@ -535,7 +528,7 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Legt fest, was passiert, wenn man seine Maus loslässt und die Funktionen, die dazu gehören sollen
      *
      * @param e the event to be processed
      */
@@ -566,7 +559,7 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     * Legt fest, dass eine Vorschau von dem zu platzierenden Objekt/Pixel angezeigt wird, sobald man seine Maus beweget
+     * Legt fest, dass eine Vorschau von dem zu platzierenden Objekt/Pixel angezeigt wird, sobald man seine Maus bewegt
      *
      * @param e the event to be processed
      */
@@ -574,5 +567,40 @@ public class GoLController extends GoLAdapter {
     public void mouseMoved(MouseEvent e) {
         mousePos = calculateMousePosition(e.getPoint());
         showPreview();
+    }
+
+    /**
+     * Setzt aktuelle Fenster Nummer
+     *
+     * @param number
+     */
+
+    public void setCurrentWindowNumber(int number) {
+        model.setCurrentWindowNumber(number);
+        view.setNewTitle();
+    }
+
+    /**
+     * stoppt das Laufen
+     */
+    public void stopRunning(){
+        activeMode = Mode.PAINTING;
+        view.updateCurrentMode(activeMode.toString());
+    }
+
+    /**
+     * Gibt das View Objekt zurück
+     * @return view
+     */
+    public GoLView getView(){
+        return view;
+    }
+
+    /**
+     * Gibt den aktuellen Modus zurück
+     * @return
+     */
+    public String getActiveMode(){
+        return activeMode.toString();
     }
 }
