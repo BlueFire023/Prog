@@ -1,5 +1,7 @@
 package second;
 
+import org.w3c.dom.css.RGBColor;
+
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -60,7 +62,6 @@ public class GoLMainView extends JFrame {
         menuBar.add(figuresMenu);
         menuBar.add(recentFiguresMenu);
 
-        //selectionMenu.add(runAllButton);
 
         figuresMenu.add(load);
         figuresMenu.add(staticMenu);

@@ -86,13 +86,16 @@ public class GoLView extends JPanel {
         speedSlider.setValue(10);
         speedSlider.setLabelTable(labelTable);
 
-        saveMenu.add(saveButton);
+        saveButton.setMargin(new Insets(2,2,2,2));
+        saveButton.setMaximumSize(new Dimension(saveButton.getPreferredSize().width - 10, saveButton.getPreferredSize().height));
+        saveButton.setFocusable(false);
+        saveButton.setBackground(Color.LIGHT_GRAY);
 
         sliderMenu.add(speedSlider);
 
         menuBar.add(modeMenu);
         menuBar.add(shapesMenu);
-        menuBar.add(saveMenu);
+        menuBar.add(saveButton);
         menuBar.add(extraMenu);
         menuBar.add(sliderMenu);
         menuBar.setBackground(Color.LIGHT_GRAY);
