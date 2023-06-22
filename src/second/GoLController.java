@@ -310,37 +310,6 @@ public class GoLController extends GoLAdapter {
     }
 
     /**
-     *  Lädt eine "Figur" aus einem vorher gespeicherten Canvas
-     */
-    private void loadSavedFigure() {
-        int returnValue = fileChooser.showOpenDialog(null);
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-            String filePath = fileChooser.getSelectedFile().getAbsolutePath();
-            try {
-                FileInputStream fs = new FileInputStream(filePath);
-                ObjectInputStream os = new ObjectInputStream(fs);
-                GoLPrefab m = (GoLPrefab) os.readObject();
-                int maxX = 0, maxY = 0;
-                for (Point p : m.cells()) {
-                    maxX = Math.max(p.x, maxX);
-                    maxY = Math.max(p.y, maxY);
-                }
-                if (maxX > model.getCanvasWidth() || maxY > model.getCanvasHeight()) {
-                    throw new Exception("Figur(Breite: " + maxX + ", Höhe: " + maxY + ") ist größer als Auflösung(Breite: " + model.getCanvasWidth() + ", Höhe: " + model.getCanvasHeight() + ")");
-                }
-                mainModel.updateRecentFigures(m);
-                calculateCenter();
-                refreshCanvas();
-                placingFigure = true;
-                activeMode = Mode.SET;
-                mainController.updateRecentFiguresMenu(mainModel.getRecentFigures());
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Fehler beim laden des Objekts: " + e.getMessage());
-            }
-        }
-    }
-
-    /**
      *
      */
     private void showPreview() {

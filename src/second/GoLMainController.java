@@ -16,6 +16,7 @@ public class GoLMainController extends GoLAdapter {
     private final GoLMainView mainView = new GoLMainView();
     private final GoLMainModel mainModel = new GoLMainModel();
     private final Random random = new Random();
+    private final JFileChooser mainFileChooser = new JFileChooser();
 
     /**
      * Erstellt neuen GoLMainWindow
@@ -23,6 +24,29 @@ public class GoLMainController extends GoLAdapter {
     public GoLMainController() {
         mainView.initFiguresMenu(mainModel.getPreMadeFigures());
         mainView.setMainListener(this, this, this);
+    }
+
+    /**
+     * Lädt eine "Figur" aus einem vorher gespeicherten Canvas
+     */
+    private void loadSavedFigure() {
+        int returnValue = mainFileChooser.showOpenDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            String filePath = mainFileChooser.getSelectedFile().getAbsolutePath();
+            try {
+                FileInputStream fs = new FileInputStream(filePath);
+                ObjectInputStream os = new ObjectInputStream(fs);
+                GoLPrefab m = (GoLPrefab) os.readObject();
+                mainModel.updateRecentFigures(m);
+                calculateCenter();
+                for (GoLController c : instances) {
+                    c.setPlacingFigure(true);
+                }
+                updateRecentFiguresMenu(mainModel.getRecentFigures());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Fehler beim laden des Objekts: " + e.getMessage());
+            }
+        }
     }
 
     @Override
