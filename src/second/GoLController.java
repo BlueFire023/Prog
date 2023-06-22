@@ -164,7 +164,6 @@ public class GoLController extends GoLAdapter {
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case "Löschen" -> clearCanvas();
-            case "Neues Fenster" -> new GoLController();
             case "Auflösung" -> {
                 activeMode = Mode.PAINTING;
                 view.updateCanvasSize();
@@ -356,9 +355,7 @@ public class GoLController extends GoLAdapter {
         painting = e.getButton() == 1;
         mouseHeld = true;
         if (placingFigure) {
-            for (Point p : model.getCurrentFigure().cells()) {
-                model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), painting);
-            }
+            model.getCurrentFigure().cells().forEach(p -> model.setCell(calculateWrap(new Point(p.x + prevPos.x - model.getCenter().x, p.y + prevPos.y - model.getCenter().y)), painting) );
         } else if (activeMode != Mode.LINE) {
             paintPixel(mousePos, false);
         }
