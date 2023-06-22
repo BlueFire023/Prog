@@ -217,7 +217,7 @@ public class GoLView extends JPanel {
     }
 
     /**
-     * HIER FEHLT NOCH EIN KOMMENTAR HIER FEHLT NOCH EIN KOMMENTAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Ausgewählte Fläche wird eingefärbt
      *
      * @param g the <code>Graphics</code> object to protect
      */
