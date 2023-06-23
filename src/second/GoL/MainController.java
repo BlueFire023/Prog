@@ -72,7 +72,6 @@ public class MainController extends Adapter {
         Controller controller = new Controller(this, mainModel);
         JInternalFrame internalFrame = controller.getView().getFrame();
         instances.add(controller);
-        Point frameSize = new Point(mainView.getWidth(), mainView.getHeight());
         if (mainView.getWidth() < 1500 && mainView.getHeight() < 1000) {
             internalFrame.setSize(new Dimension(mainView.getHeight() - 50, mainView.getHeight() - 50));
         }
