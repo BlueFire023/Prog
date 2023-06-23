@@ -44,6 +44,7 @@ public class MainView extends JFrame {
         setContentPane(desktopPane);
         setTitle("Game of Life Hauptfenster");
         setSize(new Dimension(1500, 1000));
+        setMinimumSize(new Dimension(700,700));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setBackground(Color.LIGHT_GRAY);
         setJMenuBar(menuBar);
