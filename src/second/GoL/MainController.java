@@ -76,7 +76,7 @@ public class MainController extends Adapter {
         if (mainView.getWidth() < 1500 && mainView.getHeight() < 1000) {
             internalFrame.setSize(new Dimension(mainView.getHeight() - 50, mainView.getHeight() - 50));
         }
-        mainView.addInternalFrame(internalFrame, new Point(random.nextInt(0, frameSize.x - internalFrame.getWidth()), random.nextInt(0, frameSize.y - internalFrame.getHeight())));
+        mainView.addInternalFrame(internalFrame, new Point(random.nextInt(0, mainView.getWidth() - internalFrame.getWidth()), random.nextInt(0, mainView.getHeight() - internalFrame.getHeight())));
         updateWindowNumbers();
     }
 
