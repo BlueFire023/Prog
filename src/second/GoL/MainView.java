@@ -42,6 +42,7 @@ public class MainView extends JFrame {
         desktopPane.setDesktopManager(new DefaultDesktopManager());
 
         setContentPane(desktopPane);
+        desktopPane.setBackground(new Color(43, 45, 48));
         setTitle("Game of Life Hauptfenster");
         setSize(new Dimension(1500, 1000));
         setMinimumSize(new Dimension(700,700));
