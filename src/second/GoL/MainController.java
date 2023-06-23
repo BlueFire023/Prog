@@ -72,8 +72,7 @@ public class MainController extends Adapter {
         Controller controller = new Controller(this, mainModel);
         JInternalFrame internalFrame = controller.getView().getFrame();
         instances.add(controller);
-        Point frameSize = new Point(mainView.getWidth(), mainView.getHeight());
-        mainView.addInternalFrame(internalFrame, new Point(random.nextInt(0, frameSize.x - internalFrame.getWidth()), random.nextInt(0, frameSize.y - internalFrame.getHeight())));
+        mainView.addInternalFrame(internalFrame, new Point(random.nextInt(0, mainView.getWidth() - internalFrame.getWidth()), random.nextInt(0, mainView.getHeight() - internalFrame.getHeight())));
         updateWindowNumbers();
     }
 

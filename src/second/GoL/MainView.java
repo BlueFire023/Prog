@@ -50,7 +50,7 @@ public class MainView extends JFrame {
 
         runAllButton.setActionCommand("run");
         runAllButton.setMargin(new Insets(2, 2, 2, 2));
-        runAllButton.setMaximumSize(new Dimension(runAllButton.getPreferredSize().width - 5, runAllButton.getPreferredSize().height));
+        runAllButton.setMaximumSize(runAllButton.getPreferredSize());
         runAllButton.setFocusable(false);
         runAllButton.setBackground(new Color(86, 149, 91));
         runAllButton.setForeground(Color.WHITE);
