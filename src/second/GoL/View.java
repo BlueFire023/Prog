@@ -14,14 +14,8 @@ import java.util.Hashtable;
 public class View extends JPanel {
     private final JTextField widthTextArea;
     private final JTextField heightTextArea;
-    private final JLabel aliveCellColorTag = new JLabel(" Lebende Zellen:");
-    private final JLabel deadCellColorTag = new JLabel(" Tote Zellen:");
     private final JSlider speedSlider = new JSlider();
-    private final JMenuBar menuBar = new JMenuBar();
     private final JMenu modeMenu = new JMenu("Modus");
-    private final JMenu extraMenu = new JMenu("Extras");
-    private final JMenu shapesMenu = new JMenu("Formen");
-    private final JMenu sliderMenu = new JMenu("Geschwindigkeit");
     private final JMenuItem clearButton = new JMenuItem("Löschen");
     private final JMenuItem setSizeButton = new JMenuItem("Auflösung");
     private final JMenuItem setColorButton = new JMenuItem("Farben");
@@ -44,7 +38,7 @@ public class View extends JPanel {
     /**
      * Konstruktor der View Klasse.
      *
-     * @param model
+     * @param model Game Model
      */
     public View(Model model) {
         this.model = model;
@@ -55,6 +49,7 @@ public class View extends JPanel {
         heightTextArea = new JTextField(String.valueOf(model.getCanvas().getTileHeight()));
         heightTextArea.setColumns(7);
 
+        JMenu shapesMenu = new JMenu("Formen");
         shapesMenu.add(frameButton);
         shapesMenu.add(crossButton);
         shapesMenu.add(plusButton);
@@ -64,6 +59,7 @@ public class View extends JPanel {
         modeMenu.add(setButton);
         modeMenu.add(lineButton);
 
+        JMenu extraMenu = new JMenu("Extras");
         extraMenu.add(clearButton);
         extraMenu.add(setSizeButton);
         extraMenu.add(setColorButton);
@@ -88,8 +84,10 @@ public class View extends JPanel {
         saveButton.setFocusable(false);
         saveButton.setBackground(Color.LIGHT_GRAY);
 
+        JMenu sliderMenu = new JMenu("Geschwindigkeit");
         sliderMenu.add(speedSlider);
 
+        JMenuBar menuBar = new JMenuBar();
         menuBar.add(modeMenu);
         menuBar.add(shapesMenu);
         menuBar.add(saveButton);
@@ -118,8 +116,10 @@ public class View extends JPanel {
 
         setColorFrame.setLayout(new GridLayout(2, 2));
         setColorFrame.setTitle("Farben");
+        JLabel aliveCellColorTag = new JLabel(" Lebende Zellen:");
         setColorFrame.add(aliveCellColorTag);
         setColorFrame.add(aliveLayoutPanel);
+        JLabel deadCellColorTag = new JLabel(" Tote Zellen:");
         setColorFrame.add(deadCellColorTag);
         setColorFrame.add(deadLayoutPanel);
         setColorFrame.setSize(250, 200);
@@ -174,12 +174,12 @@ public class View extends JPanel {
     /**
      * Listener werden hinzugefügt.
      *
-     * @param al
-     * @param kl
-     * @param ml
-     * @param mml
-     * @param cl
-     * @param mwl
+     * @param al ActionListener
+     * @param kl KeyListener
+     * @param ml MouseListener
+     * @param mml MouseMotionListener
+     * @param cl ChangeListener
+     * @param mwl MouseWheelListener
      */
     public void setListeners(ActionListener al, KeyListener kl, MouseListener ml, MouseMotionListener mml, ChangeListener cl, MouseWheelListener mwl) {
         addKeyListener(kl);
@@ -209,8 +209,6 @@ public class View extends JPanel {
 
     /**
      * Updated den aktuellen den aktuellen Modus
-     *
-     * @param mode
      */
     public void updateCurrentMode() {
         modeMenu.removeAll();
@@ -256,8 +254,8 @@ public class View extends JPanel {
     /**
      * Farbe der Zellen wird aktualisiert.
      *
-     * @param aColor
-     * @param dColor
+     * @param aColor Farbe
+     * @param dColor Farbe
      */
     public void updateCellColor(Color aColor, Color dColor) {
         updateSetColorFrameTitle();
@@ -276,7 +274,7 @@ public class View extends JPanel {
     /**
      * Schieberegler wird aktualisiert
      *
-     * @param i
+     * @param i Wert
      */
     public void updateSlider(int i) {
         speedSlider.setValue(i);
@@ -285,7 +283,7 @@ public class View extends JPanel {
     /**
      * Fügt den InternalFrameListener hinzu
      *
-     * @param ifl
+     * @param ifl InternalFrameListener
      */
     public void addIFL(InternalFrameListener ifl) {
         frame.addInternalFrameListener(ifl);
@@ -293,8 +291,6 @@ public class View extends JPanel {
 
     /**
      * Neue Titel Number wird gesetzt.
-     *
-     * @param
      */
     public void setNewTitle() {
         frame.setTitle("Game of Life " + model.getCurrentWindowNumber());

@@ -34,8 +34,6 @@ public class MainController extends Adapter {
 
     /**
      * Main-Methode, das Programm wird gestartet.
-     *
-     * @param args
      */
     public static void main(String[] args) {
         new MainController();
@@ -108,7 +106,7 @@ public class MainController extends Adapter {
     /**
      * Aktualisiert das Figuren Menu der letzten verwendeten Figuren.
      *
-     * @param recent
+     * @param recent Letzte Figuren Liste
      */
     public void updateRecentFiguresMenu(ArrayList<Prefab> recent) {
         mainView.updateRecentFiguresMenu(recent, this);
@@ -181,7 +179,7 @@ public class MainController extends Adapter {
      * Aktualisiert die noch vorhanden Instances an GoLController und disposed alle übrigen Frames
      *
      * @param e an {@code InternalFrameEvent} with information about the
-     *          {@code JInteralFrame} that originated the event
+     *          {@code JInternalFrame} that originated the event
      */
     @Override
     public void internalFrameClosing(InternalFrameEvent e) {

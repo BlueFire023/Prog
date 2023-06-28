@@ -35,7 +35,7 @@ public class MainModel {
     /**
      * Gibt eine vordefinierte Figur an einer bestimmten Position zurück
      *
-     * @param position
+     * @param position Index
      * @return prefab
      */
     public Prefab getPreMadeFigures(int position) {
@@ -54,7 +54,7 @@ public class MainModel {
     /**
      * Aktualisiert die Liste der aktuellen Figuren mit einer bestimmten Figur basierend auf dem Namen
      *
-     * @param name
+     * @param name Name
      */
     public void updateRecentFigures(String name) {
         for (Prefab prefab : recentFigures) {
@@ -69,7 +69,7 @@ public class MainModel {
     /**
      * Aktualisiert die Liste der aktuellen Figuren mit einer bestimmten Figur
      *
-     * @param figure
+     * @param figure Figur
      */
     public void updateRecentFigures(Prefab figure) {
         recentFigures.removeIf(prefab -> prefab.name().equals(figure.name()));
@@ -97,7 +97,7 @@ public class MainModel {
     /**
      * Setzt den Mittelpunkt
      *
-     * @param center
+     * @param center Point
      */
     public void setCenter(Point center) {
         this.center = center;
@@ -115,7 +115,7 @@ public class MainModel {
     /**
      * Setzt die Größe des Pinsels
      *
-     * @param brushSize
+     * @param brushSize Größe als Integer
      */
     public void setBrushSize(int brushSize) {
         this.brushSize = brushSize;

@@ -9,6 +9,8 @@ import java.util.Set;
  * @author Denis Schaffer, Moritz Binneweiß, Daniel Faigle, Vanessa Schoger, Filip Schepers
  * @version 1, 22/06/2023
  */
+
+@SuppressWarnings("ALL")
 public class Figures {
     //Erstellt eine Arraylist "GoLPrefab, um alle Figuren als "Prefabs" darin zu speichern
     private final ArrayList<Prefab> figures = new ArrayList<>();
@@ -509,20 +511,11 @@ public class Figures {
     /**
      * Gibt die Figur an der angegebenen Position zurück
      *
-     * @param position
+     * @param position Index
      * @return prefab
      */
     public Prefab getFigure(int position) {
         return figures.get(position);
-    }
-
-    /**
-     * Gibt alle Figuren zurück
-     *
-     * @return figures
-     */
-    public ArrayList<Prefab> getFigures() {
-        return figures;
     }
 
     /**

@@ -18,9 +18,6 @@ public class MainView extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private final JFrame hotKeyFrame = new JFrame("Hotkeys");
     private final JSlider mainSpeedSlider = new JSlider();
-    private final JMenuBar menuBar = new JMenuBar();
-    private final JMenu menu = new JMenu("Menu");
-    private final JMenu figuresMenu = new JMenu("Figuren");
     private final JMenu staticMenu = new JMenu("Statische");
     private final JMenu oscMenu = new JMenu("Oszillierende");
     private final JMenu shipsMenu = new JMenu("Raum Schiffe");
@@ -28,7 +25,6 @@ public class MainView extends JFrame {
     private final JMenu gunsMenu = new JMenu("Gleiter Kanonen");
     private final JMenu otherMenu = new JMenu("Andere");
     private final JMenu recentFiguresMenu = new JMenu("Zuletzt benutzt");
-    private final JMenu speed = new JMenu("Geschwindigkeit");
     private final JMenuItem newWindow = new JMenuItem("Neues Fenster");
     private final JMenuItem showHotKeysButton = new JMenuItem("Hotkeys");
     private final JMenuItem runAllButton = new JMenuItem("Alle Laufen");
@@ -46,6 +42,7 @@ public class MainView extends JFrame {
         setSize(new Dimension(1500, 1000));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setBackground(Color.LIGHT_GRAY);
+        JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
 
         runAllButton.setActionCommand("run");
@@ -55,14 +52,17 @@ public class MainView extends JFrame {
         runAllButton.setBackground(new Color(86, 149, 91));
         runAllButton.setForeground(Color.WHITE);
 
-        menu.add(newWindow);
-        menu.add(showHotKeysButton);
+        JMenu mainMenu = new JMenu("Menu");
+        mainMenu.add(newWindow);
+        mainMenu.add(showHotKeysButton);
 
         menuBar.setBackground(Color.LIGHT_GRAY);
 
         menuBar.add(runAllButton);
-        menuBar.add(menu);
-        menuBar.add(speed);
+        menuBar.add(mainMenu);
+        JMenu speedMenu = new JMenu("Geschwindigkeit");
+        menuBar.add(speedMenu);
+        JMenu figuresMenu = new JMenu("Figuren");
         menuBar.add(figuresMenu);
         menuBar.add(recentFiguresMenu);
 
@@ -88,7 +88,7 @@ public class MainView extends JFrame {
         mainSpeedSlider.setPaintLabels(true);
         mainSpeedSlider.setValue(10);
 
-        speed.add(mainSpeedSlider);
+        speedMenu.add(mainSpeedSlider);
 
         hotKeyFrame.setSize(new Dimension(250, 250));
         hotKeyFrame.setResizable(false);
@@ -189,9 +189,9 @@ public class MainView extends JFrame {
     /**
      * Setzt die Action Listener der HauptKlasse
      *
-     * @param al
-     * @param cl
-     * @param kl
+     * @param al ActionListener
+     * @param cl ChangeListener
+     * @param kl KeyListener
      */
     public void setMainListener(ActionListener al, ChangeListener cl, KeyListener kl) {
         newWindow.addActionListener(al);
@@ -210,8 +210,8 @@ public class MainView extends JFrame {
     /**
      * JInternalFrame wird hinzugefügt.
      *
-     * @param jif
-     * @param randomPos
+     * @param jif JInternalFrame
+     * @param randomPos Point
      */
     public void addInternalFrame(JInternalFrame jif, Point randomPos) {
         desktopPane.add(jif);
@@ -227,8 +227,8 @@ public class MainView extends JFrame {
     /**
      * Updated die Auswahl der kürzlich gezeichneten Figuren
      *
-     * @param recent
-     * @param al
+     * @param recent Liste an letzten Prefabs
+     * @param al ActionListener
      */
     public void updateRecentFiguresMenu(ArrayList<Prefab> recent, ActionListener al) {
         recentFiguresMenu.removeAll();
@@ -250,9 +250,9 @@ public class MainView extends JFrame {
     }
 
     /**
-     * Initialisiert das Figurenmenü.
+     * Initialisiert das Figuren-Menü.
      *
-     * @param preMadeFigures
+     * @param preMadeFigures Figuren Prefabs
      */
     public void initFiguresMenu(Figures preMadeFigures) {
         int count = 0;
@@ -288,9 +288,9 @@ public class MainView extends JFrame {
     }
 
     /**
-     * Ändert die Farben des Alle Laufen Buttons
+     * Ändert die Farben des alle Laufen Buttons
      *
-     * @param run
+     * @param run boolean
      */
     public void updateRunButton(boolean run) {
         runAllButton.setText(run ? "Alle Stoppen" : "Alle Laufen");

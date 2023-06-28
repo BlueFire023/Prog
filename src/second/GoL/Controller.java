@@ -31,8 +31,8 @@ public class Controller extends Adapter {
     /**
      * Konstruktor der Controller Klasse. Wird für jedes neue JInternalFrame aufgerufen.
      *
-     * @param mainController
-     * @param mainModel
+     * @param mainController MainController
+     * @param mainModel MainModel
      */
     public Controller(MainController mainController, MainModel mainModel) {
         this.mainModel = mainModel;
@@ -106,8 +106,8 @@ public class Controller extends Adapter {
     /**
      * Berechnet über den Bresenham Algorithmus die nötigen Daten, um eine Linie zu zeichnen
      *
-     * @param curr
-     * @param preview
+     * @param curr aktuelle Position der Maus als Point
+     * @param preview ob es nur als Vorschau funktioniert
      */
     private void drawLineBresenham(Point curr, Boolean preview) {
         Point prev = new Point(prevPos.x, prevPos.y);
@@ -134,8 +134,8 @@ public class Controller extends Adapter {
     /**
      * Führt die Berechnungen durch, um ein Pixel zu setzen
      *
-     * @param p
-     * @param preview
+     * @param p der Point an dem gezeichnet wird
+     * @param preview ob es nur als Vorschau funktioniert
      */
     private void paintPixel(Point p, boolean preview) {
         int brushSize = mainModel.getBrushSize();
@@ -157,7 +157,7 @@ public class Controller extends Adapter {
     /**
      * Torus Welt berechnung.
      *
-     * @param pos
+     * @param pos Point
      * @return der gewrappte Punkt
      */
     public Point calculateWrap(Point pos) {
@@ -235,7 +235,7 @@ public class Controller extends Adapter {
     /**
      * Invertiert die Farbe.
      *
-     * @param initialColor
+     * @param initialColor Farbe
      * @return negative Color
      */
     private Color invertColor(Color initialColor) {
@@ -245,7 +245,7 @@ public class Controller extends Adapter {
     /**
      * Berechnet die Position der Maus.
      *
-     * @param pos
+     * @param pos Maus Position als Point
      * @return projected MousePosition
      */
     private Point calculateMousePosition(Point pos) {
@@ -259,7 +259,7 @@ public class Controller extends Adapter {
     /**
      * Lässt die Figuren Rotieren.
      *
-     * @param direction
+     * @param direction Integer
      */
     private void rotate(int direction) {
         Set<Point> figure = mainModel.getCurrentFigure().cells();
@@ -286,7 +286,7 @@ public class Controller extends Adapter {
     /**
      * Spiegelt die Figur horizontal.
      *
-     * @param horizontal
+     * @param horizontal Wie geflippt werden soll
      */
     private void flip(boolean horizontal) {
         Set<Point> mirroredFigure = new HashSet<>();
@@ -303,8 +303,8 @@ public class Controller extends Adapter {
     /**
      * Normalisiert die Position der Figur.
      *
-     * @param figure
-     * @return
+     * @param figure Set
+     * @return Figure Set
      */
     private Set<Point> normalizePosition(Set<Point> figure) {
         int lowestX = model.getCanvasWidth();
@@ -326,7 +326,7 @@ public class Controller extends Adapter {
     /**
      * Platziert die Figuren.
      *
-     * @param placingFigure
+     * @param placingFigure boolean
      */
     public void setPlacingFigure(boolean placingFigure) {
         this.placingFigure = placingFigure;
@@ -336,6 +336,7 @@ public class Controller extends Adapter {
     /**
      * Ein neuer Thread wird gestartet und das Game of Life fängt an zu laufen
      */
+    @SuppressWarnings("BusyWait")
     public void startRunning() {
         model.setLastMode(model.getActiveMode());
         model.setActiveMode(Model.Mode.RUNNING);
@@ -594,7 +595,7 @@ public class Controller extends Adapter {
     /**
      * Setzt aktuelle Fenster Nummer
      *
-     * @param number
+     * @param number Integer
      */
 
     public void setCurrentWindowNumber(int number) {

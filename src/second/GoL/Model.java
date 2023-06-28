@@ -24,8 +24,8 @@ public class Model {
     /**
      * Setzt die Farbe der Zelle im Bild "canvas" abhängig davon, ob sie lebendig sind oder nicht
      *
-     * @param nextCellPosition
-     * @param isAlive
+     * @param nextCellPosition Point
+     * @param isAlive boolean
      */
     public void setCell(Point nextCellPosition, boolean isAlive) {
         if (isAlive) {
@@ -50,8 +50,8 @@ public class Model {
     /**
      * Setzt die Farbe eines bestimmten Punktes im Bild "canvas"
      *
-     * @param pos
-     * @param c
+     * @param pos Point
+     * @param c Farbe
      */
     public void setCanvasRGB(Point pos, Color c) {
         canvas.setRGB(pos.x, pos.y, c.getRGB());
@@ -69,7 +69,7 @@ public class Model {
     /**
      * Setzt das Bild "canvas"
      *
-     * @param canvas
+     * @param canvas Image
      */
     public void setCanvas(BufferedImage canvas) {
         this.canvas = canvas;
@@ -103,7 +103,7 @@ public class Model {
     /**
      * Setzt die Farbe der lebendigen Zellen
      *
-     * @param aliveCellColor
+     * @param aliveCellColor Farbe
      */
     public void setAliveCellColor(Color aliveCellColor) {
         this.aliveCellColor = aliveCellColor;
@@ -121,7 +121,7 @@ public class Model {
     /**
      * Setzt die Farbe der toten Zellen
      *
-     * @param deadCellColor
+     * @param deadCellColor Farbe
      */
     public void setDeadCellColor(Color deadCellColor) {
         this.deadCellColor = deadCellColor;
@@ -157,7 +157,7 @@ public class Model {
     /**
      * Setzt die invertierte Farbe
      *
-     * @param invertedColor
+     * @param invertedColor Farbe
      */
     public void setInvertedColor(Color invertedColor) {
         this.invertedColor = invertedColor;
@@ -175,7 +175,7 @@ public class Model {
     /**
      * Setzt aktuelle Fenster Nummer.
      *
-     * @param currentWindowNumber
+     * @param currentWindowNumber Integer
      */
     public void setCurrentWindowNumber(int currentWindowNumber) {
         this.currentWindowNumber = currentWindowNumber;
@@ -193,7 +193,7 @@ public class Model {
     /**
      * Setzt den Letzten verwendeten Modus
      *
-     * @param lastMode
+     * @param lastMode Modus
      */
     public void setLastMode(Mode lastMode) {
         this.lastMode = lastMode;
@@ -211,7 +211,7 @@ public class Model {
     /**
      * Setzt den aktiven Modus
      *
-     * @param activeMode
+     * @param activeMode Modus
      */
     public void setActiveMode(Mode activeMode) {
         this.activeMode = activeMode;
@@ -220,7 +220,7 @@ public class Model {
     /**
      * Gibt zurück, ob der aktive Modus mit dem übergebenen Modus übereinstimmt
      *
-     * @param mode
+     * @param mode Modus
      * @return true, wenn der aktive Modus mit dem übergebenen Modus übereinstimmt
      */
     public boolean isActiveMode(Mode mode) {
