@@ -609,7 +609,7 @@ public class Controller extends Adapter {
      * Stoppt das Laufen
      */
     public void stopRunning() {
-        model.setActiveMode(model.isActiveMode(Model.Mode.RUNNING) ? model.getLastMode() : model.getActiveMode());
+        model.setActiveMode(model.getLastMode());
         view.updateCurrentMode();
     }
 
