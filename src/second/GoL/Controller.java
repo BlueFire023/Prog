@@ -262,6 +262,7 @@ public class Controller extends Adapter {
      * @param direction Integer
      */
     private void rotate(int direction) {
+        removePreview();
         Set<Point> figure = mainModel.getCurrentFigure().cells();
         mainController.calculateCenter();
         Point center = mainModel.getCenter();
@@ -289,6 +290,7 @@ public class Controller extends Adapter {
      * @param horizontal Wie geflippt werden soll
      */
     private void flip(boolean horizontal) {
+        removePreview();
         Set<Point> mirroredFigure = new HashSet<>();
         for (Point p : mainModel.getCurrentFigure().cells()) {
             mirroredFigure.add(new Point(horizontal ? -p.x : p.x, horizontal ? p.y : -p.y));
